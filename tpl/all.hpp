@@ -1,0 +1,77 @@
+
+#pragma once
+
+#include "cache.hpp"
+
+#include <iterator>
+
+namespace tpl{
+
+namespace detail{
+
+template<class LogicalPredicate>
+struct true_for_all_predicate_holder {
+	true_for_all_predicate_holder(LogicalPredicate logicalPredicate) :
+		m_logicalPredicate(std::move(logicalPredicate)){}
+
+	LogicalPredicate m_logicalPredicate;
+};
+
+}
+
+template<class Container, class LogicalPredicate>
+class true_for_all {
+public:
+	true_for_all(Container container, LogicalPredicate logicalPredicate) :
+		m_container(std::move(container)),
+		m_logicalPredicate(std::move(logicalPredicate)){}
+
+	true_for_all(const true_for_all &otherall) :
+	   	m_container(otherall.m_container),
+		m_logicalPredicate(otherall.m_logicalPredicate){}
+
+	true_for_all(true_for_all &&otherall) :
+		m_container(std::move(otherall.m_container)),
+		m_logicalPredicate(std::move(otherall.m_logicalPredicate)){}
+
+	true_for_all &
+	operator=(true_for_all otherall) {
+		this->swap(otherall);
+		return *this;
+	}
+
+	operator bool() const {
+		for(const auto &element : m_container) {
+			if(!m_logicalPredicate(element))
+				return false;
+		}
+		return true;
+	}
+
+	void
+	swap(true_for_all &other){
+		std::swap(m_container, other.m_container);
+		std::swap(m_logicalPredicate, other.m_logicalPredicate);
+	}
+
+private:
+	Container m_container;
+	LogicalPredicate m_logicalPredicate;
+};
+
+template<class LogicalPredicate>
+detail::true_for_all_predicate_holder<LogicalPredicate>
+all(LogicalPredicate logicalPredicate){
+	return detail::true_for_all_predicate_holder<LogicalPredicate>(std::move(logicalPredicate));
+}
+
+template<class Container, class LogicalPredicate>
+true_for_all<Container, LogicalPredicate>
+operator>>(
+	Container container,
+   	detail::true_for_all_predicate_holder<LogicalPredicate> holder
+){
+	return true_for_all<Container, LogicalPredicate>(std::move(container), std::move(holder.m_logicalPredicate));
+}
+
+}
