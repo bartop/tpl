@@ -154,12 +154,22 @@ public:
 	}
 
 	const_iterator
-	begin() const{
+	begin() {
 		return const_iterator(std::begin(m_container), m_transformPredicate);
 	}
 
 	const_iterator
-	end() const{
+	end() {
+		return const_iterator(std::end(m_container), m_transformPredicate);
+	}
+
+	const_iterator
+	begin() const {
+		return const_iterator(std::begin(m_container), m_transformPredicate);
+	}
+
+	const_iterator
+	end() const {
 		return const_iterator(std::end(m_container), m_transformPredicate);
 	}
 private:
