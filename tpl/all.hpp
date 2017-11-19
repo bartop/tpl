@@ -67,7 +67,7 @@ all(LogicalPredicate logicalPredicate){
 
 template<class Container, class LogicalPredicate>
 true_for_all<Container, LogicalPredicate>
-operator>>(
+operator|(
 	Container container,
    	detail::true_for_all_predicate_holder<LogicalPredicate> holder
 ){

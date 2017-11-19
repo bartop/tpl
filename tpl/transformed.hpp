@@ -175,7 +175,7 @@ transform(TransformPredicate transformPredicate){
 
 template<class Container, class TransformPredicate>
 transformed_sequence<Container, TransformPredicate>
-operator>>(
+operator|(
 	Container container,
    	detail::transform_holder<TransformPredicate> holder
 ){

@@ -188,7 +188,7 @@ filter(FilterPredicate filterPredicate){
 
 template<class Container, class FilterPredicate>
 filtered_sequence<Container, FilterPredicate>
-operator>>(
+operator|(
 	Container container,
    	detail::filter_holder<FilterPredicate> holder
 ){
