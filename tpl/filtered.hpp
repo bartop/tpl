@@ -38,22 +38,6 @@ public:
 		m_endIterator(std::move(endIterator)),
 		m_filterPredicate(std::move(filterPredicate)) {}
 
-	filtering_iterator(const filtering_iterator &filteringIterator) :
-	   	m_subIterator(filteringIterator.m_subIterator),
-	   	m_endIterator(filteringIterator.m_endIterator),
-		m_filterPredicate(filteringIterator.m_filterPredicate){}
-
-	filtering_iterator(filtering_iterator &&other) :
-		m_subIterator(std::move(other.m_subIterator)),
-		m_endIterator(std::move(other.m_endIterator)),
-		m_filterPredicate(std::move(other.m_filterPredicate)) {}
-
-	filtering_iterator &
-	operator=(filtering_iterator other) {
-		this->swap(other);
-		return *this;
-	}
-
 	filtering_iterator &
 	operator++() {
 		++m_subIterator;
@@ -126,16 +110,8 @@ make_filtering_iterator(
 template<class Container, class FilterPredicate>
 class filtered_sequence {
 public:
-	using iterator = filtering_iterator<typename Container::iterator, FilterPredicate>;
 	using const_iterator = filtering_iterator<typename Container::const_iterator, FilterPredicate>;
-
-	filtered_sequence(const filtered_sequence &filteredSequence) :
-	   	m_container(filteredSequence.m_container),
-		m_filterPredicate(filteredSequence.m_filterPredicate){}
-
-	filtered_sequence(filtered_sequence &&filteredSequence) :
-		m_container(std::move(filteredSequence.m_container)),
-		m_filterPredicate(std::move(filteredSequence.m_filterPredicate)){}
+	using iterator = filtering_iterator<typename Container::iterator, FilterPredicate>;
 
 	filtered_sequence(
 		Container container,
@@ -143,12 +119,6 @@ public:
 	) :
 		m_container(std::move(container)),
 		m_filterPredicate(std::move(predicate)){}
-
-	filtered_sequence &
-	operator=(filtered_sequence other) {
-		this->swap(other);
-		return *this;
-	}
 
 	void
 	swap(filtered_sequence &other){
