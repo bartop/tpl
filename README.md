@@ -6,6 +6,7 @@ Using ideas from functional languages and some more modern imperative languages 
 - value semantics
 - type safety
 - speed
+- lazy evaluation - nothing is ever computed if you don't ask for result
 - syntax simplification via operator overloads
 - readability and elegance
 - ~~meaningful error messaeges~~ ```/include/c++/7.2.0/bits/atomic_base.h|74 col 3 error| note: candidate: constexpr std::memory_order std::operator|(std::memory_order, std::__memory_order_modifier)^M [cpp/gcc]```
