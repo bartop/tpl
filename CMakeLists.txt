@@ -12,6 +12,8 @@ set(CMAKE_COLOR_MAKEFILE ON)
 set(TEST_SOURCES
     tests/filtered_test.cpp
     tests/transformed_test.cpp
+    tests/sorted_test.cpp
+    tests/any_test.cpp
 )
 
 set(CATCH_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/External/Catch)
