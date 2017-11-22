@@ -95,6 +95,7 @@ template<class Container, class FilterPredicate>
 class filtered_sequence {
 public:
 	using container_t = typename std::remove_reference<Container>::type;
+	using value_type = typename container_t::value_type;
 	using const_iterator = filtering_iterator<typename container_t::const_iterator, FilterPredicate>;
 	using iterator = filtering_iterator<typename container_t::iterator, FilterPredicate>;
 

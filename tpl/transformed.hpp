@@ -108,6 +108,7 @@ template<class Container, class TransformPredicate>
 class transformed_sequence {
 public:
 	using container_t = typename std::remove_reference<Container>::type;
+	using value_type = typename container_t::value_type;
 	using const_iterator = transforming_iterator<typename container_t::const_iterator, TransformPredicate>;
 	using iterator = transforming_iterator<typename container_t::iterator, TransformPredicate>;
 
