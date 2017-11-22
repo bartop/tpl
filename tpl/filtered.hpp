@@ -1,8 +1,6 @@
 
 #pragma once
 
-#include "cache.hpp"
-
 #include <iterator>
 #include <algorithm>
 
@@ -93,31 +91,18 @@ private:
 	FilterPredicate m_filterPredicate;
 };
 
-template<class SubIterator, class FilterPredicate>
-filtering_iterator<SubIterator, FilterPredicate>
-make_filtering_iterator(
-	SubIterator subIterator,
-	SubIterator endIterator,
-	FilterPredicate filterPredicate
-){
-	return filtering_iterator<SubIterator, FilterPredicate>(
-		std::move(subIterator),
-	   	std::move(endIterator),
-	   	std::move(filterPredicate)
-	);
-}
-
 template<class Container, class FilterPredicate>
 class filtered_sequence {
 public:
-	using const_iterator = filtering_iterator<typename Container::const_iterator, FilterPredicate>;
-	using iterator = filtering_iterator<typename Container::iterator, FilterPredicate>;
+	using container_t = typename std::remove_reference<Container>::type;
+	using const_iterator = filtering_iterator<typename container_t::const_iterator, FilterPredicate>;
+	using iterator = filtering_iterator<typename container_t::iterator, FilterPredicate>;
 
 	filtered_sequence(
-		Container container,
+		Container &&container,
 		FilterPredicate predicate
 	) :
-		m_container(std::move(container)),
+		m_container(std::forward<Container>(container)),
 		m_filterPredicate(std::move(predicate)){}
 
 	void
@@ -159,10 +144,13 @@ filter(FilterPredicate filterPredicate){
 template<class Container, class FilterPredicate>
 filtered_sequence<Container, FilterPredicate>
 operator|(
-	Container container,
+	Container &&container,
    	detail::filter_holder<FilterPredicate> holder
 ){
-	return filtered_sequence<Container, FilterPredicate>(std::move(container), std::move(holder.m_filterPredicate));
+	return filtered_sequence<Container, FilterPredicate>(
+		std::forward<Container>(container),
+	   	std::move(holder.m_filterPredicate)
+	);
 }
 
 }

@@ -107,14 +107,15 @@ private:
 template<class Container, class TransformPredicate>
 class transformed_sequence {
 public:
-	using const_iterator = transforming_iterator<typename Container::const_iterator, TransformPredicate>;
+	using container_t = typename std::remove_reference<Container>::type;
+	using const_iterator = transforming_iterator<typename container_t::const_iterator, TransformPredicate>;
 	using iterator = const_iterator;
 
 	transformed_sequence(
-		Container container,
+		Container &&container,
 	   	TransformPredicate transformPredicate
 	) :
-		m_container(std::move(container)),
+		m_container(std::forward<Container>(container)),
 		m_transformPredicate(std::move(transformPredicate)){}
 
 	void
@@ -157,10 +158,10 @@ transform(TransformPredicate transformPredicate){
 template<class Container, class TransformPredicate>
 transformed_sequence<Container, TransformPredicate>
 operator|(
-	Container container,
+	Container &&container,
    	detail::transform_holder<TransformPredicate> holder
 ){
-	return transformed_sequence<Container, TransformPredicate>(std::move(container), std::move(holder.m_transformPredicate));
+	return transformed_sequence<Container, TransformPredicate>(std::forward<Container>(container), std::move(holder.m_transformPredicate));
 }
 
 }
