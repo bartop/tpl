@@ -9,7 +9,7 @@ using namespace std;
 using namespace tpl;
 
 TEST_CASE( "All in vector", "[all_test]" ) {
-	vector<int> v{ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+	const auto v = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 	SECTION(" >= 1"){
 		const bool result = (v | all([](const auto &i){ return i >= 1; }));
 		REQUIRE(true == result);

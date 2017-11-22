@@ -15,6 +15,7 @@ set(TEST_SOURCES
     tests/sorted_test.cpp
     tests/any_test.cpp
     tests/all_test.cpp
+    tests/count_test.cpp
 )
 
 set(CATCH_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/External/Catch)
