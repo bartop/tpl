@@ -109,7 +109,7 @@ class transformed_sequence {
 public:
 	using container_t = typename std::remove_reference<Container>::type;
 	using const_iterator = transforming_iterator<typename container_t::const_iterator, TransformPredicate>;
-	using iterator = const_iterator;
+	using iterator = transforming_iterator<typename container_t::iterator, TransformPredicate>;
 
 	transformed_sequence(
 		Container &&container,
