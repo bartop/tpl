@@ -1,8 +1,6 @@
 
 #pragma once
 
-#include "cache.hpp"
-
 #include <iterator>
 
 namespace tpl{
@@ -22,23 +20,9 @@ struct true_for_all_predicate_holder {
 template<class Container, class LogicalPredicate>
 class true_for_all {
 public:
-	true_for_all(Container container, LogicalPredicate logicalPredicate) :
-		m_container(std::move(container)),
+	true_for_all(Container &&container, LogicalPredicate logicalPredicate) :
+		m_container(std::forward<Container>(container)),
 		m_logicalPredicate(std::move(logicalPredicate)){}
-
-	true_for_all(const true_for_all &otherall) :
-	   	m_container(otherall.m_container),
-		m_logicalPredicate(otherall.m_logicalPredicate){}
-
-	true_for_all(true_for_all &&otherall) :
-		m_container(std::move(otherall.m_container)),
-		m_logicalPredicate(std::move(otherall.m_logicalPredicate)){}
-
-	true_for_all &
-	operator=(true_for_all otherall) {
-		this->swap(otherall);
-		return *this;
-	}
 
 	operator bool() const {
 		for(const auto &element : m_container) {
@@ -68,10 +52,13 @@ all(LogicalPredicate logicalPredicate){
 template<class Container, class LogicalPredicate>
 true_for_all<Container, LogicalPredicate>
 operator|(
-	Container container,
+	Container &&container,
    	detail::true_for_all_predicate_holder<LogicalPredicate> holder
 ){
-	return true_for_all<Container, LogicalPredicate>(std::move(container), std::move(holder.m_logicalPredicate));
+	return true_for_all<Container, LogicalPredicate>(
+		std::forward<Container>(container),
+	   	std::move(holder.m_logicalPredicate)
+	);
 }
 
 }
