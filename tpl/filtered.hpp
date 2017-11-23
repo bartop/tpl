@@ -19,11 +19,14 @@ struct filter_holder {
 }
 
 template<class SubIterator, class FilterPredicate>
-class filtering_iterator :
-	public std::iterator<std::input_iterator_tag, typename SubIterator::value_type> {
+class filtering_iterator {
 public:
-	using self_t = filtering_iterator;
-	using traits_t = std::iterator_traits<self_t>;
+	using sub_traits_t = std::iterator_traits<SubIterator>;
+	using value_type = typename sub_traits_t::value_type;
+	using difference_type = typename sub_traits_t::difference_type;
+	using reference = const value_type &;
+	using pointer = const value_type *;
+	using iterator_category = std::input_iterator_tag;
 
 	~filtering_iterator() noexcept = default;
 
@@ -50,22 +53,12 @@ public:
 		return thisCopy;
 	}
 
-	const typename traits_t::value_type &
-	operator*() {
-		return *(this->m_subIterator);
-	}
-
-	const typename traits_t::value_type *
-	operator->() {
-		return this->m_subIterator.operator->();
-	}
-
-	const typename traits_t::value_type &
+	reference
 	operator*() const {
 		return *(this->m_subIterator);
 	}
 
-	const typename traits_t::value_type *
+	pointer
 	operator->() const {
 		return this->m_subIterator.operator->();
 	}

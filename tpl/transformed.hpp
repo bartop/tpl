@@ -35,13 +35,18 @@ make_pointer_proxy(T &&value){
 }
 
 template<class SubIterator, class TransformPredicate>
-class transforming_iterator :
-	public std::iterator<
-		std::input_iterator_tag,
-	   	decltype(std::declval<TransformPredicate>()(*std::declval<SubIterator>()))> {
+class transforming_iterator {
 public:
-	using self_t = transforming_iterator;
-	using traits_t = std::iterator_traits<self_t>;
+	using sub_traits_t = std::iterator_traits<SubIterator>;
+	using value_type = decltype(
+		std::declval<TransformPredicate>()(
+			std::declval<typename sub_traits_t::value_type>()
+		)
+	);
+	using difference_type = typename sub_traits_t::difference_type;
+	using reference = value_type;
+	using pointer = detail::pointer_proxy<value_type>;
+	using iterator_category = std::input_iterator_tag;
 
 	~transforming_iterator() noexcept = default;
 
@@ -65,22 +70,12 @@ public:
 		return thisCopy;
 	}
 
-	typename traits_t::value_type
-	operator*() {
-		return m_transformPredicate(*m_subIterator);
-	}
-
-	detail::pointer_proxy<typename traits_t::value_type>
-	operator->() {
-		return detail::make_pointer_proxy(**this);
-	}
-
-	typename traits_t::value_type
+	reference
 	operator*() const {
 		return m_transformPredicate(*m_subIterator);
 	}
 
-	detail::pointer_proxy<typename traits_t::value_type>
+	pointer
 	operator->() const {
 		return detail::make_pointer_proxy(**this);
 	}

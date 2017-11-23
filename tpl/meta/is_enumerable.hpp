@@ -1,12 +1,15 @@
 
 #pragma once
 
+#include "type_sink.hpp"
+
 #include <type_traits>
 #include <iterator>
 
 namespace tpl {
 
-template<class ...> struct type_sink { typedef void type; };
+namespace meta {
+
 
 template<class T, class = void>
 struct can_begin : std::false_type {
@@ -15,7 +18,7 @@ struct can_begin : std::false_type {
 template<class T>
 struct can_begin<
 	T,
-	typename type_sink<decltype(std::begin(std::declval<T &>()))>::type
+	typename type_sink<typename std::iterator_traits<decltype(std::begin(std::declval<T>()))>::value_type>::type
 > : std::true_type {};
 
 template<class T, class = void>
@@ -24,7 +27,7 @@ struct can_end : std::false_type { };
 template<class T>
 struct can_end<
 	T,
-    typename type_sink<decltype(std::end(std::declval<T &>()))>::type
+    typename type_sink<typename std::iterator_traits<decltype(std::end(std::declval<T>()))>::value_type>::type
 > : std::true_type { };
 
 template<class T, class U, class = void>
@@ -47,10 +50,12 @@ struct is_enumerable<
 		can_begin<T>::value &&
 	   	can_end<T>::value &&
 	   	are_equality_comparable<
-			decltype(std::begin(std::declval<T &>())),
-			decltype(std::end(std::declval<T &>()))
+			typename std::iterator_traits<decltype(std::begin(std::declval<T>()))>::value_type,
+			typename std::iterator_traits<decltype(std::end(std::declval<T>()))>::value_type
 		>::value
 	>::type
 > : std::true_type { };
+
+}
 
 }
