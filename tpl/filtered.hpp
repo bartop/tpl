@@ -1,6 +1,8 @@
 
 #pragma once
 
+#include "meta/is_enumerable.hpp"
+
 #include <iterator>
 #include <algorithm>
 
@@ -85,7 +87,7 @@ private:
 };
 
 template<class Container, class FilterPredicate>
-class filtered_sequence {
+class filtered_sequence : meta::enforce_enumerable<Container> {
 public:
 	using container_t = typename std::remove_reference<Container>::type;
 	using value_type = typename container_t::value_type;

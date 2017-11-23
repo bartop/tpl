@@ -56,6 +56,12 @@ struct is_enumerable<
 	>::type
 > : std::true_type { };
 
+template<class T>
+struct enforce_enumerable {
+	static_assert(is_enumerable<T>::value, "Enumerable type must have comparable begin and end iterators.");
+	using type = T;
+};
+
 }
 
 }
