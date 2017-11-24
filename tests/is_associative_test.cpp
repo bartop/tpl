@@ -15,7 +15,7 @@
 using namespace tpl::meta;
 using namespace tpl;
 
-TEST_CASE( "Check created type traits", "[is_enumerable_test]" ) {
+TEST_CASE( "Check created type traits", "[is_associative_test]" ) {
 	REQUIRE(is_associative<char(&)[4]>::value == false);
 	REQUIRE(is_associative<char>::value == false);
 	REQUIRE(is_associative<std::vector<char>>::value == false);

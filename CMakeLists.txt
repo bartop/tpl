@@ -18,6 +18,7 @@ set(TEST_SOURCES
     tests/count_test.cpp
     tests/is_enumerable_test.cpp
     tests/is_associative_test.cpp
+    tests/enumerable_traits_test.cpp
 )
 
 set(CATCH_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/External/Catch)
