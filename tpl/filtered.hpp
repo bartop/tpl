@@ -89,7 +89,7 @@ private:
 
 template<class Container, class FilterPredicate>
 class filtered_sequence :
-	public meta::choose_associative_base<typename std::remove_reference<Container>::type>,
+	public meta::associative_traits<typename std::remove_reference<Container>::type>,
 	meta::enforce_enumerable<Container> {
 public:
 	using container_t = typename std::remove_reference<Container>::type;

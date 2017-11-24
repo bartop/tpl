@@ -102,12 +102,14 @@ private:
 	TransformPredicate m_transformPredicate;
 };
 
+
 template<class Container, class TransformPredicate>
 class transformed_sequence :
-	//public meta::choose_associative_base<typename std::remove_reference<Container>::type>,
-	//this is intentionally commented - not always transformation of associative type yields another
-	//associative type - and so distinct transformations ought to be made for associative and non
-	//associative transformations
+	public meta::associative_element_traits<decltype(
+		std::declval<TransformPredicate>()(
+			std::declval<typename std::remove_reference<Container>::type::value_type>()
+		)
+	)>,
 	meta::enforce_enumerable<Container> {
 public:
 	using container_t = typename std::remove_reference<Container>::type;
