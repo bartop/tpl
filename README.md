@@ -14,7 +14,7 @@ Using ideas from functional languages and some more modern imperative languages 
 # Getting started
 
 ## Requirements
-As tpl is header-only it does not require installation - just clone this repository and use the headers in tpl directory. Currently the tests are made under C++14 compliant compiler but it SHOULD work with compiler with C++11 support. Support for older standards is in plans, I will gladly accept any help - feel free send me an [e-mail](mailto:bartoszmiera@gmail.com).
+As tpl is header-only it does not require installation - just clone this repository and use the headers in tpl directory. Currently the tests are made under C++14 compliant compiler. Support for older standards is in plans, I will gladly accept any help - feel free send me an [e-mail](mailto:bartoszmiera@gmail.com).
 
 ## Sample code
 
