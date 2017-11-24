@@ -1,4 +1,6 @@
 
+#pragma once
+
 #include "type_sink.hpp"
 
 #include <type_traits>
