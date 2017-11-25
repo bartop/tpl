@@ -3,6 +3,7 @@
 
 #include "meta/is_enumerable.hpp"
 #include "meta/is_associative.hpp"
+#include "meta/enumerable_traits.hpp"
 
 #include <iterator>
 #include <type_traits>
@@ -107,15 +108,15 @@ template<class Container, class TransformPredicate>
 class transformed_sequence :
 	meta::enforce_enumerable<Container> {
 public:
-	using container_t = typename std::remove_reference<Container>::type;
+	using enumerable_traits = meta::enumerable_traits<Container>;
 	using value_type =
 		decltype(
 			std::declval<TransformPredicate>()(
 				std::declval<typename std::remove_reference<Container>::type::value_type>()
 			)
 		);
-	using const_iterator = transforming_iterator<typename container_t::const_iterator, TransformPredicate>;
-	using iterator = transforming_iterator<typename container_t::iterator, TransformPredicate>;
+	using const_iterator = transforming_iterator<typename enumerable_traits::const_iterator, TransformPredicate>;
+	using iterator = transforming_iterator<typename enumerable_traits::iterator, TransformPredicate>;
 
 	transformed_sequence(
 		Container &&container,

@@ -3,6 +3,7 @@
 
 #include "meta/is_enumerable.hpp"
 #include "meta/is_associative.hpp"
+#include "meta/enumerable_traits.hpp"
 
 #include <iterator>
 #include <algorithm>
@@ -91,10 +92,10 @@ template<class Container, class FilterPredicate>
 class filtered_sequence :
 	meta::enforce_enumerable<Container> {
 public:
-	using container_t = typename std::remove_reference<Container>::type;
-	using value_type = typename container_t::value_type;
-	using const_iterator = filtering_iterator<typename container_t::const_iterator, FilterPredicate>;
-	using iterator = filtering_iterator<typename container_t::iterator, FilterPredicate>;
+	using enumerable_traits = meta::enumerable_traits<Container>;
+	using value_type = typename enumerable_traits::value_type;
+	using const_iterator = filtering_iterator<typename enumerable_traits::const_iterator, FilterPredicate>;
+	using iterator = filtering_iterator<typename enumerable_traits::iterator, FilterPredicate>;
 
 	filtered_sequence(
 		Container &&container,

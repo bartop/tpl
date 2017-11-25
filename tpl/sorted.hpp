@@ -3,6 +3,7 @@
 
 #include "meta/is_enumerable.hpp"
 #include "meta/is_associative.hpp"
+#include "meta/enumerable_traits.hpp"
 
 #include <iterator>
 #include <set>
@@ -25,8 +26,8 @@ template<class Container, class ComparePredicate>
 class sorted_sequence :
 	meta::enforce_enumerable<Container> {
 public:
-	using container_t = typename std::remove_reference<Container>::type;
-	using value_type = typename container_t::value_type;
+	using enumerable_traits = meta::enumerable_traits<Container>;
+	using value_type = typename enumerable_traits::value_type;
 	using sorted_t = std::multiset<value_type, ComparePredicate>;
 	using const_iterator = typename sorted_t::const_iterator;
 	using iterator = typename sorted_t::iterator;
