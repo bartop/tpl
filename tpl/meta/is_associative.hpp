@@ -19,11 +19,28 @@ struct is_associative_element<std::pair<T, U>> : std::true_type {};
 template<class T, class = void>
 struct associative_element_traits {};
 
-template<class T, class U>
-struct associative_element_traits<std::pair<T, U>> {
-	using key_type = T;
-	using mapped_type = U;
+template<class T>
+struct associative_element_traits<
+	T,
+   	typename std::enable_if<
+		std::is_same<
+			typename std::decay<T>::type,
+			std::pair<typename T::first_type, typename T::second_type>
+   		>::value
+	>::type
+> {
+	using key_type = typename T::first_type;
+	using mapped_type = typename T::second_type;
+
+	static key_type key_value(T &&value){
+		return value.first;
+	}
+
+	static mapped_type mapped_value(T &&value){
+		return value.second;
+	}
 };
+
 
 template<class T, class = void>
 struct is_associative : std::false_type {};
@@ -32,10 +49,10 @@ template<class T>
 struct is_associative<
 	T,
    	typename type_sink<
-		typename T::mapped_type,
-		typename T::key_type
+		typename associative_element_traits<typename T::value_type>::key_type,
+		typename associative_element_traits<typename T::value_type>::mapped_type
 	>::type
-> : std::true_type{};
+> : std::true_type{ };
 
 
 template<class T>
