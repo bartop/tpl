@@ -31,7 +31,7 @@ TEST_CASE( "Check created type traits", "[is_associative_test]" ) {
 	REQUIRE((is_associative<decltype(std::set<int>() | std::declval<filter_type>())>::value) == false);
 
 	using filter_type2 = decltype(filter(std::declval<std::function<bool(std::pair<int, int>)>>()));
-	REQUIRE((is_associative<decltype(std::map<int, int>() | std::declval<filter_type>())>::value) == true);
+	REQUIRE((is_associative<decltype(std::map<int, int>() | std::declval<filter_type2>())>::value) == true);
 
 	REQUIRE((is_associative_element<std::pair<int, int>>::value) == true);
 	REQUIRE((is_associative_element<std::pair<std::vector<int>, int>>::value) == true);
