@@ -32,11 +32,11 @@ struct associative_element_traits<
 	using key_type = typename T::first_type;
 	using mapped_type = typename T::second_type;
 
-	static key_type key_value(T &&value){
+	static const key_type &key_value(const T &value){
 		return value.first;
 	}
 
-	static mapped_type mapped_value(T &&value){
+	static const mapped_type &mapped_value(const T &value){
 		return value.second;
 	}
 };
@@ -49,8 +49,8 @@ template<class T>
 struct is_associative<
 	T,
    	typename type_sink<
-		typename associative_element_traits<typename T::value_type>::key_type,
-		typename associative_element_traits<typename T::value_type>::mapped_type
+		typename associative_element_traits<typename std::decay<T>::type::value_type>::key_type,
+		typename associative_element_traits<typename std::decay<T>::type::value_type>::mapped_type
 	>::type
 > : std::true_type{ };
 
