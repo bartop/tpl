@@ -27,7 +27,8 @@ public:
 		OuterIterator outerEnd
 	) :
 		m_outerIterator(std::move(outerIterator)),
-		m_outerEnd(std::move(outerEnd)) {
+		m_outerEnd(std::move(outerEnd)),
+   		m_innerIterator() {
 		if(m_outerIterator != m_outerEnd)
 			m_innerIterator = std::begin(*m_outerIterator);
 

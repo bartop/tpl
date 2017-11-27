@@ -9,7 +9,7 @@ namespace detail{
 
 template<class LogicalPredicate>
 struct true_for_any_predicate_holder {
-	true_for_any_predicate_holder(LogicalPredicate logicalPredicate) :
+	explicit true_for_any_predicate_holder(LogicalPredicate logicalPredicate) :
 		m_logicalPredicate(std::move(logicalPredicate)){}
 
 	LogicalPredicate m_logicalPredicate;
