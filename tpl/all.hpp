@@ -17,15 +17,15 @@ struct true_for_all_predicate_holder {
 
 }
 
-template<class Container, class LogicalPredicate>
+template<class Enumerable, class LogicalPredicate>
 class true_for_all {
 public:
-	true_for_all(Container &&container, LogicalPredicate logicalPredicate) :
-		m_container(std::forward<Container>(container)),
+	true_for_all(Enumerable &&enumerable, LogicalPredicate logicalPredicate) :
+		m_enumerable(std::forward<Enumerable>(enumerable)),
 		m_logicalPredicate(std::move(logicalPredicate)){}
 
 	operator bool() const {
-		for(const auto &element : m_container) {
+		for(const auto &element : m_enumerable) {
 			if(!m_logicalPredicate(element))
 				return false;
 		}
@@ -34,12 +34,12 @@ public:
 
 	void
 	swap(true_for_all &other){
-		std::swap(m_container, other.m_container);
+		std::swap(m_enumerable, other.m_enumerable);
 		std::swap(m_logicalPredicate, other.m_logicalPredicate);
 	}
 
 private:
-	Container m_container;
+	Enumerable m_enumerable;
 	LogicalPredicate m_logicalPredicate;
 };
 
@@ -49,14 +49,14 @@ all(LogicalPredicate logicalPredicate){
 	return detail::true_for_all_predicate_holder<LogicalPredicate>(std::move(logicalPredicate));
 }
 
-template<class Container, class LogicalPredicate>
-true_for_all<Container, LogicalPredicate>
+template<class Enumerable, class LogicalPredicate>
+true_for_all<Enumerable, LogicalPredicate>
 operator|(
-	Container &&container,
+	Enumerable &&enumerable,
    	detail::true_for_all_predicate_holder<LogicalPredicate> holder
 ){
-	return true_for_all<Container, LogicalPredicate>(
-		std::forward<Container>(container),
+	return true_for_all<Enumerable, LogicalPredicate>(
+		std::forward<Enumerable>(enumerable),
 	   	std::move(holder.m_logicalPredicate)
 	);
 }

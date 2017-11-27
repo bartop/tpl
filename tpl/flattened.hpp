@@ -89,57 +89,57 @@ private:
 	InnerIterator m_innerIterator;
 };
 
-template<class Container>
+template<class Enumerable>
 class flattened_sequence :
-	meta::enforce_enumerable<Container>,
-	meta::enforce_enumerable<typename meta::enumerable_traits<Container>::value_type>{
+	meta::enforce_enumerable<Enumerable>,
+	meta::enforce_enumerable<typename meta::enumerable_traits<Enumerable>::value_type>{
 public:
-	using enumerable_traits = meta::enumerable_traits<Container>;
-	using internal_enumerable_traits = meta::enumerable_traits<typename meta::enumerable_traits<Container>::value_type>;
+	using enumerable_traits = meta::enumerable_traits<Enumerable>;
+	using internal_enumerable_traits = meta::enumerable_traits<typename meta::enumerable_traits<Enumerable>::value_type>;
 	using value_type = typename enumerable_traits::value_type;
 	using const_iterator = flattening_iterator<typename enumerable_traits::const_iterator, typename internal_enumerable_traits::const_iterator>;
 	using iterator = flattening_iterator<typename enumerable_traits::iterator, typename internal_enumerable_traits::iterator>;
 
 	flattened_sequence(
-		Container &&container
+		Enumerable &&enumerable
 	) :
-		m_container(std::forward<Container>(container)) { }
+		m_enumerable(std::forward<Enumerable>(enumerable)) { }
 
 	void
 	swap(flattened_sequence &other){
-		std::swap(m_container, other.m_container);
+		std::swap(m_enumerable, other.m_enumerable);
 	}
 
 	iterator
 	begin() {
-		return iterator(std::begin(m_container), std::end(m_container));
+		return iterator(std::begin(m_enumerable), std::end(m_enumerable));
 	}
 
 	iterator
 	end() {
-		return iterator(std::end(m_container), std::end(m_container));
+		return iterator(std::end(m_enumerable), std::end(m_enumerable));
 	}
 
 	const_iterator
 	begin() const {
-		return const_iterator(std::begin(m_container), std::end(m_container));
+		return const_iterator(std::begin(m_enumerable), std::end(m_enumerable));
 	}
 
 	const_iterator
 	end() const {
-		return const_iterator(std::end(m_container), std::end(m_container));
+		return const_iterator(std::end(m_enumerable), std::end(m_enumerable));
 	}
 private:
-	Container m_container;
+	Enumerable m_enumerable;
 };
 
 struct flatten_tag {} flatten;
 
-template<class Container>
-flattened_sequence<Container>
-operator|(Container &&container, const flatten_tag &){
-	return flattened_sequence<Container>(
-		std::forward<Container>(container)
+template<class Enumerable>
+flattened_sequence<Enumerable>
+operator|(Enumerable &&enumerable, const flatten_tag &){
+	return flattened_sequence<Enumerable>(
+		std::forward<Enumerable>(enumerable)
 	);
 }
 

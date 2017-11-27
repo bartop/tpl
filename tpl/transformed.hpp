@@ -104,55 +104,55 @@ private:
 };
 
 
-template<class Container, class TransformPredicate>
+template<class Enumerable, class TransformPredicate>
 class transformed_sequence :
-	meta::enforce_enumerable<Container> {
+	meta::enforce_enumerable<Enumerable> {
 public:
-	using enumerable_traits = meta::enumerable_traits<Container>;
+	using enumerable_traits = meta::enumerable_traits<Enumerable>;
 	using value_type =
 		decltype(
 			std::declval<TransformPredicate>()(
-				std::declval<typename std::remove_reference<Container>::type::value_type>()
+				std::declval<typename std::remove_reference<Enumerable>::type::value_type>()
 			)
 		);
 	using const_iterator = transforming_iterator<typename enumerable_traits::const_iterator, TransformPredicate>;
 	using iterator = transforming_iterator<typename enumerable_traits::iterator, TransformPredicate>;
 
 	transformed_sequence(
-		Container &&container,
+		Enumerable &&enumerable,
 	   	TransformPredicate transformPredicate
 	) :
-		m_container(std::forward<Container>(container)),
+		m_enumerable(std::forward<Enumerable>(enumerable)),
 		m_transformPredicate(std::move(transformPredicate)){}
 
 	void
 	swap(transformed_sequence &other){
-		std::swap(m_container, other.m_container);
+		std::swap(m_enumerable, other.m_enumerable);
 		std::swap(m_transformPredicate, other.m_transformPredicate);
 	}
 
 	iterator
 	begin() {
-		return const_iterator(std::begin(m_container), m_transformPredicate);
+		return const_iterator(std::begin(m_enumerable), m_transformPredicate);
 	}
 
 	iterator
 	end() {
-		return const_iterator(std::end(m_container), m_transformPredicate);
+		return const_iterator(std::end(m_enumerable), m_transformPredicate);
 	}
 
 	const_iterator
 	begin() const {
-		return const_iterator(std::begin(m_container), m_transformPredicate);
+		return const_iterator(std::begin(m_enumerable), m_transformPredicate);
 	}
 
 	const_iterator
 	end() const {
-		return const_iterator(std::end(m_container), m_transformPredicate);
+		return const_iterator(std::end(m_enumerable), m_transformPredicate);
 	}
 
 private:
-	Container m_container;
+	Enumerable m_enumerable;
 	TransformPredicate m_transformPredicate;
 };
 
@@ -162,13 +162,13 @@ transform(TransformPredicate transformPredicate){
 	return detail::transform_holder<TransformPredicate>(std::move(transformPredicate));
 }
 
-template<class Container, class TransformPredicate>
-transformed_sequence<Container, TransformPredicate>
+template<class Enumerable, class TransformPredicate>
+transformed_sequence<Enumerable, TransformPredicate>
 operator|(
-	Container &&container,
+	Enumerable &&enumerable,
    	detail::transform_holder<TransformPredicate> holder
 ){
-	return transformed_sequence<Container, TransformPredicate>(std::forward<Container>(container), std::move(holder.m_transformPredicate));
+	return transformed_sequence<Enumerable, TransformPredicate>(std::forward<Enumerable>(enumerable), std::move(holder.m_transformPredicate));
 }
 
 }

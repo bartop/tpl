@@ -69,56 +69,56 @@ private:
 	SubIterator m_subIterator;
 };
 
-template<class Container>
+template<class Enumerable>
 class mapped_values_sequence :
-	meta::enforce_enumerable<Container>,
-	meta::enforce_associative<Container>{
+	meta::enforce_enumerable<Enumerable>,
+	meta::enforce_associative<Enumerable>{
 public:
-	using enumerable_traits = meta::enumerable_traits<Container>;
+	using enumerable_traits = meta::enumerable_traits<Enumerable>;
 	using value_type = typename enumerable_traits::value_type;
 	using const_iterator = mapped_values_iterator<typename enumerable_traits::const_iterator>;
 	using iterator = mapped_values_iterator<typename enumerable_traits::iterator>;
 
 	mapped_values_sequence(
-		Container &&container
+		Enumerable &&enumerable
 	) :
-		m_container(std::forward<Container>(container)) { }
+		m_enumerable(std::forward<Enumerable>(enumerable)) { }
 
 	void
 	swap(mapped_values_sequence &other){
-		std::swap(m_container, other.m_container);
+		std::swap(m_enumerable, other.m_enumerable);
 	}
 
 	iterator
 	begin() {
-		return iterator(std::begin(m_container));
+		return iterator(std::begin(m_enumerable));
 	}
 
 	iterator
 	end() {
-		return iterator(std::end(m_container));
+		return iterator(std::end(m_enumerable));
 	}
 
 	const_iterator
 	begin() const {
-		return const_iterator(std::begin(m_container));
+		return const_iterator(std::begin(m_enumerable));
 	}
 
 	const_iterator
 	end() const {
-		return const_iterator(std::end(m_container));
+		return const_iterator(std::end(m_enumerable));
 	}
 private:
-	Container m_container;
+	Enumerable m_enumerable;
 };
 
 struct mapped_values_tag {} mapped_values;
 
-template<class Container>
-mapped_values_sequence<Container>
-operator|(Container &&container, const mapped_values_tag &) {
-	return mapped_values_sequence<Container>(
-		std::forward<Container>(container)
+template<class Enumerable>
+mapped_values_sequence<Enumerable>
+operator|(Enumerable &&enumerable, const mapped_values_tag &) {
+	return mapped_values_sequence<Enumerable>(
+		std::forward<Enumerable>(enumerable)
 	);
 }
 

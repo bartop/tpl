@@ -69,56 +69,56 @@ private:
 	SubIterator m_subIterator;
 };
 
-template<class Container>
+template<class Enumerable>
 class keys_sequence :
-	meta::enforce_enumerable<Container>,
-	meta::enforce_associative<Container>{
+	meta::enforce_enumerable<Enumerable>,
+	meta::enforce_associative<Enumerable>{
 public:
-	using enumerable_traits = meta::enumerable_traits<Container>;
+	using enumerable_traits = meta::enumerable_traits<Enumerable>;
 	using value_type = typename enumerable_traits::value_type;
 	using const_iterator = keys_iterator<typename enumerable_traits::const_iterator>;
 	using iterator = keys_iterator<typename enumerable_traits::iterator>;
 
 	keys_sequence(
-		Container &&container
+		Enumerable &&enumerable
 	) :
-		m_container(std::forward<Container>(container)) { }
+		m_enumerable(std::forward<Enumerable>(enumerable)) { }
 
 	void
 	swap(keys_sequence &other){
-		std::swap(m_container, other.m_container);
+		std::swap(m_enumerable, other.m_enumerable);
 	}
 
 	iterator
 	begin() {
-		return iterator(std::begin(m_container));
+		return iterator(std::begin(m_enumerable));
 	}
 
 	iterator
 	end() {
-		return iterator(std::end(m_container));
+		return iterator(std::end(m_enumerable));
 	}
 
 	const_iterator
 	begin() const {
-		return const_iterator(std::begin(m_container));
+		return const_iterator(std::begin(m_enumerable));
 	}
 
 	const_iterator
 	end() const {
-		return const_iterator(std::end(m_container));
+		return const_iterator(std::end(m_enumerable));
 	}
 private:
-	Container m_container;
+	Enumerable m_enumerable;
 };
 
 struct keys_tag {} keys;
 
-template<class Container>
-keys_sequence<Container>
-operator|(Container &&container, const keys_tag &) {
-	return keys_sequence<Container>(
-		std::forward<Container>(container)
+template<class Enumerable>
+keys_sequence<Enumerable>
+operator|(Enumerable &&enumerable, const keys_tag &) {
+	return keys_sequence<Enumerable>(
+		std::forward<Enumerable>(enumerable)
 	);
 }
 

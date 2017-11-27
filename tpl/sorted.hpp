@@ -22,26 +22,26 @@ struct compare_holder {
 
 }
 
-template<class Container, class ComparePredicate>
+template<class Enumerable, class ComparePredicate>
 class sorted_sequence :
-	meta::enforce_enumerable<Container> {
+	meta::enforce_enumerable<Enumerable> {
 public:
-	using enumerable_traits = meta::enumerable_traits<Container>;
+	using enumerable_traits = meta::enumerable_traits<Enumerable>;
 	using value_type = typename enumerable_traits::value_type;
 	using sorted_t = std::multiset<value_type, ComparePredicate>;
 	using const_iterator = typename sorted_t::const_iterator;
 	using iterator = typename sorted_t::iterator;
 
 	sorted_sequence(
-		Container &&container,
+		Enumerable &&enumerable,
 	   	ComparePredicate comparePredicate
 	) :
 		m_sorted(std::move(comparePredicate)),
-		m_container(std::forward<Container>(container)){ }
+		m_enumerable(std::forward<Enumerable>(enumerable)){ }
 
 	void
 	swap(sorted_sequence &other){
-		std::swap(m_container, other.m_container);
+		std::swap(m_enumerable, other.m_enumerable);
 		std::swap(m_sorted, other.m_sorted);
 	}
 
@@ -73,15 +73,15 @@ private:
 	void fillCache() const {
 		if(m_sorted.empty()) {
 			std::copy(
-				std::begin(m_container),
-				std::end(m_container),
+				std::begin(m_enumerable),
+				std::end(m_enumerable),
 				std::inserter(m_sorted, m_sorted.begin())
 			);
 		}
 	}
 
 	mutable sorted_t m_sorted;
-	Container m_container;
+	Enumerable m_enumerable;
 };
 
 template<class ComparePredicate>
@@ -90,14 +90,14 @@ sort(ComparePredicate comparePredicate){
 	return detail::compare_holder<ComparePredicate>(std::move(comparePredicate));
 }
 
-template<class Container, class ComparePredicate>
-sorted_sequence<Container, ComparePredicate>
+template<class Enumerable, class ComparePredicate>
+sorted_sequence<Enumerable, ComparePredicate>
 operator|(
-	Container &&container,
+	Enumerable &&enumerable,
    	detail::compare_holder<ComparePredicate> holder
 ){
-	return sorted_sequence<Container, ComparePredicate>(
-		std::forward<Container>(container),
+	return sorted_sequence<Enumerable, ComparePredicate>(
+		std::forward<Enumerable>(enumerable),
 	   	std::move(holder.m_comparePredicate)
 	);
 }

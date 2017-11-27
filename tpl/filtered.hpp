@@ -88,49 +88,49 @@ private:
 	FilterPredicate m_filterPredicate;
 };
 
-template<class Container, class FilterPredicate>
+template<class Enumerable, class FilterPredicate>
 class filtered_sequence :
-	meta::enforce_enumerable<Container> {
+	meta::enforce_enumerable<Enumerable> {
 public:
-	using enumerable_traits = meta::enumerable_traits<Container>;
+	using enumerable_traits = meta::enumerable_traits<Enumerable>;
 	using value_type = typename enumerable_traits::value_type;
 	using const_iterator = filtering_iterator<typename enumerable_traits::const_iterator, FilterPredicate>;
 	using iterator = filtering_iterator<typename enumerable_traits::iterator, FilterPredicate>;
 
 	filtered_sequence(
-		Container &&container,
+		Enumerable &&enumerable,
 		FilterPredicate predicate
 	) :
-		m_container(std::forward<Container>(container)),
+		m_enumerable(std::forward<Enumerable>(enumerable)),
 		m_filterPredicate(std::move(predicate)){}
 
 	void
 	swap(filtered_sequence &other){
-		std::swap(m_container, other.m_container);
+		std::swap(m_enumerable, other.m_enumerable);
 		std::swap(m_filterPredicate, other.m_filterPredicate);
 	}
 
 	iterator
 	begin() {
-		return iterator(std::begin(m_container), std::end(m_container), m_filterPredicate);
+		return iterator(std::begin(m_enumerable), std::end(m_enumerable), m_filterPredicate);
 	}
 
 	iterator
 	end() {
-		return iterator(std::end(m_container), std::end(m_container), m_filterPredicate);
+		return iterator(std::end(m_enumerable), std::end(m_enumerable), m_filterPredicate);
 	}
 
 	const_iterator
 	begin() const {
-		return const_iterator(std::begin(m_container), std::end(m_container), m_filterPredicate);
+		return const_iterator(std::begin(m_enumerable), std::end(m_enumerable), m_filterPredicate);
 	}
 
 	const_iterator
 	end() const {
-		return const_iterator(std::end(m_container), std::end(m_container), m_filterPredicate);
+		return const_iterator(std::end(m_enumerable), std::end(m_enumerable), m_filterPredicate);
 	}
 private:
-	Container m_container;
+	Enumerable m_enumerable;
 	FilterPredicate m_filterPredicate;
 };
 
@@ -140,14 +140,14 @@ filter(FilterPredicate filterPredicate){
 	return detail::filter_holder<FilterPredicate>(filterPredicate);
 }
 
-template<class Container, class FilterPredicate>
-filtered_sequence<Container, FilterPredicate>
+template<class Enumerable, class FilterPredicate>
+filtered_sequence<Enumerable, FilterPredicate>
 operator|(
-	Container &&container,
+	Enumerable &&enumerable,
    	detail::filter_holder<FilterPredicate> holder
 ){
-	return filtered_sequence<Container, FilterPredicate>(
-		std::forward<Container>(container),
+	return filtered_sequence<Enumerable, FilterPredicate>(
+		std::forward<Enumerable>(enumerable),
 	   	std::move(holder.m_filterPredicate)
 	);
 }
