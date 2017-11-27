@@ -5,8 +5,6 @@
 
 namespace tpl{
 
-namespace detail{
-
 template<class LogicalPredicate>
 struct count_predicate_holder {
 	explicit count_predicate_holder(LogicalPredicate logicalPredicate) :
@@ -14,8 +12,6 @@ struct count_predicate_holder {
 
 	LogicalPredicate m_logicalPredicate;
 };
-
-}
 
 template<class Enumerable, class LogicalPredicate>
 class count_compliant {
@@ -45,16 +41,16 @@ private:
 };
 
 template<class LogicalPredicate>
-detail::count_predicate_holder<LogicalPredicate>
+count_predicate_holder<LogicalPredicate>
 count(LogicalPredicate logicalPredicate){
-	return detail::count_predicate_holder<LogicalPredicate>(std::move(logicalPredicate));
+	return count_predicate_holder<LogicalPredicate>(std::move(logicalPredicate));
 }
 
 template<class Enumerable, class LogicalPredicate>
 count_compliant<Enumerable, LogicalPredicate>
 operator|(
 	Enumerable &&enumerable,
-   	detail::count_predicate_holder<LogicalPredicate> holder
+   	count_predicate_holder<LogicalPredicate> holder
 ){
 	return count_compliant<Enumerable, LogicalPredicate>(
 		std::forward<Enumerable>(enumerable),

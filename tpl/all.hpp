@@ -5,8 +5,6 @@
 
 namespace tpl{
 
-namespace detail{
-
 template<class LogicalPredicate>
 struct true_for_all_predicate_holder {
 	explicit true_for_all_predicate_holder(LogicalPredicate logicalPredicate) :
@@ -14,8 +12,6 @@ struct true_for_all_predicate_holder {
 
 	LogicalPredicate m_logicalPredicate;
 };
-
-}
 
 template<class Enumerable, class LogicalPredicate>
 class true_for_all {
@@ -44,16 +40,16 @@ private:
 };
 
 template<class LogicalPredicate>
-detail::true_for_all_predicate_holder<LogicalPredicate>
+true_for_all_predicate_holder<LogicalPredicate>
 all(LogicalPredicate logicalPredicate){
-	return detail::true_for_all_predicate_holder<LogicalPredicate>(std::move(logicalPredicate));
+	return true_for_all_predicate_holder<LogicalPredicate>(std::move(logicalPredicate));
 }
 
 template<class Enumerable, class LogicalPredicate>
 true_for_all<Enumerable, LogicalPredicate>
 operator|(
 	Enumerable &&enumerable,
-   	detail::true_for_all_predicate_holder<LogicalPredicate> holder
+   	true_for_all_predicate_holder<LogicalPredicate> holder
 ){
 	return true_for_all<Enumerable, LogicalPredicate>(
 		std::forward<Enumerable>(enumerable),

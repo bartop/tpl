@@ -10,8 +10,6 @@
 
 namespace tpl{
 
-namespace detail{
-
 template<class FilterPredicate>
 struct filter_holder {
 	filter_holder(FilterPredicate filterPredicate) :
@@ -19,8 +17,6 @@ struct filter_holder {
 
 	FilterPredicate m_filterPredicate;
 };
-
-}
 
 template<class SubIterator, class FilterPredicate>
 class filtering_iterator {
@@ -135,16 +131,16 @@ private:
 };
 
 template<class FilterPredicate>
-detail::filter_holder<FilterPredicate>
+filter_holder<FilterPredicate>
 filter(FilterPredicate filterPredicate){
-	return detail::filter_holder<FilterPredicate>(filterPredicate);
+	return filter_holder<FilterPredicate>(filterPredicate);
 }
 
 template<class Enumerable, class FilterPredicate>
 filtered_sequence<Enumerable, FilterPredicate>
 operator|(
 	Enumerable &&enumerable,
-   	detail::filter_holder<FilterPredicate> holder
+   	filter_holder<FilterPredicate> holder
 ){
 	return filtered_sequence<Enumerable, FilterPredicate>(
 		std::forward<Enumerable>(enumerable),

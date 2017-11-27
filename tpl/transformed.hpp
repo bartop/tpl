@@ -12,14 +12,6 @@ namespace tpl{
 
 namespace detail{
 
-template<class TransformPredicate>
-struct transform_holder {
-	transform_holder(TransformPredicate transformPredicate) :
-		m_transformPredicate(std::move(transformPredicate)){}
-
-	TransformPredicate m_transformPredicate;
-};
-
 template<class T>
 class pointer_proxy {
 public:
@@ -37,6 +29,14 @@ make_pointer_proxy(T &&value){
 }
 
 }
+
+template<class TransformPredicate>
+struct transform_holder {
+	transform_holder(TransformPredicate transformPredicate) :
+		m_transformPredicate(std::move(transformPredicate)){}
+
+	TransformPredicate m_transformPredicate;
+};
 
 template<class SubIterator, class TransformPredicate>
 class transforming_iterator {
@@ -157,16 +157,16 @@ private:
 };
 
 template<class TransformPredicate>
-detail::transform_holder<TransformPredicate>
+transform_holder<TransformPredicate>
 transform(TransformPredicate transformPredicate){
-	return detail::transform_holder<TransformPredicate>(std::move(transformPredicate));
+	return transform_holder<TransformPredicate>(std::move(transformPredicate));
 }
 
 template<class Enumerable, class TransformPredicate>
 transformed_sequence<Enumerable, TransformPredicate>
 operator|(
 	Enumerable &&enumerable,
-   	detail::transform_holder<TransformPredicate> holder
+   	transform_holder<TransformPredicate> holder
 ){
 	return transformed_sequence<Enumerable, TransformPredicate>(std::forward<Enumerable>(enumerable), std::move(holder.m_transformPredicate));
 }

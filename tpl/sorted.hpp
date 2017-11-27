@@ -10,8 +10,6 @@
 
 namespace tpl{
 
-namespace detail{
-
 template<class ComparePredicate>
 struct compare_holder {
 	explicit compare_holder(ComparePredicate comparePredicate) :
@@ -19,8 +17,6 @@ struct compare_holder {
 
 	ComparePredicate m_comparePredicate;
 };
-
-}
 
 template<class Enumerable, class ComparePredicate>
 class sorted_sequence :
@@ -85,16 +81,16 @@ private:
 };
 
 template<class ComparePredicate>
-detail::compare_holder<ComparePredicate>
+compare_holder<ComparePredicate>
 sort(ComparePredicate comparePredicate){
-	return detail::compare_holder<ComparePredicate>(std::move(comparePredicate));
+	return compare_holder<ComparePredicate>(std::move(comparePredicate));
 }
 
 template<class Enumerable, class ComparePredicate>
 sorted_sequence<Enumerable, ComparePredicate>
 operator|(
 	Enumerable &&enumerable,
-   	detail::compare_holder<ComparePredicate> holder
+   	compare_holder<ComparePredicate> holder
 ){
 	return sorted_sequence<Enumerable, ComparePredicate>(
 		std::forward<Enumerable>(enumerable),
