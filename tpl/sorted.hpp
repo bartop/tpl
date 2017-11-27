@@ -14,7 +14,7 @@ namespace detail{
 
 template<class ComparePredicate>
 struct compare_holder {
-	compare_holder(ComparePredicate comparePredicate) :
+	explicit compare_holder(ComparePredicate comparePredicate) :
 		m_comparePredicate(std::move(comparePredicate)){}
 
 	ComparePredicate m_comparePredicate;
@@ -36,8 +36,8 @@ public:
 		Container &&container,
 	   	ComparePredicate comparePredicate
 	) :
-		m_container(std::forward<Container>(container)),
-		m_sorted(std::move(comparePredicate)){}
+		m_sorted(std::move(comparePredicate)),
+		m_container(std::forward<Container>(container)){ }
 
 	void
 	swap(sorted_sequence &other){

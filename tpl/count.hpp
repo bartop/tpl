@@ -9,7 +9,7 @@ namespace detail{
 
 template<class LogicalPredicate>
 struct count_predicate_holder {
-	count_predicate_holder(LogicalPredicate logicalPredicate) :
+	explicit count_predicate_holder(LogicalPredicate logicalPredicate) :
 		m_logicalPredicate(std::move(logicalPredicate)){}
 
 	LogicalPredicate m_logicalPredicate;
