@@ -73,11 +73,51 @@ int main(){
   return 0;
 }
 ```
+### Extract keys of the map 
+```C++
+#include <tpl/sorted.hpp>
+#include <iostream>
+#include <map>
+
+using namespace tpl;
+using namespace std;
+
+int main(){
+  const map<int, int> map = { {1, 2}, {3, 4}, {5, 6}, {7, 8}, {9, 10} };
+  const auto keys = map | keys;
+  for(const auto i : keys)
+    cout << i;
+  //output will be 1, 3, 5, 7, 9
+  return 0;
+}
+```
+### Flatten the collection of collections
+```C++
+#include <tpl/sorted.hpp>
+#include <iostream>
+#include <vector>
+
+using namespace tpl;
+using namespace std;
+
+int main(){
+  const vector<vector<int>> vec = { {1, 2, 3, 4}, {5, 6}, {7, 8, 9} , {10} };
+  const auto flat = vec | flatten;
+  for(const auto i : flat)
+    cout << i;
+  //output will be 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+  return 0;
+}
+```
+
+
 ### More complex example
 The whole power of this solutin is ease of extension. For example, if you want to filter, sort and transform you can do it just like that:
 ```C++
-const auto afterComplexOperation = collection 
+const auto afterComplexOperation = map
+  | keys
   | filter([](const auto &i){ /* your filter here */ }
   | sort([](const auto &i, const auto &j){ /* your sort predicate */}
-  | transform([](const auto &i){ /* apply your transformation */});
+  | transform([](const auto &i){ /* apply your transformation */})
+  | flatten;
 ```
