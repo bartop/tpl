@@ -12,8 +12,8 @@ namespace tpl{
 
 template<class FilterPredicate>
 struct filter_holder {
-	filter_holder(FilterPredicate filterPredicate) :
-		m_filterPredicate(std::move(filterPredicate)){}
+	filter_holder(FilterPredicate &&filterPredicate) :
+		m_filterPredicate(std::forward<FilterPredicate>(filterPredicate)){}
 
 	FilterPredicate m_filterPredicate;
 };
@@ -95,10 +95,10 @@ public:
 
 	filtered_sequence(
 		Enumerable &&enumerable,
-		FilterPredicate predicate
+		FilterPredicate &&predicate
 	) :
 		m_enumerable(std::forward<Enumerable>(enumerable)),
-		m_filterPredicate(std::move(predicate)){}
+		m_filterPredicate(std::forward<FilterPredicate>(predicate)){}
 
 	void
 	swap(filtered_sequence &other){
@@ -108,22 +108,38 @@ public:
 
 	iterator
 	begin() {
-		return iterator(std::begin(m_enumerable), std::end(m_enumerable), m_filterPredicate);
+		return iterator(
+			std::begin(m_enumerable),
+		   	std::end(m_enumerable),
+			m_filterPredicate
+		);
 	}
 
 	iterator
 	end() {
-		return iterator(std::end(m_enumerable), std::end(m_enumerable), m_filterPredicate);
+		return iterator(
+			std::end(m_enumerable),
+		   	std::end(m_enumerable),
+			m_filterPredicate
+		);
 	}
 
 	const_iterator
 	begin() const {
-		return const_iterator(std::begin(m_enumerable), std::end(m_enumerable), m_filterPredicate);
+		return const_iterator(
+			std::begin(m_enumerable),
+		   	std::end(m_enumerable),
+			m_filterPredicate
+		);
 	}
 
 	const_iterator
 	end() const {
-		return const_iterator(std::end(m_enumerable), std::end(m_enumerable), m_filterPredicate);
+		return const_iterator(
+			std::end(m_enumerable),
+		   	std::end(m_enumerable),
+			m_filterPredicate
+		);
 	}
 private:
 	Enumerable m_enumerable;
@@ -132,19 +148,19 @@ private:
 
 template<class FilterPredicate>
 filter_holder<FilterPredicate>
-filter(FilterPredicate filterPredicate){
-	return filter_holder<FilterPredicate>(filterPredicate);
+filter(FilterPredicate &&filterPredicate){
+	return filter_holder<FilterPredicate>(std::forward<FilterPredicate>(filterPredicate));
 }
 
 template<class Enumerable, class FilterPredicate>
 filtered_sequence<Enumerable, FilterPredicate>
 operator|(
 	Enumerable &&enumerable,
-   	filter_holder<FilterPredicate> holder
+   	filter_holder<FilterPredicate> &&holder
 ){
 	return filtered_sequence<Enumerable, FilterPredicate>(
 		std::forward<Enumerable>(enumerable),
-	   	std::move(holder.m_filterPredicate)
+	   	std::forward<filter_holder<FilterPredicate>>(holder).m_filterPredicate
 	);
 }
 
