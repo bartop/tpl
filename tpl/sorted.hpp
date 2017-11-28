@@ -12,8 +12,8 @@ namespace tpl{
 
 template<class ComparePredicate>
 struct compare_holder {
-	explicit compare_holder(ComparePredicate comparePredicate) :
-		m_comparePredicate(std::move(comparePredicate)){}
+	explicit compare_holder(ComparePredicate &&comparePredicate) :
+		m_comparePredicate(std::forward<ComparePredicate>(comparePredicate)){}
 
 	ComparePredicate m_comparePredicate;
 };
@@ -30,9 +30,9 @@ public:
 
 	sorted_sequence(
 		Enumerable &&enumerable,
-	   	ComparePredicate comparePredicate
+	   	ComparePredicate &&comparePredicate
 	) :
-		m_sorted(std::move(comparePredicate)),
+		m_sorted(std::forward<ComparePredicate>(comparePredicate)),
 		m_enumerable(std::forward<Enumerable>(enumerable)){ }
 
 	void
@@ -82,19 +82,19 @@ private:
 
 template<class ComparePredicate>
 compare_holder<ComparePredicate>
-sort(ComparePredicate comparePredicate){
-	return compare_holder<ComparePredicate>(std::move(comparePredicate));
+sort(ComparePredicate &&comparePredicate){
+	return compare_holder<ComparePredicate>(std::forward<ComparePredicate>(comparePredicate));
 }
 
 template<class Enumerable, class ComparePredicate>
 sorted_sequence<Enumerable, ComparePredicate>
 operator|(
 	Enumerable &&enumerable,
-   	compare_holder<ComparePredicate> holder
+   	compare_holder<ComparePredicate> &&holder
 ){
 	return sorted_sequence<Enumerable, ComparePredicate>(
 		std::forward<Enumerable>(enumerable),
-	   	std::move(holder.m_comparePredicate)
+	   	std::forward<compare_holder<ComparePredicate>>(holder).m_comparePredicate
 	);
 }
 

@@ -15,7 +15,7 @@ namespace detail{
 template<class T>
 class pointer_proxy {
 public:
-	pointer_proxy(T &&value) : m_value(value) {}
+	pointer_proxy(T &&value) : m_value(std::forward<T>(value)) {}
 	T *operator ->() const { return &m_value; }
 
 private:
@@ -32,8 +32,8 @@ make_pointer_proxy(T &&value){
 
 template<class TransformPredicate>
 struct transform_holder {
-	transform_holder(TransformPredicate transformPredicate) :
-		m_transformPredicate(std::move(transformPredicate)){}
+	transform_holder(TransformPredicate &&transformPredicate) :
+		m_transformPredicate(std::forward<TransformPredicate>(transformPredicate)){}
 
 	TransformPredicate m_transformPredicate;
 };
@@ -120,10 +120,10 @@ public:
 
 	transformed_sequence(
 		Enumerable &&enumerable,
-	   	TransformPredicate transformPredicate
+	   	TransformPredicate &&transformPredicate
 	) :
 		m_enumerable(std::forward<Enumerable>(enumerable)),
-		m_transformPredicate(std::move(transformPredicate)){}
+		m_transformPredicate(std::forward<TransformPredicate>(transformPredicate)){}
 
 	void
 	swap(transformed_sequence &other){
@@ -158,17 +158,20 @@ private:
 
 template<class TransformPredicate>
 transform_holder<TransformPredicate>
-transform(TransformPredicate transformPredicate){
-	return transform_holder<TransformPredicate>(std::move(transformPredicate));
+transform(TransformPredicate &&transformPredicate){
+	return transform_holder<TransformPredicate>(std::forward<TransformPredicate>(transformPredicate));
 }
 
 template<class Enumerable, class TransformPredicate>
 transformed_sequence<Enumerable, TransformPredicate>
 operator|(
 	Enumerable &&enumerable,
-   	transform_holder<TransformPredicate> holder
+   	transform_holder<TransformPredicate> &&holder
 ){
-	return transformed_sequence<Enumerable, TransformPredicate>(std::forward<Enumerable>(enumerable), std::move(holder.m_transformPredicate));
+	return transformed_sequence<Enumerable, TransformPredicate>(
+		std::forward<Enumerable>(enumerable),
+	   	std::forward<transform_holder<TransformPredicate>>(holder).m_transformPredicate
+	);
 }
 
 }
