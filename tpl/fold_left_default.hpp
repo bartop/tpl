@@ -29,7 +29,12 @@ public:
 		m_enumerable(std::forward<Enumerable>(enumerable)),
 		m_predicate(std::forward<BinaryPredicate>(predicate)) {}
 
-	operator auto () const {
+	operator decltype(
+		std::declval<BinaryPredicate>()(
+		   	std::declval<typename meta::enumerable_traits<Enumerable>::value_type>() ,
+		   	std::declval<typename meta::enumerable_traits<Enumerable>::value_type>()
+		)
+	) () const {
 		return std::accumulate(
 			std::begin(m_enumerable),
 		   	std::end(m_enumerable),
