@@ -33,12 +33,7 @@ public:
 		m_predicate(std::forward<BinaryPredicate>(predicate)),
 		m_initialValue(std::forward<InitialValue>(initialValue)){}
 
-	operator decltype(
-		std::declval<BinaryPredicate>()(
-			std::declval<InitialValue>(),
-		   	std::declval<typename meta::enumerable_traits<Enumerable>::value_type>()
-		)
-	) () const {
+	operator auto() const {
 		return std::accumulate(std::begin(m_enumerable), std::end(m_enumerable), m_initialValue, m_predicate);
 	}
 
