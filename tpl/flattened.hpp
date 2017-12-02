@@ -29,23 +29,35 @@ public:
 		m_outerIterator(std::move(outerIterator)),
 		m_outerEnd(std::move(outerEnd)),
    		m_innerIterator() {
-		if(m_outerIterator != m_outerEnd)
+		if(m_outerIterator != m_outerEnd && std::begin(*m_outerIterator) != std::end(*m_outerIterator))
 			m_innerIterator = std::begin(*m_outerIterator);
+		else{
+			m_outerIterator = std::find_if(
+				m_outerIterator,
+				m_outerEnd,
+				[](const auto &container) { return std::begin(container) != std::end(container); }
+			);
 
-		while(m_outerIterator != m_outerEnd && m_innerIterator == std::end(*m_outerIterator)) {
-			++m_outerIterator;
-			m_innerIterator = std::begin(*m_outerIterator);
+			if (m_outerIterator != m_outerEnd)
+				m_innerIterator = std::begin(*m_outerIterator);
 		}
 	}
 
 	flattening_iterator &
 	operator++() {
-		if (m_innerIterator != std::end(*m_outerIterator)) {
+		if (m_innerIterator != std::end(*m_outerIterator))
 			++m_innerIterator;
-		}
-		while(m_outerIterator != m_outerEnd && m_innerIterator == std::end(*m_outerIterator)) {
+			
+		if (m_outerIterator != m_outerEnd && m_innerIterator == std::end(*m_outerIterator))	{
 			++m_outerIterator;
-			m_innerIterator = std::begin(*m_outerIterator);
+	
+			m_outerIterator = std::find_if(
+				m_outerIterator,
+				m_outerEnd,
+				[](const auto &container) { return std::begin(container) != std::end(container); }
+			);
+			if (m_outerIterator != m_outerEnd)
+				m_innerIterator = std::begin(*m_outerIterator);
 		}
 		return *this;
 	}
