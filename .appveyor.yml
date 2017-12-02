@@ -21,6 +21,5 @@ build:
   project: $(APPVEYOR_BUILD_FOLDER)\Build\$(APPVEYOR_PROJECT_NAME).sln
 
 test_script:
-  - cd $(APPVEYOR_BUILD_FOLDER)\Build
   - ctest
 
