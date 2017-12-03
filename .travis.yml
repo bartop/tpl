@@ -37,8 +37,8 @@ matrix:
         - MATRIX_EVAL="export CC=gcc-7 CXX=g++-7"
 
     - os: linux
-      addons:
       compiler: gcc
+      addons:
         apt:
           sources:
             - ubuntu-toolchain-r-test
