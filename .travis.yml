@@ -43,6 +43,36 @@ matrix:
       env:
          - MATRIX_EVAL="export CC=gcc-4.9 CXX=g++-4.9"
 
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - llvm-toolchain-trusty-3.4
+          packages:
+            - clang-3.4
+      env:
+        - MATRIX_EVAL="export CC=clang-3.4 CXX=clang++-3.4"
+
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - llvm-toolchain-trusty-4.0
+          packages:
+            - clang-4.0
+      env:
+        - MATRIX_EVAL="export CC=clang-4.0 CXX=clang++-4.0"
+
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - llvm-toolchain-trusty-5.0
+          packages:
+            - clang-5.0
+      env:
+        - MATRIX_EVAL="export CC=clang-5.0 CXX=clang++-5.0"
+
 before_install:
   - mkdir $HOME/usr
   - export PATH="$HOME/usr/bin:$PATH"
