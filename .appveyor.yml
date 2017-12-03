@@ -22,7 +22,7 @@ install:
 before_build:
     - mkdir Build
     - cd Build
-    - cmake -G "%CMAKE_GENERATOR%" ..
+    - cmake -G %CMAKE_GENERATOR% ..
 
 build:
   project: $(APPVEYOR_BUILD_FOLDER)\Build\$(APPVEYOR_PROJECT_NAME).sln
