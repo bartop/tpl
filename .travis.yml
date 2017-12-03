@@ -50,6 +50,8 @@ matrix:
             - llvm-toolchain-trusty-4.0
           packages:
             - clang-4.0
+            - libc++-dev
+
       env:
         - MATRIX_EVAL="export CC=clang-4.0 CXX=clang++-4.0"
 
@@ -60,6 +62,7 @@ matrix:
             - llvm-toolchain-trusty-5.0
           packages:
             - clang-5.0
+            - libc++-dev
       env:
         - MATRIX_EVAL="export CC=clang-5.0 CXX=clang++-5.0"
 
