@@ -18,6 +18,7 @@ set(CMAKE_COLOR_MAKEFILE ON)
 set (CMAKE_CXX_STANDARD 14)
 
 set(TEST_SOURCES
+    tests/zipped_test.cpp
     tests/filtered_test.cpp
     tests/flattened_test.cpp
     tests/transformed_test.cpp
