@@ -33,6 +33,16 @@ matrix:
       env:
         - MATRIX_EVAL="export CC=gcc-7 CXX=g++-7"
 
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-4.9
+      env:
+         - MATRIX_EVAL="export CC=gcc-4.9 CXX=g++-4.9"
+
 before_install:
   - mkdir $HOME/usr
   - export PATH="$HOME/usr/bin:$PATH"
