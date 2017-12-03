@@ -52,12 +52,22 @@ matrix:
       addons:
         apt:
           sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-4.9
+      env:
+        - MATRIX_EVAL="export CC=clang CXX=clang++"
+
+    - os: linux
+      compiler: clang
+      addons:
+        apt:
+          sources:
             - llvm-toolchain-trusty-4.0
             - ubuntu-toolchain-r-test
           packages:
             - clang-4.0
             - g++-4.9
-
       env:
         - MATRIX_EVAL="export CC=clang-4.0 CXX=clang++-4.0"
 
