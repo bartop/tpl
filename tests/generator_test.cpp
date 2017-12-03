@@ -9,6 +9,7 @@
 
 using namespace std;
 using namespace tpl;
+using namespace std::literals::string_literals;
 
 TEST_CASE( "Testing generated sequence", "[generator_test]" ) {
 	SECTION("1") {
