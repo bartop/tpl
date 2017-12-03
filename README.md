@@ -15,11 +15,23 @@ Using ideas from functional languages and some more modern imperative languages 
 
 ## Build statuses
 
-| Compiler | GCC4.9 | GCC5 | GCC6 | GCC7 | VS 2017 |
-| -------- | ------ | ---- | ---- | ---- | ------- |
-| Build status | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/bartop/tpl/branches/master/4)](https://travis-ci.org/bartop/tpl) | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/bartop/tpl/branches/master/1)](https://travis-ci.org/bartop/tpl) | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/bartop/tpl/branches/master/2)](https://travis-ci.org/bartop/tpl) | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/bartop/tpl/branches/master/3)](https://travis-ci.org/bartop/tpl) | [![Build status](https://ci.appveyor.com/api/projects/status/g52jere64wcb5lw6?svg=true)](https://ci.appveyor.com/project/bartop/tpl)
+### Linux gcc 4.9+
 
+| gcc 4.9 | gcc 5 | gcc 6 | gcc 7 |
+| ------- | ----- | ----- | ----- |
+| [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/bartop/tpl/branches/master/4)](https://travis-ci.org/bartop/tpl) | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/bartop/tpl/branches/master/1)](https://travis-ci.org/bartop/tpl) | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/bartop/tpl/branches/master/2)](https://travis-ci.org/bartop/tpl) | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/bartop/tpl/branches/master/3)](https://travis-ci.org/bartop/tpl) 
 
+### Linux clang 3.9+
+
+| clang 3.9 | clang 4 | clang 5 |
+| --------- | ------- | ------- | 
+| [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/bartop/tpl/branches/master/5)](https://travis-ci.org/bartop/tpl) | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/bartop/tpl/branches/master/6)](https://travis-ci.org/bartop/tpl) | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/bartop/tpl/branches/master/7)](https://travis-ci.org/bartop/tpl) |
+
+### Windows Visual Studio 2017
+
+| Visual Studio 2017 |
+| ------------------ |
+| [![Build status](https://ci.appveyor.com/api/projects/status/g52jere64wcb5lw6?svg=true)](https://ci.appveyor.com/project/bartop/tpl)| 
 
 # Getting started
 
