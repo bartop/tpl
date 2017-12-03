@@ -2,8 +2,8 @@
 #include <catch.hpp>
 
 #include <meta/is_associative.hpp>
-#include <filtered.hpp>
-#include <transformed.hpp>
+#include <operator/filtered.hpp>
+#include <operator/transformed.hpp>
 
 #include <vector>
 #include <map>

@@ -2,8 +2,8 @@
 #include <catch.hpp>
 
 #include <meta/enumerable_traits.hpp>
-#include <filtered.hpp>
-#include <transformed.hpp>
+#include <operator/filtered.hpp>
+#include <operator/transformed.hpp>
 
 #include <vector>
 #include <map>

@@ -4,7 +4,8 @@
 #include "meta/is_enumerable.hpp"
 #include "meta/is_associative.hpp"
 #include "meta/enumerable_traits.hpp"
-#include "pointer_proxy.hpp"
+
+#include "../detail/pointer_proxy.hpp"
 
 #include <iterator>
 #include <algorithm>
