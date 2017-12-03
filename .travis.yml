@@ -34,7 +34,6 @@ matrix:
         - MATRIX_EVAL="export CC=gcc-7 CXX=g++-7"
 
 before_install:
-  - eval "$(MATRIX_EVAL)"
   - mkdir $HOME/usr
   - export PATH="$HOME/usr/bin:$PATH"
   - wget https://cmake.org/files/v3.9/cmake-3.9.1-Linux-x86_64.sh
@@ -43,6 +42,7 @@ before_install:
   - cmake --version
 
 install:
+  - eval "$(MATRIX_EVAL)"
   - export CPLUS_INCLUDE_PATH=/usr/local/include
 
 before_script:
