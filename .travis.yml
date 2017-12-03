@@ -42,7 +42,7 @@ before_install:
   - cmake --version
 
 install:
-  - eval "$(MATRIX_EVAL)"
+  - eval "${MATRIX_EVAL}"
   - export CPLUS_INCLUDE_PATH=/usr/local/include
 
 before_script:
