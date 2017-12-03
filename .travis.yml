@@ -9,19 +9,9 @@ matrix:
           sources:
             - ubuntu-toolchain-r-test
           packages:
-            - g++-4.9
-      env:
-         - MATRIX_EVAL="CC=gcc-4.9 && CXX=g++-4.9"
-
-    - os: linux
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-          packages:
             - g++-5
       env:
-         - MATRIX_EVAL="CC=gcc-5 && CXX=g++-5"
+         - MATRIX_EVAL="export CC=gcc-5 CXX=g++-5"
 
     - os: linux
       addons:
@@ -31,7 +21,7 @@ matrix:
           packages:
             - g++-6
       env:
-        - MATRIX_EVAL="CC=gcc-6 && CXX=g++-6"
+        - MATRIX_EVAL="export CC=gcc-6 CXX=g++-6"
 
     - os: linux
       addons:
@@ -41,7 +31,7 @@ matrix:
           packages:
             - g++-7
       env:
-        - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
+        - MATRIX_EVAL="export CC=gcc-7 CXX=g++-7"
 
 before_install:
   - eval "$(MATRIX_EVAL)"
@@ -51,6 +41,9 @@ before_install:
   - chmod +x cmake-3.9.1-Linux-x86_64.sh
   - ./cmake-3.9.1-Linux-x86_64.sh --prefix=$HOME/usr --exclude-subdir --skip-license
   - cmake --version
+
+install:
+  - export CPLUS_INCLUDE_PATH=/usr/local/include
 
 before_script:
   - mkdir build
