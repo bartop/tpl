@@ -10,14 +10,23 @@ environment:
       CMAKE_GENERATOR: Visual Studio 14 2015 Win64
 
 platform:
-  - x64
+    - x64
 
 configuration:
-  - Release
-  - Debug
+    - Release
+    - Debug
 
 install:
     - git submodule update --init --recursive
+
+    ############################################################################
+    # Install a recent CMake
+    ############################################################################
+    - set CMAKE_URL="https://cmake.org/files/v3.10/cmake-3.10.0-rc5-win64-x64.zip"
+    - appveyor DownloadFile %CMAKE_URL% -FileName cmake.zip
+    - 7z x cmake.zip -oC:\projects\deps\cmake > nul
+    - set PATH=C:\projects\deps\cmake\bin;%PATH%
+    - C:\projects\deps\cmake\cmake-3.10.0-rc5-win64-x64\bin\cmake.exe --version
 
 before_build:
     - mkdir Build
@@ -25,8 +34,8 @@ before_build:
     - cmake -G "%CMAKE_GENERATOR%" ..
 
 build:
-  project: $(APPVEYOR_BUILD_FOLDER)\Build\$(APPVEYOR_PROJECT_NAME).sln
+    project: $(APPVEYOR_BUILD_FOLDER)\Build\$(APPVEYOR_PROJECT_NAME).sln
 
 test_script:
-  - ctest
+    - ctest
 
