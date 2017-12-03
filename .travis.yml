@@ -4,6 +4,7 @@ language: cpp
 matrix:
   include:
     - os: linux
+      compiler: gcc
       addons:
         apt:
           sources:
@@ -14,6 +15,7 @@ matrix:
          - MATRIX_EVAL="export CC=gcc-5 CXX=g++-5"
 
     - os: linux
+      compiler: gcc
       addons:
         apt:
           sources:
@@ -24,6 +26,7 @@ matrix:
         - MATRIX_EVAL="export CC=gcc-6 CXX=g++-6"
 
     - os: linux
+      compiler: gcc
       addons:
         apt:
           sources:
@@ -35,6 +38,7 @@ matrix:
 
     - os: linux
       addons:
+      compiler: gcc
         apt:
           sources:
             - ubuntu-toolchain-r-test
@@ -44,25 +48,27 @@ matrix:
          - MATRIX_EVAL="export CC=gcc-4.9 CXX=g++-4.9"
 
     - os: linux
+      compiler: clang
       addons:
         apt:
           sources:
             - llvm-toolchain-trusty-4.0
+            - ubuntu-toolchain-r-test
           packages:
             - clang-4.0
-            - libc++-dev
 
       env:
         - MATRIX_EVAL="export CC=clang-4.0 CXX=clang++-4.0"
 
     - os: linux
+      compiler: clang
       addons:
         apt:
           sources:
             - llvm-toolchain-trusty-5.0
+            - ubuntu-toolchain-r-test
           packages:
             - clang-5.0
-            - libc++-dev
       env:
         - MATRIX_EVAL="export CC=clang-5.0 CXX=clang++-5.0"
 
