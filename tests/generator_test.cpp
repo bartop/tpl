@@ -9,7 +9,6 @@
 
 using namespace std;
 using namespace tpl;
-using namespace std::literals::string_literals;
 
 TEST_CASE( "Testing generated sequence", "[generator_test]" ) {
 	SECTION("1") {
@@ -23,6 +22,7 @@ TEST_CASE( "Testing generated sequence", "[generator_test]" ) {
 	}
 
 	SECTION("std::string(\"a\")") {
+		using namespace std::string_literals;
 		const auto result = generator([](const auto &s){ return s+"a"; }, std::string("a"));
 		REQUIRE((*result.begin() == "a"s));
 		REQUIRE((*(++result.begin()) == "aa"s));
