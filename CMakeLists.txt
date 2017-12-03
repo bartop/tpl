@@ -15,6 +15,7 @@ endif ( MSVC )
 
 set(CMAKE_DISABLE_IN_SOURCE_BUILD ON)
 set(CMAKE_COLOR_MAKEFILE ON)
+set (CMAKE_CXX_STANDARD 14)
 
 set(TEST_SOURCES
     tests/filtered_test.cpp
