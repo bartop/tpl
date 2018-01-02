@@ -11,6 +11,7 @@
 #include <algorithm>
 
 namespace tpl{
+namespace operation{
 
 template<class Enumerable>
 struct zipped_enumerable_holder {
@@ -173,4 +174,5 @@ operator|(
 	);
 }
 
+}
 }

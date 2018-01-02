@@ -8,7 +8,7 @@
 #include <vector>
 
 using namespace std;
-using namespace tpl;
+using namespace tpl::generator;
 
 TEST_CASE( "Testing infinite sequence", "[infinite_test]" ) {
 	SECTION("1") {

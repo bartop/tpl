@@ -1,13 +1,13 @@
 #define CATCH_CONFIG_MAIN  // This tells Catch to provide a main() - only do this in one cpp file
 #include <catch.hpp>
 
-#include <operator/zipped.hpp>
+#include <operation/zipped.hpp>
 
 #include <vector>
 
 TEST_CASE( "Vector zipping", "[zipped_test]" ) {
 	using namespace std;
-	using namespace tpl;
+	using namespace tpl::operation;
 	vector<int> v1{ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 	vector<int> v2{ 3, 4, 5, 6, 7, 8, 9, 10 };
 	vector<int> v3{ 5, 6, 7, 8, 9, 10 };

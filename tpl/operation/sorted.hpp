@@ -9,6 +9,7 @@
 #include <set>
 
 namespace tpl{
+namespace operation{
 
 template<class ComparePredicate>
 struct compare_holder {
@@ -98,4 +99,5 @@ operator|(
 	);
 }
 
+}
 }

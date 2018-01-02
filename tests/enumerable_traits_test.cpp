@@ -2,8 +2,8 @@
 #include <catch.hpp>
 
 #include <meta/enumerable_traits.hpp>
-#include <operator/filtered.hpp>
-#include <operator/transformed.hpp>
+#include <operation/filtered.hpp>
+#include <operation/transformed.hpp>
 
 #include <vector>
 #include <map>
@@ -13,7 +13,7 @@
 #include <functional>
 
 using namespace tpl::meta;
-using namespace tpl;
+using namespace tpl::operation;
 
 
 TEST_CASE( "Check created type traits", "[enumerable_traits_test]" ) {

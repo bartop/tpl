@@ -9,6 +9,7 @@
 #include <algorithm>
 
 namespace tpl{
+namespace operation{
 
 template<class FilterPredicate>
 struct filter_holder {
@@ -164,4 +165,5 @@ operator|(
 	);
 }
 
+}
 }

@@ -1,6 +1,7 @@
 
 #include <utility>
 
+namespace tpl{
 namespace detail{
 
 template<class T>
@@ -19,4 +20,5 @@ make_pointer_proxy(T &&value){
 	return pointer_proxy<T>(std::forward<T>(value));
 }
 
+}
 }

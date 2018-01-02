@@ -9,9 +9,10 @@
 #include <algorithm>
 
 namespace tpl{
+namespace operation{
 
 template<class SubIterator>
-class keys_iterator {
+class mapped_values_iterator {
 public:
 	using sub_traits_t = std::iterator_traits<SubIterator>;
 	using associative_traits_t = meta::associative_element_traits<typename sub_traits_t::value_type>;
@@ -21,20 +22,20 @@ public:
 	using pointer = const value_type *;
 	using iterator_category = std::input_iterator_tag;
 
-	~keys_iterator() noexcept = default;
+	~mapped_values_iterator() noexcept = default;
 
-	keys_iterator(
+	mapped_values_iterator(
 		SubIterator subIterator
 	) :
 		m_subIterator(std::move(subIterator)) { }
 
-	keys_iterator &
+	mapped_values_iterator &
 	operator++() {
 		++m_subIterator;
 		return *this;
 	}
 
-	keys_iterator
+	mapped_values_iterator
 	operator++(int) {
 		const auto thisCopy = *this;
 		++*this;
@@ -43,25 +44,25 @@ public:
 
 	reference
 	operator*() const {
-		return associative_traits_t::key_value(*(this->m_subIterator));
+		return associative_traits_t::mapped_value(*(this->m_subIterator));
 	}
 
 	pointer
 	operator->() const {
-		return &associative_traits_t::key_value(*(this->m_subIterator));
+		return &associative_traits_t::mapped_value(*(this->m_subIterator));
 	}
 
 	bool
-	operator==(const keys_iterator &other) const {
+	operator==(const mapped_values_iterator &other) const {
 		return this->m_subIterator == other.m_subIterator;
 	}
 
 	bool
-	operator!=(const keys_iterator &other) const {
+	operator!=(const mapped_values_iterator &other) const {
 		return !(*this == other);
 	}
 
-	void swap(keys_iterator &filteringIterator) {
+	void swap(mapped_values_iterator &filteringIterator) {
 		std::swap(this->m_subIterator, filteringIterator.m_subIterator);
 	}
 
@@ -70,22 +71,22 @@ private:
 };
 
 template<class Enumerable>
-class keys_sequence :
+class mapped_values_sequence :
 	meta::enforce_enumerable<Enumerable>,
 	meta::enforce_associative<Enumerable>{
 public:
 	using enumerable_traits = meta::enumerable_traits<Enumerable>;
 	using value_type = typename enumerable_traits::value_type;
-	using const_iterator = keys_iterator<typename enumerable_traits::const_iterator>;
-	using iterator = keys_iterator<typename enumerable_traits::iterator>;
+	using const_iterator = mapped_values_iterator<typename enumerable_traits::const_iterator>;
+	using iterator = mapped_values_iterator<typename enumerable_traits::iterator>;
 
-	keys_sequence(
+	mapped_values_sequence(
 		Enumerable &&enumerable
 	) :
 		m_enumerable(std::forward<Enumerable>(enumerable)) { }
 
 	void
-	swap(keys_sequence &other){
+	swap(mapped_values_sequence &other){
 		std::swap(m_enumerable, other.m_enumerable);
 	}
 
@@ -112,14 +113,15 @@ private:
 	Enumerable m_enumerable;
 };
 
-struct keys_tag {} keys;
+struct mapped_values_tag {} mapped_values;
 
 template<class Enumerable>
-keys_sequence<Enumerable>
-operator|(Enumerable &&enumerable, const keys_tag &) {
-	return keys_sequence<Enumerable>(
+mapped_values_sequence<Enumerable>
+operator|(Enumerable &&enumerable, const mapped_values_tag &) {
+	return mapped_values_sequence<Enumerable>(
 		std::forward<Enumerable>(enumerable)
 	);
 }
 
+}
 }

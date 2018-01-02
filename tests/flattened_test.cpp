@@ -1,12 +1,12 @@
 #define CATCH_CONFIG_MAIN  // This tells Catch to provide a main() - only do this in one cpp file
 #include <catch.hpp>
 
-#include <operator/flattened.hpp>
+#include <operation/flattened.hpp>
 
 #include <vector>
 
 using namespace std;
-using namespace tpl;
+using namespace tpl::operation;
 
 TEST_CASE( "Vector of vectors flattening", "[flattened_test]" ) {
 	vector<vector<int>> v;

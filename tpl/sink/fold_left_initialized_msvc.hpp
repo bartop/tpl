@@ -7,6 +7,7 @@
 #include <numeric>
 
 namespace tpl{
+namespace sink{
 
 template<class BinaryPredicate, class InitialValue>
 struct fold_left_arguments_holder {
@@ -72,4 +73,5 @@ operator|(
 	);
 }
 
+}
 }

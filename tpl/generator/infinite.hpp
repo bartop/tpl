@@ -4,6 +4,7 @@
 #include <algorithm>
 
 namespace tpl{
+namespace generator{
 
 template<class ValueType>
 class infinite_iterator {
@@ -105,4 +106,5 @@ infinite(ValueType &&value){
 	return infinite_sequence<ValueType>(std::forward<ValueType>(value));
 }
 
+}
 }

@@ -7,7 +7,6 @@
 #include <utility>
 
 namespace tpl{
-
 namespace meta{
 
 template<class T, class = void>
@@ -73,5 +72,4 @@ template<class T>
 using associative_traits = typename std::conditional<is_associative<T>::value, associative_base<T>, empty_base>::type;
 
 }
-
 }

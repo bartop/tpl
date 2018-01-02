@@ -4,6 +4,7 @@
 #include <iterator>
 
 namespace tpl{
+namespace sink{
 
 template<class LogicalPredicate>
 struct true_for_all_predicate_holder {
@@ -57,4 +58,5 @@ operator|(
 	);
 }
 
+}
 }

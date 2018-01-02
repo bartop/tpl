@@ -6,7 +6,7 @@
 #include <vector>
 
 using namespace std;
-using namespace tpl;
+using namespace tpl::sink;
 
 TEST_CASE( "Any in vector", "[any_test]" ) {
 	vector<int> v{ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };

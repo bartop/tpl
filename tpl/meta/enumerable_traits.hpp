@@ -6,7 +6,6 @@
 #include <type_traits>
 
 namespace tpl{
-
 namespace meta{
 
 template<class T, class = void>
@@ -46,5 +45,4 @@ struct enumerable_traits<
 };
 
 }
-
 }

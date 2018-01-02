@@ -4,15 +4,12 @@
 #include <iterator>
 
 namespace tpl{
-
-namespace detail{
+namespace sink{
 
 template<class Enumerable, class OutputIterator>
 void
 copy_to_function(Enumerable &&enumerable, OutputIterator &&outputIterator){
 	std::copy(std::begin(enumerable), std::end(enumerable), outputIterator);
-}
-
 }
 
 template<class OutputIterator>
@@ -37,10 +34,11 @@ operator|(
 	Enumerable &&enumerable,
    	copy_to_iterator_holder<OutputIterator> &&holder
 ){
-	detail::copy_to_function(
+	copy_to_function(
 		std::forward<Enumerable>(enumerable),
 	   	std::forward<copy_to_iterator_holder<OutputIterator>>(holder).m_outputIterator
 	);
 }
 
+}
 }

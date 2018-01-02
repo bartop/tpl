@@ -4,6 +4,7 @@
 #include <iterator>
 
 namespace tpl{
+namespace sink{
 
 template<class LogicalPredicate>
 struct count_predicate_holder {
@@ -58,4 +59,5 @@ operator|(
 	);
 }
 
+}
 }

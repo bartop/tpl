@@ -7,9 +7,7 @@
 #include <iterator>
 
 namespace tpl {
-
 namespace meta {
-
 
 template<class T, class = void>
 struct can_begin : std::false_type {
@@ -63,5 +61,4 @@ struct enforce_enumerable {
 };
 
 }
-
 }

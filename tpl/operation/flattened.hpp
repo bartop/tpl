@@ -9,6 +9,7 @@
 #include <algorithm>
 
 namespace tpl{
+namespace operation{
 
 template<class OuterIterator, class InnerIterator>
 class flattening_iterator {
@@ -155,4 +156,5 @@ operator|(Enumerable &&enumerable, const flatten_tag &){
 	);
 }
 
+}
 }

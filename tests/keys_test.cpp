@@ -1,12 +1,12 @@
 #define CATCH_CONFIG_MAIN  // This tells Catch to provide a main() - only do this in one cpp file
 #include <catch.hpp>
 
-#include <operator/keys.hpp>
+#include <operation/keys.hpp>
 
 #include <vector>
 
 using namespace std;
-using namespace tpl;
+using namespace tpl::operation;
 
 TEST_CASE( "Keys", "[keys_test]" ) {
 	SECTION("Test 1"){

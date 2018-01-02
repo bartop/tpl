@@ -11,6 +11,7 @@
 #include <type_traits>
 
 namespace tpl{
+namespace operation{
 
 template<class TransformPredicate>
 struct transform_holder {
@@ -156,4 +157,5 @@ operator|(
 	);
 }
 
+}
 }
