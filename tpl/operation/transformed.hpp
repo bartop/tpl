@@ -6,6 +6,7 @@
 #include "meta/enumerable_traits.hpp"
 
 #include "../detail/pointer_proxy.hpp"
+#include "../detail/iterator_base.hpp"
 
 #include <iterator>
 #include <type_traits>
@@ -22,7 +23,8 @@ struct transform_holder {
 };
 
 template<class SubIterator, class TransformPredicate>
-class transforming_iterator {
+class transforming_iterator :
+	public detail::iterator_base<transforming_iterator<SubIterator, TransformPredicate>> {
 public:
 	using sub_traits_t = std::iterator_traits<SubIterator>;
 	using value_type = decltype(
@@ -50,13 +52,6 @@ public:
 		return *this;
 	}
 
-	transforming_iterator
-	operator++(int) {
-		auto thisCopy = *this;
-		++(*this);
-		return thisCopy;
-	}
-
 	reference
 	operator*() const {
 		return m_transformPredicate(*m_subIterator);
@@ -72,12 +67,8 @@ public:
 		return this->m_subIterator == transformingIterator.m_subIterator;
 	}
 
-	bool
-	operator!=(const transforming_iterator &transformingIterator) const {
-		return this->m_subIterator != transformingIterator.m_subIterator;
-	}
-
-	void swap(transforming_iterator &transformingIterator) {
+	void
+	swap(transforming_iterator &transformingIterator) {
 		std::swap(this->m_subIterator, transformingIterator.m_subIterator);
 		std::swap(this->m_transformPredicate, transformingIterator.m_transformPredicate);
 	}

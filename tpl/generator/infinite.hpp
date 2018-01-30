@@ -1,13 +1,15 @@
 
 #pragma once
 
+#include "../detail/iterator_base.hpp"
+
 #include <algorithm>
 
 namespace tpl{
 namespace generator{
 
 template<class ValueType>
-class infinite_iterator {
+class infinite_iterator : public detail::iterator_base<infinite_iterator<ValueType>> {
 public:
 	using value_type = ValueType;
 	using difference_type = ptrdiff_t;
@@ -27,11 +29,6 @@ public:
 		return *this;
 	}
 
-	infinite_iterator
-	operator++(int) {
-		return *this;
-	}
-
 	reference
 	operator*() const {
 		return m_value;
@@ -45,11 +42,6 @@ public:
 	bool
 	operator==(const infinite_iterator &other) const {
 		return false;
-	}
-
-	bool
-	operator!=(const infinite_iterator &other) const {
-		return true;
 	}
 
 	void swap(infinite_iterator &other) {
