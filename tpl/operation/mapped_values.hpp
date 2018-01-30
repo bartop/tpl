@@ -5,6 +5,8 @@
 #include "meta/is_associative.hpp"
 #include "meta/enumerable_traits.hpp"
 
+#include "../detail/iterator_base.hpp"
+
 #include <iterator>
 #include <algorithm>
 
@@ -12,7 +14,8 @@ namespace tpl{
 namespace operation{
 
 template<class SubIterator>
-class mapped_values_iterator {
+class mapped_values_iterator :
+	public detail::iterator_base<mapped_values_iterator<SubIterator>> {
 public:
 	using sub_traits_t = std::iterator_traits<SubIterator>;
 	using associative_traits_t = meta::associative_element_traits<typename sub_traits_t::value_type>;
@@ -35,13 +38,6 @@ public:
 		return *this;
 	}
 
-	mapped_values_iterator
-	operator++(int) {
-		const auto thisCopy = *this;
-		++*this;
-		return thisCopy;
-	}
-
 	reference
 	operator*() const {
 		return associative_traits_t::mapped_value(*(this->m_subIterator));
@@ -57,12 +53,8 @@ public:
 		return this->m_subIterator == other.m_subIterator;
 	}
 
-	bool
-	operator!=(const mapped_values_iterator &other) const {
-		return !(*this == other);
-	}
-
-	void swap(mapped_values_iterator &filteringIterator) {
+	void
+	swap(mapped_values_iterator &filteringIterator) {
 		std::swap(this->m_subIterator, filteringIterator.m_subIterator);
 	}
 

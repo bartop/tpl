@@ -5,6 +5,8 @@
 #include "meta/is_associative.hpp"
 #include "meta/enumerable_traits.hpp"
 
+#include "../detail/iterator_base.hpp"
+
 #include <iterator>
 #include <algorithm>
 
@@ -20,7 +22,8 @@ struct filter_holder {
 };
 
 template<class SubIterator, class FilterPredicate>
-class filtering_iterator {
+class filtering_iterator :
+	public detail::iterator_base<filtering_iterator<SubIterator, FilterPredicate>> {
 public:
 	using sub_traits_t = std::iterator_traits<SubIterator>;
 	using value_type = typename sub_traits_t::value_type;
@@ -47,13 +50,6 @@ public:
 		return *this;
 	}
 
-	filtering_iterator
-	operator++(int) {
-		const auto thisCopy = *this;
-		++*this;
-		return thisCopy;
-	}
-
 	reference
 	operator*() const {
 		return *(this->m_subIterator);
@@ -67,11 +63,6 @@ public:
 	bool
 	operator==(const filtering_iterator &filteringIterator) const {
 		return this->m_subIterator == filteringIterator.m_subIterator;
-	}
-
-	bool
-	operator!=(const filtering_iterator &filteringIterator) const {
-		return this->m_subIterator != filteringIterator.m_subIterator;
 	}
 
 	void swap(filtering_iterator &filteringIterator) {

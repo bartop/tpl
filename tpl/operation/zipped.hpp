@@ -6,6 +6,7 @@
 #include "meta/enumerable_traits.hpp"
 
 #include "../detail/pointer_proxy.hpp"
+#include "../detail/iterator_base.hpp"
 
 #include <iterator>
 #include <algorithm>
@@ -22,7 +23,8 @@ struct zipped_enumerable_holder {
 };
 
 template<class SubIterator1, class SubIterator2>
-class zipped_iterator {
+class zipped_iterator :
+	public detail::iterator_base<zipped_iterator<SubIterator1, SubIterator2>> {
 public:
 	using sub_traits_t1 = std::iterator_traits<SubIterator1>;
 	using sub_traits_t2 = std::iterator_traits<SubIterator2>;
@@ -48,13 +50,6 @@ public:
 		return *this;
 	}
 
-	zipped_iterator
-	operator++(int) {
-		const auto thisCopy = *this;
-		++*this;
-		return thisCopy;
-	}
-
 	reference
 	operator*() const {
 		return std::make_pair(*m_subIterator1, *m_subIterator2);
@@ -71,11 +66,6 @@ public:
 	operator==(const zipped_iterator &other) const {
 		return this->m_subIterator1 == other.m_subIterator1 ||
 			this->m_subIterator2 == other.m_subIterator2;
-	}
-
-	bool
-	operator!=(const zipped_iterator &other) const {
-		return !(*this == other);
 	}
 
 	void

@@ -1,13 +1,16 @@
 
 #pragma once
 
+#include <detail/iterator_base.hpp>
+
 #include <algorithm>
 
 namespace tpl{
 namespace generator{
 
 template<class GeneratingFunction, class ValueType>
-class generating_iterator {
+class generating_iterator :
+	public detail::iterator_base<generating_iterator<GeneratingFunction, ValueType>> {
 public:
 	using value_type = ValueType;
 	using difference_type = ptrdiff_t;
@@ -30,13 +33,6 @@ public:
 		return *this;
 	}
 
-	generating_iterator
-	operator++(int) {
-		const auto tmp = *this;
-		++*this;
-		return tmp;
-	}
-
 	reference
 	operator*() const {
 		return m_currentValue;
@@ -50,11 +46,6 @@ public:
 	bool
 	operator==(const generating_iterator &other) const {
 		return false;
-	}
-
-	bool
-	operator!=(const generating_iterator &other) const {
-		return true;
 	}
 
 	void swap(generating_iterator &other) {

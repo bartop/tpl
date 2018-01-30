@@ -5,6 +5,8 @@
 #include "meta/is_associative.hpp"
 #include "meta/enumerable_traits.hpp"
 
+#include "../detail/iterator_base.hpp"
+
 #include <iterator>
 #include <algorithm>
 
@@ -12,7 +14,8 @@ namespace tpl{
 namespace operation{
 
 template<class OuterIterator, class InnerIterator>
-class flattening_iterator {
+class flattening_iterator :
+	public detail::iterator_base<flattening_iterator<OuterIterator, InnerIterator>> {
 public:
 	using sub_traits_t = std::iterator_traits<InnerIterator>;
 	using value_type = typename sub_traits_t::value_type;
@@ -48,10 +51,10 @@ public:
 	operator++() {
 		if (m_innerIterator != std::end(*m_outerIterator))
 			++m_innerIterator;
-			
+
 		if (m_outerIterator != m_outerEnd && m_innerIterator == std::end(*m_outerIterator))	{
 			++m_outerIterator;
-	
+
 			m_outerIterator = std::find_if(
 				m_outerIterator,
 				m_outerEnd,
@@ -61,13 +64,6 @@ public:
 				m_innerIterator = std::begin(*m_outerIterator);
 		}
 		return *this;
-	}
-
-	flattening_iterator
-	operator++(int) {
-		const auto thisCopy = *this;
-		++*this;
-		return thisCopy;
 	}
 
 	reference
@@ -83,11 +79,6 @@ public:
 	bool
 	operator==(const flattening_iterator &other) const {
 		return this->m_outerIterator == other.m_outerIterator;
-	}
-
-	bool
-	operator!=(const flattening_iterator &other) const {
-		return !(*this == other);
 	}
 
 	void swap(flattening_iterator &filteringIterator) {
