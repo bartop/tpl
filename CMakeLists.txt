@@ -35,6 +35,7 @@ set(TEST_SOURCES
     tests/infinite_test.cpp
     tests/generator_test.cpp
     tests/fold_left_test.cpp
+    tests/cycle_test.cpp
 )
 
 set(CATCH_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/External/Catch)
