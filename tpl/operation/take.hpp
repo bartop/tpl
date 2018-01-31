@@ -129,7 +129,7 @@ private:
 
 class take_factory {
 public:
-	take_factory(unsigned toTake) :
+	explicit take_factory(unsigned toTake) :
 		m_toTake(toTake){}
 
 	template<class Enumerable>
