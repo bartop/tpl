@@ -6,7 +6,7 @@
 #include <vector>
 
 using namespace std;
-using namespace tpl::operation;
+using namespace tpl;
 
 TEST_CASE( "Vector of vectors flattening", "[flattened_test]" ) {
 	vector<vector<int>> v;

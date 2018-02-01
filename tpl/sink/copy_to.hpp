@@ -4,7 +4,6 @@
 #include <iterator>
 
 namespace tpl{
-namespace sink{
 
 template<class Enumerable, class OutputIterator>
 void
@@ -58,5 +57,4 @@ operator|(
 	);
 }
 
-}
 }

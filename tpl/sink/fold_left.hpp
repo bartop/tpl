@@ -8,7 +8,6 @@
 #endif
 
 namespace tpl{
-namespace sink{
 
 template<class BinaryPredicate>
 class fold_left_factory {
@@ -114,5 +113,4 @@ operator|(
 	);
 }
 
-}
 }

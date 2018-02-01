@@ -4,7 +4,6 @@
 #include <iterator>
 
 namespace tpl{
-namespace sink{
 
 template<class Enumerable, class LogicalPredicate>
 class count_compliant {
@@ -79,5 +78,4 @@ operator|(
 	);
 }
 
-}
 }

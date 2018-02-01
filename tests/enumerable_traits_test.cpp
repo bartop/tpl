@@ -13,7 +13,7 @@
 #include <functional>
 
 using namespace tpl::meta;
-using namespace tpl::operation;
+using namespace tpl;
 
 
 TEST_CASE( "Check created type traits", "[enumerable_traits_test]" ) {

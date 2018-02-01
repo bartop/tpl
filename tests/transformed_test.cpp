@@ -6,7 +6,7 @@
 #include <vector>
 
 using namespace std;
-using namespace tpl::operation;
+using namespace tpl;
 
 TEST_CASE( "Vector transforming", "[transformed_test]" ) {
 	vector<int> v{ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };

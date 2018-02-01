@@ -6,7 +6,6 @@
 #include <algorithm>
 
 namespace tpl{
-namespace generator{
 
 template<class GeneratingFunction, class ValueType>
 class generating_iterator :
@@ -110,5 +109,4 @@ generator(GeneratingFunction &&generatingFunction, ValueType &&initialValue){
 	);
 }
 
-}
 }

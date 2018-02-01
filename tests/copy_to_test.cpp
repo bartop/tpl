@@ -6,7 +6,7 @@
 #include <vector>
 
 using namespace std;
-using namespace tpl::sink;
+using namespace tpl;
 
 TEST_CASE( "Copying into a vector", "[copy_to_test]" ) {
 	SECTION("Test 1"){

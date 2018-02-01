@@ -8,7 +8,7 @@
 #include <vector>
 
 using namespace std;
-using namespace tpl::generator;
+using namespace tpl;
 
 TEST_CASE( "Testing cyclic sequence", "[cycle_test]" ) {
 	SECTION("1") {

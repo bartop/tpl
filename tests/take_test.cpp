@@ -8,7 +8,7 @@
 #include <vector>
 
 using namespace std;
-using namespace tpl::operation;
+using namespace tpl;
 
 TEST_CASE( "Testing taking from sequence", "[take_test]" ) {
 	const vector<int> in = { 1, 2, 3, 4, 5, 6 };

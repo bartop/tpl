@@ -12,7 +12,6 @@
 #include <algorithm>
 
 namespace tpl{
-namespace operation{
 
 template<class SubIterator1, class SubIterator2>
 class zipped_iterator :
@@ -183,5 +182,4 @@ operator|(
 	);
 }
 
-}
 }

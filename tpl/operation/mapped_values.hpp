@@ -11,7 +11,6 @@
 #include <algorithm>
 
 namespace tpl{
-namespace operation{
 
 template<class SubIterator>
 class mapped_values_iterator :
@@ -124,5 +123,4 @@ operator|(Enumerable &&enumerable, const mapped_values_factory &factory) {
 	);
 }
 
-}
 }

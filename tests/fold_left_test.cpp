@@ -6,7 +6,7 @@
 #include <vector>
 
 using namespace std;
-using namespace tpl::sink;
+using namespace tpl;
 
 TEST_CASE( "Fold left initializer list", "[fold_left_test]" ) {
 	const auto v = { 1, 2, 3, 4, 5 };

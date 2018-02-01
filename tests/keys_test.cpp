@@ -6,7 +6,7 @@
 #include <vector>
 
 using namespace std;
-using namespace tpl::operation;
+using namespace tpl;
 
 TEST_CASE( "Keys", "[keys_test]" ) {
 	SECTION("Test 1"){

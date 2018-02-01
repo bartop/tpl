@@ -4,7 +4,6 @@
 #include <iterator>
 
 namespace tpl{
-namespace sink{
 
 template<class Enumerable, class LogicalPredicate>
 class true_for_any {
@@ -85,5 +84,4 @@ operator|(
 	);
 }
 
-}
 }
