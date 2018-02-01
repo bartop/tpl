@@ -13,14 +13,6 @@
 namespace tpl{
 namespace operation{
 
-template<class FilterPredicate>
-struct filter_holder {
-	filter_holder(FilterPredicate &&filterPredicate) :
-		m_filterPredicate(std::forward<FilterPredicate>(filterPredicate)){}
-
-	FilterPredicate m_filterPredicate;
-};
-
 template<class SubIterator, class FilterPredicate>
 class filtering_iterator :
 	public detail::iterator_base<filtering_iterator<SubIterator, FilterPredicate>> {
@@ -139,20 +131,46 @@ private:
 };
 
 template<class FilterPredicate>
-filter_holder<FilterPredicate>
+class filter_factory {
+public:
+	filter_factory(FilterPredicate &&filterPredicate) :
+		m_filterPredicate(std::forward<FilterPredicate>(filterPredicate)){}
+
+	template<class Enumerable>
+	filtered_sequence<Enumerable, FilterPredicate>
+	create(Enumerable &&enumerable) const & {
+		return filtered_sequence<Enumerable, FilterPredicate>(
+			std::forward<Enumerable>(enumerable),
+			m_filterPredicate
+		);
+	}
+
+	template<class Enumerable>
+	filtered_sequence<Enumerable, FilterPredicate>
+	create(Enumerable &&enumerable) && {
+		return filtered_sequence<Enumerable, FilterPredicate>(
+			std::forward<Enumerable>(enumerable),
+			std::forward<FilterPredicate>(m_filterPredicate)
+		);
+	}
+private:
+	FilterPredicate m_filterPredicate;
+};
+
+template<class FilterPredicate>
+filter_factory<FilterPredicate>
 filter(FilterPredicate &&filterPredicate){
-	return filter_holder<FilterPredicate>(std::forward<FilterPredicate>(filterPredicate));
+	return filter_factory<FilterPredicate>(std::forward<FilterPredicate>(filterPredicate));
 }
 
 template<class Enumerable, class FilterPredicate>
 filtered_sequence<Enumerable, FilterPredicate>
 operator|(
 	Enumerable &&enumerable,
-   	filter_holder<FilterPredicate> &&holder
+   	filter_factory<FilterPredicate> &&factory
 ){
-	return filtered_sequence<Enumerable, FilterPredicate>(
-		std::forward<Enumerable>(enumerable),
-	   	std::forward<filter_holder<FilterPredicate>>(holder).m_filterPredicate
+	return std::forward<filter_factory<FilterPredicate>>(factory).create(
+			std::forward<Enumerable>(enumerable)
 	);
 }
 

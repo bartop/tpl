@@ -137,12 +137,21 @@ private:
 	Enumerable m_enumerable;
 };
 
-struct flatten_tag {} flatten;
+class flatten_factory {
+public:
+   	template<class Enumerable>
+	flattened_sequence<Enumerable>
+	create(Enumerable &&enumerable) const {
+		return flattened_sequence<Enumerable>(
+			std::forward<Enumerable>(enumerable)
+		);
+	}
+} flatten;
 
 template<class Enumerable>
 flattened_sequence<Enumerable>
-operator|(Enumerable &&enumerable, const flatten_tag &){
-	return flattened_sequence<Enumerable>(
+operator|(Enumerable &&enumerable, const flatten_factory &factory){
+	return factory.create(
 		std::forward<Enumerable>(enumerable)
 	);
 }

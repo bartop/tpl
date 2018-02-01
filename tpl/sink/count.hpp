@@ -6,14 +6,6 @@
 namespace tpl{
 namespace sink{
 
-template<class LogicalPredicate>
-struct count_predicate_holder {
-	explicit count_predicate_holder(LogicalPredicate &&logicalPredicate) :
-		m_logicalPredicate(std::forward<LogicalPredicate>(logicalPredicate)){}
-
-	LogicalPredicate m_logicalPredicate;
-};
-
 template<class Enumerable, class LogicalPredicate>
 class count_compliant {
 public:
@@ -42,20 +34,48 @@ private:
 };
 
 template<class LogicalPredicate>
-count_predicate_holder<LogicalPredicate>
+class count_factory {
+public:
+	explicit count_factory(LogicalPredicate &&logicalPredicate) :
+		m_logicalPredicate(std::forward<LogicalPredicate>(logicalPredicate)){}
+
+	template<class Enumerable>
+	count_compliant<Enumerable, LogicalPredicate>
+	create(Enumerable &&enumerable) const & {
+		return count_compliant<Enumerable, LogicalPredicate>(
+			std::forward<Enumerable>(enumerable),
+			m_logicalPredicate
+		);
+	}
+
+	template<class Enumerable>
+	count_compliant<Enumerable, LogicalPredicate>
+	create(Enumerable &&enumerable) && {
+		return count_compliant<Enumerable, LogicalPredicate>(
+			std::forward<Enumerable>(enumerable),
+			std::forward<LogicalPredicate>(m_logicalPredicate)
+		);
+	}
+private:
+	LogicalPredicate m_logicalPredicate;
+};
+
+template<class LogicalPredicate>
+count_factory<LogicalPredicate>
 count(LogicalPredicate &&logicalPredicate){
-	return count_predicate_holder<LogicalPredicate>(std::forward<LogicalPredicate>(logicalPredicate));
+	return count_factory<LogicalPredicate>(
+		std::forward<LogicalPredicate>(logicalPredicate)
+	);
 }
 
 template<class Enumerable, class LogicalPredicate>
 count_compliant<Enumerable, LogicalPredicate>
 operator|(
 	Enumerable &&enumerable,
-   	count_predicate_holder<LogicalPredicate> &&holder
+   	count_factory<LogicalPredicate> &&factory
 ){
-	return count_compliant<Enumerable, LogicalPredicate>(
-		std::forward<Enumerable>(enumerable),
-	   	std::forward<count_predicate_holder<LogicalPredicate>>(holder).m_logicalPredicate
+	return std::forward<count_factory<LogicalPredicate>>(factory).create(
+		std::forward<Enumerable>(enumerable)
 	);
 }
 

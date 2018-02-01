@@ -14,14 +14,6 @@
 namespace tpl{
 namespace operation{
 
-template<class TransformPredicate>
-struct transform_holder {
-	transform_holder(TransformPredicate &&transformPredicate) :
-		m_transformPredicate(std::forward<TransformPredicate>(transformPredicate)){}
-
-	TransformPredicate m_transformPredicate;
-};
-
 template<class SubIterator, class TransformPredicate>
 class transforming_iterator :
 	public detail::iterator_base<transforming_iterator<SubIterator, TransformPredicate>> {
@@ -131,20 +123,46 @@ private:
 };
 
 template<class TransformPredicate>
-transform_holder<TransformPredicate>
+class transform_factory {
+public:
+	explicit transform_factory(TransformPredicate &&transformPredicate) :
+		m_transformPredicate(std::forward<TransformPredicate>(transformPredicate)){}
+
+	template<class Enumerable>
+	transformed_sequence<Enumerable, TransformPredicate>
+	create(Enumerable &&enumerable) const & {
+		return transformed_sequence<Enumerable, TransformPredicate>(
+			std::forward<Enumerable>(enumerable),
+			m_transformPredicate
+		);
+	}
+
+	template<class Enumerable>
+	transformed_sequence<Enumerable, TransformPredicate>
+	create(Enumerable &&enumerable) && {
+		return transformed_sequence<Enumerable, TransformPredicate>(
+			std::forward<Enumerable>(enumerable),
+			std::move(m_transformPredicate)
+		);
+	}
+private:
+	TransformPredicate m_transformPredicate;
+};
+
+template<class TransformPredicate>
+transform_factory<TransformPredicate>
 transform(TransformPredicate &&transformPredicate){
-	return transform_holder<TransformPredicate>(std::forward<TransformPredicate>(transformPredicate));
+	return transform_factory<TransformPredicate>(std::forward<TransformPredicate>(transformPredicate));
 }
 
 template<class Enumerable, class TransformPredicate>
 transformed_sequence<Enumerable, TransformPredicate>
 operator|(
 	Enumerable &&enumerable,
-   	transform_holder<TransformPredicate> &&holder
+   	transform_factory<TransformPredicate> &&factory
 ){
-	return transformed_sequence<Enumerable, TransformPredicate>(
-		std::forward<Enumerable>(enumerable),
-	   	std::forward<transform_holder<TransformPredicate>>(holder).m_transformPredicate
+	return std::forward<transform_factory<TransformPredicate>>(factory).create(
+		std::forward<Enumerable>(enumerable)
 	);
 }
 
