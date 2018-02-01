@@ -12,7 +12,6 @@
 #include <type_traits>
 
 namespace tpl{
-namespace operation{
 
 template<class SubIterator, class TransformPredicate>
 class transforming_iterator :
@@ -166,5 +165,4 @@ operator|(
 	);
 }
 
-}
 }

@@ -9,7 +9,6 @@
 #include <set>
 
 namespace tpl{
-namespace operation{
 
 template<class Enumerable, class ComparePredicate>
 class sorted_sequence :
@@ -118,5 +117,4 @@ operator|(
 	);
 }
 
-}
 }

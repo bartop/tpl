@@ -7,7 +7,6 @@
 #include <numeric>
 
 namespace tpl{
-namespace sink{
 
 template<class Enumerable, class BinaryPredicate, class InitialValue>
 class initialized_fold_left {
@@ -45,5 +44,4 @@ private:
 	InitialValue m_initialValue;
 };
 
-}
 }

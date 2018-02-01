@@ -7,7 +7,6 @@
 #include <numeric>
 
 namespace tpl{
-namespace sink{
 
 template<class Enumerable, class BinaryPredicate>
 class default_fold_left {
@@ -46,5 +45,4 @@ private:
 	BinaryPredicate m_predicate;
 };
 
-}
 }

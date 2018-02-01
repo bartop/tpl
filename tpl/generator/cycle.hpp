@@ -9,7 +9,6 @@
 #include <algorithm>
 
 namespace tpl{
-namespace generator{
 
 template<class Enumerable>
 class cycle_iterator : public detail::iterator_base<cycle_iterator<Enumerable>> {
@@ -111,5 +110,4 @@ cycle(Enumerable &&enumerable){
 	return cycle_sequence<Enumerable>(std::forward<Enumerable>(enumerable));
 }
 
-}
 }

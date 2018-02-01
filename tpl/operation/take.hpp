@@ -11,7 +11,6 @@
 #include <algorithm>
 
 namespace tpl{
-namespace operation{
 
 template<class SubIterator>
 class taking_iterator :
@@ -161,5 +160,4 @@ operator|(
 	);
 }
 
-}
 }

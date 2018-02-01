@@ -9,7 +9,7 @@
 
 using namespace std::string_literals;
 using namespace std;
-using namespace tpl::generator;
+using namespace tpl;
 
 TEST_CASE( "Testing generated sequence", "[generator_test]" ) {
 	SECTION("1") {

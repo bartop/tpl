@@ -11,7 +11,6 @@
 #include <algorithm>
 
 namespace tpl{
-namespace operation{
 
 template<class SubIterator, class FilterPredicate>
 class filtering_iterator :
@@ -174,5 +173,4 @@ operator|(
 	);
 }
 
-}
 }

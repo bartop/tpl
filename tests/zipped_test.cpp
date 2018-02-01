@@ -7,7 +7,7 @@
 
 TEST_CASE( "Vector zipping", "[zipped_test]" ) {
 	using namespace std;
-	using namespace tpl::operation;
+	using namespace tpl;
 	vector<int> v1{ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 	vector<int> v2{ 3, 4, 5, 6, 7, 8, 9, 10 };
 	vector<int> v3{ 5, 6, 7, 8, 9, 10 };

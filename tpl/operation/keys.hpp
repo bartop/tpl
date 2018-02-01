@@ -11,7 +11,6 @@
 #include <algorithm>
 
 namespace tpl{
-namespace operation{
 
 template<class SubIterator>
 class keys_iterator : public detail::iterator_base<keys_iterator<SubIterator>> {
@@ -123,5 +122,4 @@ operator|(Enumerable &&enumerable, const keys_factory &factory) {
 	);
 }
 
-}
 }
