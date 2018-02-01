@@ -9,19 +9,6 @@
 namespace tpl{
 namespace sink{
 
-template<class BinaryPredicate, class InitialValue>
-struct fold_left_arguments_holder {
-	fold_left_arguments_holder(
-		BinaryPredicate &&predicate,
-		InitialValue &&initialValue
-	) :
-		m_predicate(std::forward<BinaryPredicate>(predicate)),
-		m_initialValue(std::forward<InitialValue>(initialValue)){}
-
-	BinaryPredicate m_predicate;
-	InitialValue m_initialValue;
-};
-
 template<class Enumerable, class BinaryPredicate, class InitialValue>
 class initialized_fold_left {
 public:
@@ -57,28 +44,6 @@ private:
 	BinaryPredicate m_predicate;
 	InitialValue m_initialValue;
 };
-
-template<class BinaryPredicate, class InitialValue>
-fold_left_arguments_holder<BinaryPredicate, InitialValue>
-fold_left(BinaryPredicate &&predicate, InitialValue &&initialValue){
-	return fold_left_arguments_holder<BinaryPredicate, InitialValue>(
-		std::forward<BinaryPredicate>(predicate),
-		std::forward<InitialValue>(initialValue)
-	);
-}
-
-template<class Enumerable, class BinaryPredicate, class InitialValue>
-initialized_fold_left<Enumerable, BinaryPredicate, InitialValue>
-operator|(
-	Enumerable &&enumerable,
-   	fold_left_arguments_holder<BinaryPredicate, InitialValue> &&holder
-){
-	return initialized_fold_left<Enumerable, BinaryPredicate, InitialValue>(
-		std::forward<Enumerable>(enumerable),
-	   	std::forward<fold_left_arguments_holder<BinaryPredicate, InitialValue>>(holder).m_predicate,
-	   	std::forward<fold_left_arguments_holder<BinaryPredicate, InitialValue>>(holder).m_initialValue
-	);
-}
 
 }
 }

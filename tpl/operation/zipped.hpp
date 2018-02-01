@@ -14,14 +14,6 @@
 namespace tpl{
 namespace operation{
 
-template<class Enumerable>
-struct zipped_enumerable_holder {
-	zipped_enumerable_holder(Enumerable &&enumerable) :
-		m_enumerable(std::forward<Enumerable>(enumerable)){}
-
-	Enumerable m_enumerable;
-};
-
 template<class SubIterator1, class SubIterator2>
 class zipped_iterator :
 	public detail::iterator_base<zipped_iterator<SubIterator1, SubIterator2>> {
@@ -69,9 +61,9 @@ public:
 	}
 
 	void
-	swap(zipped_iterator &filteringIterator) {
-		std::swap(this->m_subIterator1, filteringIterator.m_subIterator1);
-		std::swap(this->m_subIterator2, filteringIterator.m_subIterator2);
+	swap(zipped_iterator &zipingIterator) {
+		std::swap(this->m_subIterator1, zipingIterator.m_subIterator1);
+		std::swap(this->m_subIterator2, zipingIterator.m_subIterator2);
 	}
 private:
 	SubIterator1 m_subIterator1;
@@ -79,7 +71,7 @@ private:
 };
 
 template<class Enumerable1, class Enumerable2>
-class filtered_sequence :
+class ziped_sequence :
 	meta::enforce_enumerable<Enumerable1> {
 public:
 	using enumerable_traits1 = meta::enumerable_traits<Enumerable1>;
@@ -97,7 +89,7 @@ public:
 		typename enumerable_traits2::iterator
 	>;
 
-	filtered_sequence(
+	ziped_sequence(
 		Enumerable1 &&enumerable1,
 		Enumerable2 &&enumerable2
 	) :
@@ -105,7 +97,7 @@ public:
 		m_enumerable2(std::forward<Enumerable2>(enumerable2)){}
 
 	void
-	swap(filtered_sequence &other){
+	swap(ziped_sequence &other){
 		std::swap(m_enumerable1, other.m_enumerable1);
 		std::swap(m_enumerable2, other.m_enumerable2);
 	}
@@ -147,20 +139,47 @@ private:
 };
 
 template<class Enumerable>
-zipped_enumerable_holder<Enumerable>
+class zipped_enumerable_factory {
+public:
+	zipped_enumerable_factory(Enumerable &&enumerable) :
+		m_enumerable(std::forward<Enumerable>(enumerable)){}
+
+	template<class Enumerable2>
+	ziped_sequence<Enumerable, Enumerable2>
+	create(Enumerable2 &&enumerable) const & {
+		return ziped_sequence<Enumerable, Enumerable2>(
+			std::forward<Enumerable2>(enumerable),
+			m_enumerable
+		);
+	}
+
+	template<class Enumerable2>
+	ziped_sequence<Enumerable, Enumerable2>
+	create(Enumerable2 &&enumerable) && {
+		return ziped_sequence<Enumerable, Enumerable2>(
+			std::forward<Enumerable2>(enumerable),
+			std::forward<Enumerable>(m_enumerable)
+		);
+	}
+
+private:
+	Enumerable m_enumerable;
+};
+
+template<class Enumerable>
+zipped_enumerable_factory<Enumerable>
 zip(Enumerable &&enumerable){
-	return zipped_enumerable_holder<Enumerable>(std::forward<Enumerable>(enumerable));
+	return zipped_enumerable_factory<Enumerable>(std::forward<Enumerable>(enumerable));
 }
 
 template<class Enumerable1, class Enumerable2>
-filtered_sequence<Enumerable1, Enumerable2>
+ziped_sequence<Enumerable1, Enumerable2>
 operator|(
-	Enumerable1 &&enumerable,
-   	zipped_enumerable_holder<Enumerable2> &&holder
+	Enumerable2 &&enumerable,
+   	zipped_enumerable_factory<Enumerable1> &&factory
 ){
-	return filtered_sequence<Enumerable1, Enumerable2>(
-		std::forward<Enumerable1>(enumerable),
-	   	std::forward<zipped_enumerable_holder<Enumerable2>>(holder).m_enumerable
+	return std::forward<zipped_enumerable_factory<Enumerable1>>(factory).create(
+		std::forward<Enumerable2>(enumerable)
 	);
 }
 

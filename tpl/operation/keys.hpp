@@ -104,12 +104,21 @@ private:
 	Enumerable m_enumerable;
 };
 
-struct keys_tag {} keys;
+class keys_factory {
+public:
+   	template<class Enumerable>
+	keys_sequence<Enumerable>
+	create(Enumerable &&enumerable) const {
+		return keys_sequence<Enumerable>(
+			std::forward<Enumerable>(enumerable)
+		);
+	}
+} keys;
 
 template<class Enumerable>
 keys_sequence<Enumerable>
-operator|(Enumerable &&enumerable, const keys_tag &) {
-	return keys_sequence<Enumerable>(
+operator|(Enumerable &&enumerable, const keys_factory &factory) {
+	return factory.create(
 		std::forward<Enumerable>(enumerable)
 	);
 }

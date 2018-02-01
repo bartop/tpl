@@ -11,14 +11,6 @@
 namespace tpl{
 namespace operation{
 
-template<class ComparePredicate>
-struct compare_holder {
-	explicit compare_holder(ComparePredicate &&comparePredicate) :
-		m_comparePredicate(std::forward<ComparePredicate>(comparePredicate)){}
-
-	ComparePredicate m_comparePredicate;
-};
-
 template<class Enumerable, class ComparePredicate>
 class sorted_sequence :
 	meta::enforce_enumerable<Enumerable> {
@@ -82,20 +74,47 @@ private:
 };
 
 template<class ComparePredicate>
-compare_holder<ComparePredicate>
+class compare_factory {
+public:
+	explicit compare_factory(ComparePredicate &&comparePredicate) :
+		m_comparePredicate(std::forward<ComparePredicate>(comparePredicate)){}
+
+	template<class Enumerable>
+	sorted_sequence<Enumerable, ComparePredicate>
+	create(Enumerable &&enumerable) const & {
+		return sorted_sequence<Enumerable, ComparePredicate>(
+			std::forward<Enumerable>(enumerable),
+			m_comparePredicate
+		);
+	}
+
+	template<class Enumerable>
+	sorted_sequence<Enumerable, ComparePredicate>
+	create(Enumerable &&enumerable) && {
+		return sorted_sequence<Enumerable, ComparePredicate>(
+			std::forward<Enumerable>(enumerable),
+			std::forward<ComparePredicate>(m_comparePredicate)
+		);
+	}
+
+private:
+	ComparePredicate m_comparePredicate;
+};
+
+template<class ComparePredicate>
+compare_factory<ComparePredicate>
 sort(ComparePredicate &&comparePredicate){
-	return compare_holder<ComparePredicate>(std::forward<ComparePredicate>(comparePredicate));
+	return compare_factory<ComparePredicate>(std::forward<ComparePredicate>(comparePredicate));
 }
 
 template<class Enumerable, class ComparePredicate>
 sorted_sequence<Enumerable, ComparePredicate>
 operator|(
 	Enumerable &&enumerable,
-   	compare_holder<ComparePredicate> &&holder
+   	compare_factory<ComparePredicate> &&factory
 ){
-	return sorted_sequence<Enumerable, ComparePredicate>(
-		std::forward<Enumerable>(enumerable),
-	   	std::forward<compare_holder<ComparePredicate>>(holder).m_comparePredicate
+	return std::forward<compare_factory<ComparePredicate>>(factory).create(
+		std::forward<Enumerable>(enumerable)
 	);
 }
 

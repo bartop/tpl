@@ -9,16 +9,6 @@
 namespace tpl{
 namespace sink{
 
-template<class BinaryPredicate>
-struct fold_left_predicate_holder {
-	fold_left_predicate_holder(
-		BinaryPredicate &&predicate
-	) :
-		m_predicate(std::forward<BinaryPredicate>(predicate)){}
-
-	BinaryPredicate m_predicate;
-};
-
 template<class Enumerable, class BinaryPredicate>
 class default_fold_left {
 public:
@@ -55,27 +45,6 @@ private:
 	Enumerable m_enumerable;
 	BinaryPredicate m_predicate;
 };
-
-
-template<class BinaryPredicate>
-fold_left_predicate_holder<BinaryPredicate>
-fold_left(BinaryPredicate &&predicate){
-	return fold_left_predicate_holder<BinaryPredicate>(
-		std::forward<BinaryPredicate>(predicate)
-	);
-}
-
-template<class Enumerable, class BinaryPredicate>
-default_fold_left<Enumerable, BinaryPredicate>
-operator|(
-	Enumerable &&enumerable,
-   	fold_left_predicate_holder<BinaryPredicate> &&holder
-){
-	return default_fold_left<Enumerable, BinaryPredicate>(
-		std::forward<Enumerable>(enumerable),
-	   	std::forward<fold_left_predicate_holder<BinaryPredicate>>(holder).m_predicate
-	);
-}
 
 }
 }

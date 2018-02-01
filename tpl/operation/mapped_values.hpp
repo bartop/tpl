@@ -105,12 +105,21 @@ private:
 	Enumerable m_enumerable;
 };
 
-struct mapped_values_tag {} mapped_values;
+class mapped_values_factory {
+public:
+   	template<class Enumerable>
+	mapped_values_sequence<Enumerable>
+	create(Enumerable &&enumerable) const {
+		return mapped_values_sequence<Enumerable>(
+			std::forward<Enumerable>(enumerable)
+		);
+	}
+} mapped_values;
 
 template<class Enumerable>
 mapped_values_sequence<Enumerable>
-operator|(Enumerable &&enumerable, const mapped_values_tag &) {
-	return mapped_values_sequence<Enumerable>(
+operator|(Enumerable &&enumerable, const mapped_values_factory &factory) {
+	return factory.create(
 		std::forward<Enumerable>(enumerable)
 	);
 }

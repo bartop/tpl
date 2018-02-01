@@ -6,14 +6,6 @@
 namespace tpl{
 namespace sink{
 
-template<class LogicalPredicate>
-struct true_for_all_predicate_holder {
-	explicit true_for_all_predicate_holder(LogicalPredicate &&logicalPredicate) :
-		m_logicalPredicate(std::forward<LogicalPredicate>(logicalPredicate)){}
-
-	LogicalPredicate m_logicalPredicate;
-};
-
 template<class Enumerable, class LogicalPredicate>
 class true_for_all {
 public:
@@ -40,21 +32,50 @@ private:
 	LogicalPredicate m_logicalPredicate;
 };
 
+
 template<class LogicalPredicate>
-true_for_all_predicate_holder<LogicalPredicate>
+class true_for_all_factory {
+public:
+	explicit true_for_all_factory(LogicalPredicate &&logicalPredicate) :
+		m_logicalPredicate(std::forward<LogicalPredicate>(logicalPredicate)){}
+
+	template<class Enumerable>
+	true_for_all<Enumerable, LogicalPredicate>
+	create(Enumerable &&enumerable) const & {
+		return true_for_all<Enumerable, LogicalPredicate>(
+			std::forward<Enumerable>(enumerable),
+			m_logicalPredicate
+		);
+	}
+
+	template<class Enumerable>
+	true_for_all<Enumerable, LogicalPredicate>
+	create(Enumerable &&enumerable) && {
+		return true_for_all<Enumerable, LogicalPredicate>(
+			std::forward<Enumerable>(enumerable),
+			std::forward<LogicalPredicate>(m_logicalPredicate)
+		);
+	}
+private:
+	LogicalPredicate m_logicalPredicate;
+};
+
+template<class LogicalPredicate>
+true_for_all_factory<LogicalPredicate>
 all(LogicalPredicate &&logicalPredicate){
-	return true_for_all_predicate_holder<LogicalPredicate>(std::forward<LogicalPredicate>(logicalPredicate));
+	return true_for_all_factory<LogicalPredicate>(
+		std::forward<LogicalPredicate>(logicalPredicate)
+	);
 }
 
 template<class Enumerable, class LogicalPredicate>
 true_for_all<Enumerable, LogicalPredicate>
 operator|(
 	Enumerable &&enumerable,
-   	true_for_all_predicate_holder<LogicalPredicate> &&holder
+   	true_for_all_factory<LogicalPredicate> &&factory
 ){
-	return true_for_all<Enumerable, LogicalPredicate>(
-		std::forward<Enumerable>(enumerable),
-	   	std::forward<true_for_all_predicate_holder<LogicalPredicate>>(holder).m_logicalPredicate
+	return std::forward<true_for_all_factory<LogicalPredicate>>(factory).create(
+		std::forward<Enumerable>(enumerable)
 	);
 }
 
