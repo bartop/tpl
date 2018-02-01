@@ -5,7 +5,7 @@
 #include "../meta/is_associative.hpp"
 #include "../meta/enumerable_traits.hpp"
 
-#include "../detail/iterator_base.hpp"
+#include "../common/composition_operator.hpp"
 
 #include <iterator>
 #include <algorithm>
@@ -83,17 +83,6 @@ private:
 take_factory
 take(unsigned toTake){
 	return take_factory(toTake);
-}
-
-template<class Enumerable>
-taken_sequence<Enumerable>
-operator|(
-	Enumerable &&enumerable,
-   	take_factory &&factory
-){
-	return factory.create<Enumerable>(
-		std::forward<Enumerable>(enumerable)
-	);
 }
 
 }

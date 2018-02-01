@@ -3,6 +3,8 @@
 
 #include <iterator>
 
+#include "../common/composition_operator.hpp"
+
 namespace tpl{
 
 template<class Enumerable, class LogicalPredicate>
@@ -41,7 +43,7 @@ public:
 	template<class Enumerable>
 	count_compliant<Enumerable, LogicalPredicate>
 	create(Enumerable &&enumerable) const & {
-		return count_compliant<Enumerable, LogicalPredicate>(
+		return count_compliant<Enumerable, const LogicalPredicate &>(
 			std::forward<Enumerable>(enumerable),
 			m_logicalPredicate
 		);
@@ -64,17 +66,6 @@ count_factory<LogicalPredicate>
 count(LogicalPredicate &&logicalPredicate){
 	return count_factory<LogicalPredicate>(
 		std::forward<LogicalPredicate>(logicalPredicate)
-	);
-}
-
-template<class Enumerable, class LogicalPredicate>
-count_compliant<Enumerable, LogicalPredicate>
-operator|(
-	Enumerable &&enumerable,
-   	count_factory<LogicalPredicate> &&factory
-){
-	return std::forward<count_factory<LogicalPredicate>>(factory).create(
-		std::forward<Enumerable>(enumerable)
 	);
 }
 

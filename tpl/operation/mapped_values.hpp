@@ -7,6 +7,8 @@
 
 #include "../detail/iterator_base.hpp"
 
+#include "../common/composition_operator.hpp"
+
 #include <iterator>
 #include <algorithm>
 
@@ -114,13 +116,5 @@ public:
 		);
 	}
 } mapped_values;
-
-template<class Enumerable>
-mapped_values_sequence<Enumerable>
-operator|(Enumerable &&enumerable, const mapped_values_factory &factory) {
-	return factory.create(
-		std::forward<Enumerable>(enumerable)
-	);
-}
 
 }

@@ -3,6 +3,8 @@
 
 #include <iterator>
 
+#include "../common/composition_operator.hpp"
+
 namespace tpl{
 
 template<class Enumerable, class OutputIterator>
@@ -43,17 +45,6 @@ copy_to_factory<OutputIterator>
 copy_to(OutputIterator &&outputIterator){
 	return copy_to_factory<OutputIterator>(
 		std::forward<OutputIterator>(outputIterator)
-	);
-}
-
-template<class Enumerable, class OutputIterator>
-void
-operator|(
-	Enumerable &&enumerable,
-   	copy_to_factory<OutputIterator> &&factory
-){
-	std::forward<copy_to_factory<OutputIterator>>(factory).create(
-		std::forward<Enumerable>(enumerable)
 	);
 }
 
