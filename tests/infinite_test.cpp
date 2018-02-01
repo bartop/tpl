@@ -6,6 +6,7 @@
 #include <string>
 #include <algorithm>
 #include <vector>
+#include <iterator>
 
 using namespace std;
 using namespace tpl;
