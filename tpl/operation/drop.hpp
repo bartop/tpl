@@ -13,7 +13,7 @@
 namespace tpl{
 
 template<class Enumerable>
-class taken_sequence :
+class dropping_sequence :
 	meta::enforce_enumerable<Enumerable> {
 public:
 	using enumerable_traits = meta::enumerable_traits<Enumerable>;
@@ -21,75 +21,75 @@ public:
 	using const_iterator = typename enumerable_traits::const_iterator;
 	using iterator = typename enumerable_traits::iterator;
 
-	taken_sequence(
+	dropping_sequence(
 		Enumerable &&enumerable,
-		unsigned toTake
+		unsigned toDrop
 	) :
 		m_enumerable(std::forward<Enumerable>(enumerable)),
-		m_toTake(toTake) {}
+		m_toDrop(toDrop) {}
 
 	void
-	swap(taken_sequence &other){
+	swap(dropping_sequence &other){
 		std::swap(m_enumerable, other.m_enumerable);
-		std::swap(m_toTake, other.m_toTake);
+		std::swap(m_toDrop, other.m_toDrop);
 	}
 
 	iterator
 	begin() {
-		return std::begin(m_enumerable);
+		return std::distance(std::begin(m_enumerable), std::end(m_enumerable)) > m_toDrop ?
+			std::next(std::begin(m_enumerable), m_toDrop) :
+			std::end(m_enumerable);
 	}
 
 	iterator
 	end() {
-		return std::distance(std::begin(m_enumerable), std::end(m_enumerable)) > m_toTake ?
-			std::next(std::begin(m_enumerable), m_toTake) :
-			std::end(m_enumerable);
+		return std::end(m_enumerable);
 	}
 
 	const_iterator
 	begin() const {
-		return std::begin(m_enumerable);
+		return std::distance(std::begin(m_enumerable), std::end(m_enumerable)) > m_toDrop ?
+			std::next(std::begin(m_enumerable), m_toDrop) :
+			std::end(m_enumerable);
 	}
 
 	const_iterator
 	end() const {
-		return std::distance(std::begin(m_enumerable), std::end(m_enumerable)) > m_toTake ?
-			std::next(std::begin(m_enumerable), m_toTake) :
-			std::end(m_enumerable);
+		return std::end(m_enumerable);
 	}
 private:
 	Enumerable m_enumerable;
-	unsigned m_toTake;
+	unsigned m_toDrop;
 };
 
-class take_factory {
+class drop_factory {
 public:
-	explicit take_factory(unsigned toTake) :
-		m_toTake(toTake){}
+	explicit drop_factory(unsigned toDrop) :
+		m_toDrop(toDrop){}
 
 	template<class Enumerable>
-	taken_sequence<Enumerable>
+	dropping_sequence<Enumerable>
 	create(Enumerable &&enumerable) const {
-		return taken_sequence<Enumerable>(
+		return dropping_sequence<Enumerable>(
 			std::forward<Enumerable>(enumerable),
-			m_toTake
+			m_toDrop
 		);
 	}
 
 private:
-	unsigned m_toTake;
+	unsigned m_toDrop;
 };
 
-take_factory
-take(unsigned toTake){
-	return take_factory(toTake);
+drop_factory
+drop(unsigned toDrop){
+	return drop_factory(toDrop);
 }
 
 template<class Enumerable>
-taken_sequence<Enumerable>
+dropping_sequence<Enumerable>
 operator|(
 	Enumerable &&enumerable,
-   	take_factory &&factory
+   	drop_factory &&factory
 ){
 	return factory.create<Enumerable>(
 		std::forward<Enumerable>(enumerable)
