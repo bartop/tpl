@@ -8,6 +8,8 @@
 #include "../detail/pointer_proxy.hpp"
 #include "../detail/iterator_base.hpp"
 
+#include "../common/composition_operator.hpp"
+
 #include <iterator>
 #include <type_traits>
 
@@ -128,9 +130,9 @@ public:
 		m_transformPredicate(std::forward<TransformPredicate>(transformPredicate)){}
 
 	template<class Enumerable>
-	transformed_sequence<Enumerable, TransformPredicate>
+	auto
 	create(Enumerable &&enumerable) const & {
-		return transformed_sequence<Enumerable, TransformPredicate>(
+		return transformed_sequence<Enumerable, const TransformPredicate &>(
 			std::forward<Enumerable>(enumerable),
 			m_transformPredicate
 		);
@@ -152,17 +154,6 @@ template<class TransformPredicate>
 transform_factory<TransformPredicate>
 transform(TransformPredicate &&transformPredicate){
 	return transform_factory<TransformPredicate>(std::forward<TransformPredicate>(transformPredicate));
-}
-
-template<class Enumerable, class TransformPredicate>
-transformed_sequence<Enumerable, TransformPredicate>
-operator|(
-	Enumerable &&enumerable,
-   	transform_factory<TransformPredicate> &&factory
-){
-	return std::forward<transform_factory<TransformPredicate>>(factory).create(
-		std::forward<Enumerable>(enumerable)
-	);
 }
 
 }

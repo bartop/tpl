@@ -7,6 +7,8 @@
 
 #include "../detail/iterator_base.hpp"
 
+#include "../common/composition_operator.hpp"
+
 #include <iterator>
 #include <algorithm>
 
@@ -146,13 +148,5 @@ public:
 		);
 	}
 } flatten;
-
-template<class Enumerable>
-flattened_sequence<Enumerable>
-operator|(Enumerable &&enumerable, const flatten_factory &factory){
-	return factory.create(
-		std::forward<Enumerable>(enumerable)
-	);
-}
 
 }

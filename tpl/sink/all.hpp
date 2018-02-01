@@ -3,6 +3,8 @@
 
 #include <iterator>
 
+#include "../common/composition_operator.hpp"
+
 namespace tpl{
 
 template<class Enumerable, class LogicalPredicate>
@@ -41,7 +43,7 @@ public:
 	template<class Enumerable>
 	true_for_all<Enumerable, LogicalPredicate>
 	create(Enumerable &&enumerable) const & {
-		return true_for_all<Enumerable, LogicalPredicate>(
+		return true_for_all<Enumerable, const LogicalPredicate &>(
 			std::forward<Enumerable>(enumerable),
 			m_logicalPredicate
 		);
@@ -64,17 +66,6 @@ true_for_all_factory<LogicalPredicate>
 all(LogicalPredicate &&logicalPredicate){
 	return true_for_all_factory<LogicalPredicate>(
 		std::forward<LogicalPredicate>(logicalPredicate)
-	);
-}
-
-template<class Enumerable, class LogicalPredicate>
-true_for_all<Enumerable, LogicalPredicate>
-operator|(
-	Enumerable &&enumerable,
-   	true_for_all_factory<LogicalPredicate> &&factory
-){
-	return std::forward<true_for_all_factory<LogicalPredicate>>(factory).create(
-		std::forward<Enumerable>(enumerable)
 	);
 }
 

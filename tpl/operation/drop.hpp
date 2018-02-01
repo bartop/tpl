@@ -7,6 +7,8 @@
 
 #include "../detail/iterator_base.hpp"
 
+#include "../common/composition_operator.hpp"
+
 #include <iterator>
 #include <algorithm>
 
@@ -83,17 +85,6 @@ private:
 drop_factory
 drop(unsigned toDrop){
 	return drop_factory(toDrop);
-}
-
-template<class Enumerable>
-dropping_sequence<Enumerable>
-operator|(
-	Enumerable &&enumerable,
-   	drop_factory &&factory
-){
-	return factory.create<Enumerable>(
-		std::forward<Enumerable>(enumerable)
-	);
 }
 
 }

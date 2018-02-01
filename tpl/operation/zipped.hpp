@@ -8,6 +8,8 @@
 #include "../detail/pointer_proxy.hpp"
 #include "../detail/iterator_base.hpp"
 
+#include "../common/composition_operator.hpp"
+
 #include <iterator>
 #include <algorithm>
 
@@ -146,7 +148,7 @@ public:
 	template<class Enumerable2>
 	ziped_sequence<Enumerable, Enumerable2>
 	create(Enumerable2 &&enumerable) const & {
-		return ziped_sequence<Enumerable, Enumerable2>(
+		return ziped_sequence<const Enumerable &, Enumerable2>(
 			std::forward<Enumerable2>(enumerable),
 			m_enumerable
 		);
@@ -169,17 +171,6 @@ template<class Enumerable>
 zipped_enumerable_factory<Enumerable>
 zip(Enumerable &&enumerable){
 	return zipped_enumerable_factory<Enumerable>(std::forward<Enumerable>(enumerable));
-}
-
-template<class Enumerable1, class Enumerable2>
-ziped_sequence<Enumerable1, Enumerable2>
-operator|(
-	Enumerable2 &&enumerable,
-   	zipped_enumerable_factory<Enumerable1> &&factory
-){
-	return std::forward<zipped_enumerable_factory<Enumerable1>>(factory).create(
-		std::forward<Enumerable2>(enumerable)
-	);
 }
 
 }

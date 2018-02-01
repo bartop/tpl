@@ -1,4 +1,6 @@
 
+#include "../common/composition_operator.hpp"
+
 #ifndef _MSC_VER
 #include "fold_left_initialized.hpp"
 #include "fold_left_default.hpp"
@@ -20,7 +22,7 @@ public:
 	template<class Enumerable>
 	default_fold_left<Enumerable, BinaryPredicate>
 	create(Enumerable &&enumerable) const & {
-		return default_fold_left<Enumerable, BinaryPredicate>(
+		return default_fold_left<Enumerable, const BinaryPredicate &>(
 			std::forward<Enumerable>(enumerable),
 			m_predicate
 		);
@@ -47,17 +49,6 @@ fold_left(BinaryPredicate &&predicate){
 	);
 }
 
-template<class Enumerable, class BinaryPredicate>
-default_fold_left<Enumerable, BinaryPredicate>
-operator|(
-	Enumerable &&enumerable,
-   	fold_left_factory<BinaryPredicate> &&factory
-){
-	return std::forward<fold_left_factory<BinaryPredicate>>(factory).create(
-		std::forward<Enumerable>(enumerable)
-	);
-}
-
 template<class BinaryPredicate, class InitialValue>
 class initialized_fold_left_factory {
 public:
@@ -72,7 +63,7 @@ public:
 	template<class Enumerable>
 	initialized_fold_left<Enumerable, BinaryPredicate, InitialValue>
 	create(Enumerable &&enumerable) const & {
-		return initialized_fold_left<Enumerable, BinaryPredicate, InitialValue>(
+		return initialized_fold_left<Enumerable, const BinaryPredicate &, const InitialValue &>(
 			std::forward<Enumerable>(enumerable),
 			std::forward<BinaryPredicate>(m_predicate),
 			m_initialValue
@@ -99,17 +90,6 @@ fold_left(BinaryPredicate &&predicate, InitialValue &&initialValue){
 	return initialized_fold_left_factory<BinaryPredicate, InitialValue>(
 		std::forward<BinaryPredicate>(predicate),
 		std::forward<InitialValue>(initialValue)
-	);
-}
-
-template<class Enumerable, class BinaryPredicate, class InitialValue>
-initialized_fold_left<Enumerable, BinaryPredicate, InitialValue>
-operator|(
-	Enumerable &&enumerable,
-   	initialized_fold_left_factory<BinaryPredicate, InitialValue> &&factory
-){
-	return std::forward<initialized_fold_left_factory<BinaryPredicate, InitialValue>>(factory).create(
-		std::forward<Enumerable>(enumerable)
 	);
 }
 

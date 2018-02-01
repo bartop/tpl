@@ -5,6 +5,8 @@
 #include "meta/is_associative.hpp"
 #include "meta/enumerable_traits.hpp"
 
+#include "../common/composition_operator.hpp"
+
 #include <iterator>
 #include <set>
 
@@ -79,9 +81,9 @@ public:
 		m_comparePredicate(std::forward<ComparePredicate>(comparePredicate)){}
 
 	template<class Enumerable>
-	sorted_sequence<Enumerable, ComparePredicate>
+	auto
 	create(Enumerable &&enumerable) const & {
-		return sorted_sequence<Enumerable, ComparePredicate>(
+		return sorted_sequence<Enumerable, const ComparePredicate &>(
 			std::forward<Enumerable>(enumerable),
 			m_comparePredicate
 		);
@@ -104,17 +106,6 @@ template<class ComparePredicate>
 compare_factory<ComparePredicate>
 sort(ComparePredicate &&comparePredicate){
 	return compare_factory<ComparePredicate>(std::forward<ComparePredicate>(comparePredicate));
-}
-
-template<class Enumerable, class ComparePredicate>
-sorted_sequence<Enumerable, ComparePredicate>
-operator|(
-	Enumerable &&enumerable,
-   	compare_factory<ComparePredicate> &&factory
-){
-	return std::forward<compare_factory<ComparePredicate>>(factory).create(
-		std::forward<Enumerable>(enumerable)
-	);
 }
 
 }
