@@ -34,10 +34,10 @@ public:
 
 	transforming_iterator(
 		SubIterator subIterator,
-		Predicate transformPredicate
+		const Predicate &transformPredicate
 	) :
 		m_subIterator(std::move(subIterator)),
-		m_transformPredicate(std::move(transformPredicate)) {}
+		m_transformPredicate(transformPredicate) {}
 
 	transforming_iterator &
 	operator++() {
@@ -62,7 +62,7 @@ public:
 
 private:
 	SubIterator m_subIterator;
-	Predicate m_transformPredicate;
+	const Predicate &m_transformPredicate;
 };
 
 

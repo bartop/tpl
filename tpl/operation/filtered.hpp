@@ -30,11 +30,11 @@ public:
 	filtering_iterator(
 		SubIterator subIterator,
 		SubIterator endIterator,
-		FilterPredicate filterPredicate
+		const FilterPredicate &filterPredicate
 	) :
 		m_subIterator(std::find_if(subIterator, endIterator, filterPredicate)),
 		m_endIterator(std::move(endIterator)),
-		m_filterPredicate(std::move(filterPredicate)) {}
+		m_filterPredicate(filterPredicate) {}
 
 	filtering_iterator &
 	operator++() {
@@ -60,7 +60,7 @@ public:
 private:
 	SubIterator m_subIterator;
 	SubIterator m_endIterator;
-	FilterPredicate m_filterPredicate;
+	const FilterPredicate &m_filterPredicate;
 };
 
 template<class Enumerable, class FilterPredicate>
