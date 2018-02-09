@@ -5,7 +5,7 @@
 #include "meta/is_associative.hpp"
 #include "meta/enumerable_traits.hpp"
 
-#include "../common/composition_operator.hpp"
+#include "../common/composite_factory.hpp"
 
 #include <iterator>
 #include <set>
@@ -29,11 +29,7 @@ public:
 		m_sorted(std::forward<ComparePredicate>(comparePredicate)),
 		m_enumerable(std::forward<Enumerable>(enumerable)){ }
 
-	void
-	swap(sorted_sequence &other){
-		std::swap(m_enumerable, other.m_enumerable);
-		std::swap(m_sorted, other.m_sorted);
-	}
+	sorted_sequence &operator=(sorted_sequence &) = delete;
 
 	iterator
 	begin() {
@@ -74,6 +70,15 @@ private:
 	Enumerable m_enumerable;
 };
 
+template<class Enumerable, class Predicate>
+auto
+make_sorted(Enumerable &&enumerable, Predicate &&predicate){
+	return sorted_sequence<Enumerable, Predicate>(
+		std::forward<Enumerable>(enumerable),
+		std::forward<Predicate>(predicate)
+	);
+}
+
 template<class ComparePredicate>
 class compare_factory {
 public:
@@ -83,21 +88,20 @@ public:
 	template<class Enumerable>
 	auto
 	create(Enumerable &&enumerable) const & {
-		return sorted_sequence<Enumerable, const ComparePredicate &>(
+		return make_sorted(
 			std::forward<Enumerable>(enumerable),
 			m_comparePredicate
 		);
 	}
 
 	template<class Enumerable>
-	sorted_sequence<Enumerable, ComparePredicate>
+	auto
 	create(Enumerable &&enumerable) && {
-		return sorted_sequence<Enumerable, ComparePredicate>(
+		return make_sorted(
 			std::forward<Enumerable>(enumerable),
 			std::forward<ComparePredicate>(m_comparePredicate)
 		);
 	}
-
 private:
 	ComparePredicate m_comparePredicate;
 };
@@ -106,6 +110,48 @@ template<class ComparePredicate>
 compare_factory<ComparePredicate>
 sort(ComparePredicate &&comparePredicate){
 	return compare_factory<ComparePredicate>(std::forward<ComparePredicate>(comparePredicate));
+}
+
+template<
+	class Enumerable,
+   	class ComparePredicate,
+   	class = typename std::enable_if<meta::is_enumerable<std::decay_t<Enumerable>>::value>::type
+>
+sorted_sequence<Enumerable, ComparePredicate>
+operator|(Enumerable &&enumerable, const compare_factory<ComparePredicate> &factory) {
+	return factory.create(
+		std::forward<Enumerable>(enumerable)
+	);
+}
+
+template<
+	class Enumerable,
+   	class ComparePredicate,
+   	class = typename std::enable_if<meta::is_enumerable<std::decay_t<Enumerable>>::value>::type
+>
+sorted_sequence<Enumerable, ComparePredicate>
+operator|(Enumerable &&enumerable, compare_factory<ComparePredicate> &&factory){
+	return std::move(factory).create(
+		std::forward<Enumerable>(enumerable)
+	);
+}
+
+template<class Factory, class ComparePredicate>
+auto
+operator|(const compare_factory<ComparePredicate> &factory, Factory &&other){
+	return make_composite(
+		factory,
+	   	std::forward<Factory>(other)
+	);
+}
+
+template<class Factory, class ComparePredicate>
+auto
+operator|(compare_factory<ComparePredicate> &&factory, Factory &&other){
+	return make_composite(
+		std::move(factory),
+	   	std::forward<Factory>(other)
+	);
 }
 
 }

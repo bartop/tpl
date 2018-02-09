@@ -7,7 +7,7 @@
 
 #include "../detail/iterator_base.hpp"
 
-#include "../common/composition_operator.hpp"
+#include "../common/composite_factory.hpp"
 
 #include <iterator>
 #include <algorithm>
@@ -54,11 +54,6 @@ public:
 		return this->m_subIterator == other.m_subIterator;
 	}
 
-	void
-	swap(mapped_values_iterator &filteringIterator) {
-		std::swap(this->m_subIterator, filteringIterator.m_subIterator);
-	}
-
 private:
 	SubIterator m_subIterator;
 };
@@ -77,11 +72,6 @@ public:
 		Enumerable &&enumerable
 	) :
 		m_enumerable(std::forward<Enumerable>(enumerable)) { }
-
-	void
-	swap(mapped_values_sequence &other){
-		std::swap(m_enumerable, other.m_enumerable);
-	}
 
 	iterator
 	begin() {
@@ -116,5 +106,22 @@ public:
 		);
 	}
 } mapped_values;
+
+template<class Enumerable>
+auto
+operator|(Enumerable &&enumerable, const mapped_values_factory &factory){
+	return factory.create(
+		std::forward<Enumerable>(enumerable)
+	);
+}
+
+template<class Factory>
+auto
+operator|(const mapped_values_factory &factory, Factory &&other){
+	return make_composite(
+		factory,
+	   	std::forward<Factory>(other)
+	);
+}
 
 }

@@ -8,7 +8,7 @@
 #include "../detail/pointer_proxy.hpp"
 #include "../detail/iterator_base.hpp"
 
-#include "../common/composition_operator.hpp"
+#include "../common/composite_factory.hpp"
 
 #include <iterator>
 #include <algorithm>
@@ -61,11 +61,6 @@ public:
 			this->m_subIterator2 == other.m_subIterator2;
 	}
 
-	void
-	swap(zipped_iterator &zipingIterator) {
-		std::swap(this->m_subIterator1, zipingIterator.m_subIterator1);
-		std::swap(this->m_subIterator2, zipingIterator.m_subIterator2);
-	}
 private:
 	SubIterator1 m_subIterator1;
 	SubIterator2 m_subIterator2;
@@ -96,12 +91,6 @@ public:
 	) :
 		m_enumerable1(std::forward<Enumerable1>(enumerable1)),
 		m_enumerable2(std::forward<Enumerable2>(enumerable2)){}
-
-	void
-	swap(ziped_sequence &other){
-		std::swap(m_enumerable1, other.m_enumerable1);
-		std::swap(m_enumerable2, other.m_enumerable2);
-	}
 
 	iterator
 	begin() {
@@ -139,6 +128,15 @@ private:
 	Enumerable2 m_enumerable2;
 };
 
+template<class Enumerable1, class Enumerable2>
+auto
+make_zipped(Enumerable1 &&enumerable1, Enumerable2 &&enumerable2){
+	return ziped_sequence<Enumerable1, Enumerable2>(
+		std::forward<Enumerable1>(enumerable1),
+	   	std::forward<Enumerable2>(enumerable2)
+	);
+}
+
 template<class Enumerable>
 class zipped_enumerable_factory {
 public:
@@ -146,23 +144,22 @@ public:
 		m_enumerable(std::forward<Enumerable>(enumerable)){}
 
 	template<class Enumerable2>
-	ziped_sequence<Enumerable, Enumerable2>
+	auto
 	create(Enumerable2 &&enumerable) const & {
-		return ziped_sequence<const Enumerable &, Enumerable2>(
+		return make_zipped(
 			std::forward<Enumerable2>(enumerable),
 			m_enumerable
 		);
 	}
 
 	template<class Enumerable2>
-	ziped_sequence<Enumerable, Enumerable2>
+	auto
 	create(Enumerable2 &&enumerable) && {
-		return ziped_sequence<Enumerable, Enumerable2>(
+		return make_zipped(
 			std::forward<Enumerable2>(enumerable),
 			std::forward<Enumerable>(m_enumerable)
 		);
 	}
-
 private:
 	Enumerable m_enumerable;
 };
@@ -171,6 +168,40 @@ template<class Enumerable>
 zipped_enumerable_factory<Enumerable>
 zip(Enumerable &&enumerable){
 	return zipped_enumerable_factory<Enumerable>(std::forward<Enumerable>(enumerable));
+}
+
+template<class Enumerable, class Enumerable2>
+auto
+operator|(Enumerable &&enumerable, const zipped_enumerable_factory<Enumerable2> &factory){
+	return factory.create(
+		std::forward<Enumerable>(enumerable)
+	);
+}
+
+template<class Enumerable, class Enumerable2>
+auto
+operator|(Enumerable &&enumerable, zipped_enumerable_factory<Enumerable2> &&factory){
+	return std::forward<zipped_enumerable_factory<Enumerable2>>(factory).create(
+		std::forward<Enumerable>(enumerable)
+	);
+}
+
+template<class Factory, class Enumerable2>
+auto
+operator|(const zipped_enumerable_factory<Enumerable2> &factory, Factory &&other){
+	return make_composite(
+		factory,
+	   	std::forward<Factory>(other)
+	);
+}
+
+template<class Factory, class Enumerable2>
+auto
+operator|(zipped_enumerable_factory<Enumerable2> &&factory, Factory &&other){
+	return make_composite(
+		std::forward<zipped_enumerable_factory<Enumerable2>>(factory),
+	   	std::forward<Factory>(other)
+	);
 }
 
 }
