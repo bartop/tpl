@@ -83,14 +83,14 @@ template<class Comparison>
 class compare_factory {
 public:
 	explicit compare_factory(Comparison &&compareComparison) :
-		m_compareComparison(std::forward<Comparison>(compareComparison)){}
+		m_comparison(std::forward<Comparison>(compareComparison)){}
 
 	template<class Enumerable>
 	sorted_sequence<Enumerable, const Comparison &>
 	create(Enumerable &&enumerable) const & {
 		return make_sorted(
 			std::forward<Enumerable>(enumerable),
-			m_compareComparison
+			m_comparison
 		);
 	}
 
@@ -99,11 +99,11 @@ public:
 	create(Enumerable &&enumerable) && {
 		return make_sorted(
 			std::forward<Enumerable>(enumerable),
-			std::forward<Comparison>(m_compareComparison)
+			std::forward<Comparison>(m_comparison)
 		);
 	}
 private:
-	Comparison m_compareComparison;
+	Comparison m_comparison;
 };
 
 template<class Comparison>
