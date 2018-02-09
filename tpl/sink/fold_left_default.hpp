@@ -8,7 +8,16 @@
 
 namespace tpl{
 
-template<class Enumerable, class BinaryPredicate>
+template<
+	class Enumerable,
+	class BinaryPredicate,
+   	class ConversionType = decltype(
+		std::declval<BinaryPredicate>()(
+		   	std::declval<typename meta::enumerable_traits<Enumerable>::value_type>(),
+		   	std::declval<typename meta::enumerable_traits<Enumerable>::value_type>()
+		)
+	)
+>
 class default_fold_left {
 public:
 	default_fold_left(
@@ -18,12 +27,7 @@ public:
 		m_enumerable(std::forward<Enumerable>(enumerable)),
 		m_predicate(std::forward<BinaryPredicate>(predicate)) {}
 
-	using conversion_type = decltype(
-		std::declval<BinaryPredicate>()(
-		   	std::declval<typename meta::enumerable_traits<Enumerable>::value_type>() ,
-		   	std::declval<typename meta::enumerable_traits<Enumerable>::value_type>()
-		)
-	);
+	using conversion_type = ConversionType;
 
 	operator conversion_type() const {
 		return std::accumulate(
