@@ -140,7 +140,7 @@ public:
 
 
 template<class Enumerable>
-auto
+flattened_sequence<Enumerable>
 operator|(Enumerable &&enumerable, const flatten_factory &factory){
 	return factory.create(
 		std::forward<Enumerable>(enumerable)
@@ -148,7 +148,7 @@ operator|(Enumerable &&enumerable, const flatten_factory &factory){
 }
 
 template<class Factory>
-auto
+composite_factory<const flatten_factory &, Factory>
 operator|(const flatten_factory &factory, Factory &&other){
 	return make_composite(std::move(factory), std::forward<Factory>(other));
 }

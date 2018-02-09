@@ -35,7 +35,7 @@ private:
 };
 
 template<class Enumerable, class Predicate>
-auto
+count_compliant<Enumerable, Predicate>
 make_count(Enumerable &&enumerable, Predicate &&predicate){
 	return count_compliant<Enumerable, Predicate>(
 		std::forward<Enumerable>(enumerable),
@@ -50,7 +50,7 @@ public:
 		m_logicalPredicate(std::forward<LogicalPredicate>(logicalPredicate)){}
 
 	template<class Enumerable>
-	count_compliant<Enumerable, LogicalPredicate>
+	count_compliant<Enumerable, const LogicalPredicate &>
 	create(Enumerable &&enumerable) const & {
 		return make_count(
 			std::forward<Enumerable>(enumerable),
@@ -83,19 +83,22 @@ template<
 	class LogicalPredicate,
    	class = typename std::enable_if<meta::is_enumerable<std::decay_t<Enumerable>>::value>::type
 >
-auto
+	count_compliant<Enumerable, LogicalPredicate>
 operator|(Enumerable &&enumerable, count_factory<LogicalPredicate> &&factory){
 	return std::forward<count_factory<LogicalPredicate>>(factory).create(
 		std::forward<Enumerable>(enumerable)
 	);
 }
 
-template<class Factory, class LogicalPredicate>
-auto
-operator|(count_factory<LogicalPredicate> &&factory, Factory &&other){
-	return make_composite(
-		std::forward<count_factory<LogicalPredicate>>(factory),
-	   	std::forward<Factory>(other)
+template<
+	class Enumerable,
+	class LogicalPredicate,
+   	class = typename std::enable_if<meta::is_enumerable<std::decay_t<Enumerable>>::value>::type
+>
+count_compliant<Enumerable, const LogicalPredicate &>
+operator|(Enumerable &&enumerable, const count_factory<LogicalPredicate> &factory){
+	return factory.create(
+		std::forward<Enumerable>(enumerable)
 	);
 }
 

@@ -28,7 +28,7 @@ private:
 
 
 template<class Enumerable, class Predicate>
-auto
+true_for_all<Enumerable, Predicate>
 make_true_for_all(Enumerable &&enumerable, Predicate &&predicate){
 	return true_for_all<Enumerable, Predicate>(
 		std::forward<Enumerable>(enumerable),
@@ -44,7 +44,7 @@ public:
 		m_logicalPredicate(std::forward<LogicalPredicate>(logicalPredicate)){}
 
 	template<class Enumerable>
-	auto
+	true_for_all<Enumerable, const LogicalPredicate &>
 	create(Enumerable &&enumerable) const & {
 		return make_true_for_all(
 			std::forward<Enumerable>(enumerable),
@@ -53,7 +53,7 @@ public:
 	}
 
 	template<class Enumerable>
-	auto
+	true_for_all<Enumerable, LogicalPredicate>
 	create(Enumerable &&enumerable) && {
 		return make_true_for_all(
 			std::forward<Enumerable>(enumerable),
@@ -77,19 +77,22 @@ template<
 	class LogicalPredicate,
    	class = typename std::enable_if<meta::is_enumerable<std::decay_t<Enumerable>>::value>::type
 >
-auto
-operator|(Enumerable &&enumerable, true_for_all_factory<LogicalPredicate> &&factory){
-	return std::forward<true_for_all_factory<LogicalPredicate>>(factory).create(
+true_for_all<Enumerable, const LogicalPredicate &>
+operator|(Enumerable &&enumerable, const true_for_all_factory<LogicalPredicate> &factory){
+	return factory.create(
 		std::forward<Enumerable>(enumerable)
 	);
 }
 
-template<class Factory, class LogicalPredicate>
-auto
-operator|(true_for_all_factory<LogicalPredicate> &&factory, Factory &&other){
-	return make_composite(
-		std::forward<true_for_all_factory<LogicalPredicate>>(factory),
-	   	std::forward<Factory>(other)
+template<
+	class Enumerable,
+	class LogicalPredicate,
+   	class = typename std::enable_if<meta::is_enumerable<std::decay_t<Enumerable>>::value>::type
+>
+true_for_all<Enumerable, LogicalPredicate>
+operator|(Enumerable &&enumerable, true_for_all_factory<LogicalPredicate> &&factory){
+	return std::forward<true_for_all_factory<LogicalPredicate>>(factory).create(
+		std::forward<Enumerable>(enumerable)
 	);
 }
 
