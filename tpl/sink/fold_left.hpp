@@ -1,5 +1,5 @@
 
-#include "../common/composition_operator.hpp"
+#include "../common/composite_factory.hpp"
 
 #ifndef _MSC_VER
 #include "fold_left_initialized.hpp"
@@ -10,6 +10,15 @@
 #endif
 
 namespace tpl{
+
+template<class Enumerable, class Predicate>
+auto
+make_fold_left(Enumerable &&enumerable, Predicate &&predicate){
+	return default_fold_left<Enumerable, Predicate>(
+		std::forward<Enumerable>(enumerable),
+		std::forward<Predicate>(predicate)
+	);
+}
 
 template<class BinaryPredicate>
 class fold_left_factory {
@@ -22,7 +31,7 @@ public:
 	template<class Enumerable>
 	default_fold_left<Enumerable, BinaryPredicate>
 	create(Enumerable &&enumerable) const & {
-		return default_fold_left<Enumerable, const BinaryPredicate &>(
+		return make_fold_left(
 			std::forward<Enumerable>(enumerable),
 			m_predicate
 		);
@@ -31,7 +40,7 @@ public:
 	template<class Enumerable>
 	default_fold_left<Enumerable, BinaryPredicate>
 	create(Enumerable &&enumerable) && {
-		return default_fold_left<Enumerable, BinaryPredicate>(
+		return make_fold_left(
 			std::forward<Enumerable>(enumerable),
 			std::forward<BinaryPredicate>(m_predicate)
 		);
@@ -49,6 +58,37 @@ fold_left(BinaryPredicate &&predicate){
 	);
 }
 
+template<
+	class Enumerable,
+	class BinaryPredicate,
+   	class = typename std::enable_if<meta::is_enumerable<std::decay_t<Enumerable>>::value>::type
+>
+auto
+operator|(Enumerable &&enumerable, fold_left_factory<BinaryPredicate> &&factory){
+	return std::forward<fold_left_factory<BinaryPredicate>>(factory).create(
+		std::forward<Enumerable>(enumerable)
+	);
+}
+
+template<class Factory, class BinaryPredicate>
+auto
+operator|(fold_left_factory<BinaryPredicate> &&factory, Factory &&other){
+	return make_composite(
+		std::forward<fold_left_factory<BinaryPredicate>>(factory),
+	   	std::forward<Factory>(other)
+	);
+}
+
+template<class Enumerable, class Predicate, class InitialValue>
+auto
+make_initialized_fold_left(Enumerable &&enumerable, Predicate &&predicate, InitialValue &&init){
+	return initialized_fold_left<Enumerable, Predicate, InitialValue>(
+		std::forward<Enumerable>(enumerable),
+		std::forward<Predicate>(predicate),
+		std::forward<InitialValue>(init)
+	);
+}
+
 template<class BinaryPredicate, class InitialValue>
 class initialized_fold_left_factory {
 public:
@@ -61,19 +101,19 @@ public:
 
 
 	template<class Enumerable>
-	initialized_fold_left<Enumerable, BinaryPredicate, InitialValue>
+	auto
 	create(Enumerable &&enumerable) const & {
-		return initialized_fold_left<Enumerable, const BinaryPredicate &, const InitialValue &>(
+		return make_initialized_fold_left(
 			std::forward<Enumerable>(enumerable),
-			std::forward<BinaryPredicate>(m_predicate),
+			m_predicate,
 			m_initialValue
 		);
 	}
 
 	template<class Enumerable>
-	initialized_fold_left<Enumerable, BinaryPredicate, InitialValue>
+	auto
 	create(Enumerable &&enumerable) && {
-		return initialized_fold_left<Enumerable, BinaryPredicate, InitialValue>(
+		return make_initialized_fold_left(
 			std::forward<Enumerable>(enumerable),
 			std::forward<BinaryPredicate>(m_predicate),
 			std::forward<InitialValue>(m_initialValue)
@@ -90,6 +130,28 @@ fold_left(BinaryPredicate &&predicate, InitialValue &&initialValue){
 	return initialized_fold_left_factory<BinaryPredicate, InitialValue>(
 		std::forward<BinaryPredicate>(predicate),
 		std::forward<InitialValue>(initialValue)
+	);
+}
+
+template<
+	class Enumerable,
+	class BinaryPredicate,
+	class InitialValue,
+   	class = typename std::enable_if<meta::is_enumerable<std::decay_t<Enumerable>>::value>::type
+>
+auto
+operator|(Enumerable &&enumerable, initialized_fold_left_factory<BinaryPredicate, InitialValue> &&factory){
+	return std::forward<initialized_fold_left_factory<BinaryPredicate, InitialValue>>(factory).create(
+		std::forward<Enumerable>(enumerable)
+	);
+}
+
+template<class Factory, class BinaryPredicate, class InitialValue>
+auto
+operator|(initialized_fold_left_factory<BinaryPredicate, InitialValue> &&factory, Factory &&other){
+	return make_composite(
+		std::forward<initialized_fold_left_factory<BinaryPredicate, InitialValue>>(factory),
+	   	std::forward<Factory>(other)
 	);
 }
 

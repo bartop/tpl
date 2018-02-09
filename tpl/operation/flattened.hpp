@@ -7,7 +7,7 @@
 
 #include "../detail/iterator_base.hpp"
 
-#include "../common/composition_operator.hpp"
+#include "../common/composite_factory.hpp"
 
 #include <iterator>
 #include <algorithm>
@@ -82,12 +82,6 @@ public:
 		return this->m_outerIterator == other.m_outerIterator;
 	}
 
-	void swap(flattening_iterator &filteringIterator) {
-		std::swap(this->m_outerIterator, filteringIterator.m_outerIterator);
-		std::swap(this->m_outerEnd, filteringIterator.m_outerEnd);
-		std::swap(this->m_innerIterator, filteringIterator.m_innerIterator);
-	}
-
 private:
 	OuterIterator m_outerIterator;
 	OuterIterator m_outerEnd;
@@ -109,11 +103,6 @@ public:
 		Enumerable &&enumerable
 	) :
 		m_enumerable(std::forward<Enumerable>(enumerable)) { }
-
-	void
-	swap(flattened_sequence &other){
-		std::swap(m_enumerable, other.m_enumerable);
-	}
 
 	iterator
 	begin() {
@@ -148,5 +137,20 @@ public:
 		);
 	}
 } flatten;
+
+
+template<class Enumerable>
+auto
+operator|(Enumerable &&enumerable, const flatten_factory &factory){
+	return factory.create(
+		std::forward<Enumerable>(enumerable)
+	);
+}
+
+template<class Factory>
+auto
+operator|(const flatten_factory &factory, Factory &&other){
+	return make_composite(std::move(factory), std::forward<Factory>(other));
+}
 
 }

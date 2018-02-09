@@ -5,7 +5,7 @@
 #include "../meta/is_associative.hpp"
 #include "../meta/enumerable_traits.hpp"
 
-#include "../common/composition_operator.hpp"
+#include "../common/composite_factory.hpp"
 
 #include <iterator>
 #include <algorithm>
@@ -27,12 +27,6 @@ public:
 	) :
 		m_enumerable(std::forward<Enumerable>(enumerable)),
 		m_toTake(toTake) {}
-
-	void
-	swap(taken_sequence &other){
-		std::swap(m_enumerable, other.m_enumerable);
-		std::swap(m_toTake, other.m_toTake);
-	}
 
 	iterator
 	begin() {
@@ -83,6 +77,40 @@ private:
 take_factory
 take(unsigned toTake){
 	return take_factory(toTake);
+}
+
+template<class Enumerable>
+auto
+operator|(Enumerable &&enumerable, const take_factory &factory){
+	return factory.create(
+		std::forward<Enumerable>(enumerable)
+	);
+}
+
+template<class Factory>
+auto
+operator|(const take_factory &factory, Factory &&other){
+	return make_composite(
+		factory,
+	   	std::forward<Factory>(other)
+	);
+}
+
+template<class Enumerable>
+auto
+operator|(Enumerable &&enumerable, take_factory &&factory){
+	return std::move(factory).create(
+		std::forward<Enumerable>(enumerable)
+	);
+}
+
+template<class Factory>
+auto
+operator|(take_factory &&factory, Factory &&other){
+	return make_composite(
+		std::move(factory),
+	   	std::forward<Factory>(other)
+	);
 }
 
 }

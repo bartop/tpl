@@ -3,7 +3,7 @@
 
 #include <iterator>
 
-#include "../common/composition_operator.hpp"
+#include "../common/composite_factory.hpp"
 
 namespace tpl{
 
@@ -34,6 +34,15 @@ private:
 	LogicalPredicate m_logicalPredicate;
 };
 
+template<class Enumerable, class Predicate>
+auto
+make_count(Enumerable &&enumerable, Predicate &&predicate){
+	return count_compliant<Enumerable, Predicate>(
+		std::forward<Enumerable>(enumerable),
+		std::forward<Predicate>(predicate)
+	);
+}
+
 template<class LogicalPredicate>
 class count_factory {
 public:
@@ -43,7 +52,7 @@ public:
 	template<class Enumerable>
 	count_compliant<Enumerable, LogicalPredicate>
 	create(Enumerable &&enumerable) const & {
-		return count_compliant<Enumerable, const LogicalPredicate &>(
+		return make_count(
 			std::forward<Enumerable>(enumerable),
 			m_logicalPredicate
 		);
@@ -52,7 +61,7 @@ public:
 	template<class Enumerable>
 	count_compliant<Enumerable, LogicalPredicate>
 	create(Enumerable &&enumerable) && {
-		return count_compliant<Enumerable, LogicalPredicate>(
+		return make_count(
 			std::forward<Enumerable>(enumerable),
 			std::forward<LogicalPredicate>(m_logicalPredicate)
 		);
@@ -66,6 +75,27 @@ count_factory<LogicalPredicate>
 count(LogicalPredicate &&logicalPredicate){
 	return count_factory<LogicalPredicate>(
 		std::forward<LogicalPredicate>(logicalPredicate)
+	);
+}
+
+template<
+	class Enumerable,
+	class LogicalPredicate,
+   	class = typename std::enable_if<meta::is_enumerable<std::decay_t<Enumerable>>::value>::type
+>
+auto
+operator|(Enumerable &&enumerable, count_factory<LogicalPredicate> &&factory){
+	return std::forward<count_factory<LogicalPredicate>>(factory).create(
+		std::forward<Enumerable>(enumerable)
+	);
+}
+
+template<class Factory, class LogicalPredicate>
+auto
+operator|(count_factory<LogicalPredicate> &&factory, Factory &&other){
+	return make_composite(
+		std::forward<count_factory<LogicalPredicate>>(factory),
+	   	std::forward<Factory>(other)
 	);
 }
 

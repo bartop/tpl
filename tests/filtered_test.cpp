@@ -29,7 +29,7 @@ TEST_CASE( "Vector filtering", "[filtered_test]" ) {
 TEST_CASE( "C array filtering", "[filtered_test]" ) {
 	using namespace std;
 	using namespace tpl;
-	int v[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+	const int v[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 	SECTION(" >= 1"){
 		const auto vf = (v | filter([](const auto &i){ return i >= 1; }));
 		vector<int> result(vf.begin(), vf.end());

@@ -7,7 +7,7 @@
 
 #include "../detail/iterator_base.hpp"
 
-#include "../common/composition_operator.hpp"
+#include "../common/composite_factory.hpp"
 
 #include <iterator>
 #include <algorithm>
@@ -29,12 +29,6 @@ public:
 	) :
 		m_enumerable(std::forward<Enumerable>(enumerable)),
 		m_toDrop(toDrop) {}
-
-	void
-	swap(dropping_sequence &other){
-		std::swap(m_enumerable, other.m_enumerable);
-		std::swap(m_toDrop, other.m_toDrop);
-	}
 
 	iterator
 	begin() {
@@ -85,6 +79,30 @@ private:
 drop_factory
 drop(unsigned toDrop){
 	return drop_factory(toDrop);
+}
+
+template<class Enumerable>
+auto
+operator|(Enumerable &&enumerable, const drop_factory &factory){
+	return factory.create(std::forward<Enumerable>(enumerable));
+}
+
+template<class Enumerable>
+auto
+operator|(Enumerable &&enumerable, drop_factory &&factory){
+	return std::move(factory).create(std::forward<Enumerable>(enumerable));
+}
+
+template<class Factory>
+auto
+operator|(const drop_factory &factory, Factory &&other){
+	return make_composite(factory, std::forward<Factory>(other));
+}
+
+template<class Factory>
+auto
+operator|(drop_factory &&factory, Factory &&other){
+	return make_composite(std::move(factory), std::forward<Factory>(other));
 }
 
 }

@@ -3,7 +3,7 @@
 
 #include <iterator>
 
-#include "../common/composition_operator.hpp"
+#include "../common/composite_factory.hpp"
 
 namespace tpl{
 
@@ -39,6 +39,15 @@ private:
 	LogicalPredicate m_logicalPredicate;
 };
 
+template<class Enumerable, class Predicate>
+auto
+make_true_for_any(Enumerable &&enumerable, Predicate &&predicate){
+	return true_for_any<Enumerable, Predicate>(
+		std::forward<Enumerable>(enumerable),
+		std::forward<Predicate>(predicate)
+	);
+}
+
 template<class LogicalPredicate>
 class true_for_any_factory {
 public:
@@ -46,18 +55,18 @@ public:
 		m_logicalPredicate(std::forward<LogicalPredicate>(logicalPredicate)){}
 
 	template<class Enumerable>
-	true_for_any<Enumerable, LogicalPredicate>
+	auto
 	create(Enumerable &&enumerable) const & {
-		return true_for_any<Enumerable, const LogicalPredicate &>(
+		return make_true_for_any(
 			std::forward<Enumerable>(enumerable),
 			m_logicalPredicate
 		);
 	}
 
 	template<class Enumerable>
-	true_for_any<Enumerable, LogicalPredicate>
+	auto
 	create(Enumerable &&enumerable) && {
-		return true_for_any<Enumerable, LogicalPredicate>(
+		return make_true_for_any(
 			std::forward<Enumerable>(enumerable),
 			std::forward<LogicalPredicate>(m_logicalPredicate)
 		);
@@ -72,6 +81,27 @@ true_for_any_factory<LogicalPredicate>
 any(LogicalPredicate &&logicalPredicate){
 	return true_for_any_factory<LogicalPredicate>(
 		std::forward<LogicalPredicate>(logicalPredicate)
+	);
+}
+
+template<
+	class Enumerable,
+	class LogicalPredicate,
+   	class = typename std::enable_if<meta::is_enumerable<std::decay_t<Enumerable>>::value>::type
+>
+auto
+operator|(Enumerable &&enumerable, true_for_any_factory<LogicalPredicate> &&factory){
+	return std::forward<true_for_any_factory<LogicalPredicate>>(factory).create(
+		std::forward<Enumerable>(enumerable)
+	);
+}
+
+template<class Factory, class LogicalPredicate>
+auto
+operator|(true_for_any_factory<LogicalPredicate> &&factory, Factory &&other){
+	return make_composite(
+		std::forward<true_for_any_factory<LogicalPredicate>>(factory),
+	   	std::forward<Factory>(other)
 	);
 }
 
