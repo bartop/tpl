@@ -15,13 +15,13 @@
 
 namespace tpl{
 
-template<class SubIterator, class TransformPredicate>
+template<class SubIterator, class Predicate>
 class transforming_iterator :
-	public detail::iterator_base<transforming_iterator<SubIterator, TransformPredicate>> {
+	public detail::iterator_base<transforming_iterator<SubIterator, Predicate>> {
 public:
 	using sub_traits_t = std::iterator_traits<SubIterator>;
 	using value_type = decltype(
-		std::declval<TransformPredicate>()(
+		std::declval<Predicate>()(
 			std::declval<typename sub_traits_t::value_type>()
 		)
 	);
@@ -34,7 +34,7 @@ public:
 
 	transforming_iterator(
 		SubIterator subIterator,
-		TransformPredicate transformPredicate
+		Predicate transformPredicate
 	) :
 		m_subIterator(std::move(subIterator)),
 		m_transformPredicate(std::move(transformPredicate)) {}
@@ -62,30 +62,30 @@ public:
 
 private:
 	SubIterator m_subIterator;
-	TransformPredicate m_transformPredicate;
+	Predicate m_transformPredicate;
 };
 
 
-template<class Enumerable, class TransformPredicate>
+template<class Enumerable, class Predicate>
 class transformed_sequence :
 	meta::enforce_enumerable<Enumerable> {
 public:
 	using enumerable_traits = meta::enumerable_traits<Enumerable>;
 	using value_type =
 		decltype(
-			std::declval<TransformPredicate>()(
+			std::declval<Predicate>()(
 				std::declval<typename std::remove_reference<Enumerable>::type::value_type>()
 			)
 		);
-	using const_iterator = transforming_iterator<typename enumerable_traits::const_iterator, TransformPredicate>;
-	using iterator = transforming_iterator<typename enumerable_traits::iterator, TransformPredicate>;
+	using const_iterator = transforming_iterator<typename enumerable_traits::const_iterator, Predicate>;
+	using iterator = transforming_iterator<typename enumerable_traits::iterator, Predicate>;
 
 	transformed_sequence(
 		Enumerable &&enumerable,
-	   	TransformPredicate &&transformPredicate
+	   	Predicate &&transformPredicate
 	) :
 		m_enumerable(std::forward<Enumerable>(enumerable)),
-		m_transformPredicate(std::forward<TransformPredicate>(transformPredicate)){}
+		m_transformPredicate(std::forward<Predicate>(transformPredicate)){}
 
 	iterator
 	begin() {
@@ -109,11 +109,11 @@ public:
 
 private:
 	Enumerable m_enumerable;
-	TransformPredicate m_transformPredicate;
+	Predicate m_transformPredicate;
 };
 
 template<class Enumerable, class Predicate>
-auto
+transformed_sequence<Enumerable, Predicate>
 make_transformed(Enumerable &&enumerable, Predicate &&predicate){
 	return transformed_sequence<Enumerable, Predicate>(
 		std::forward<Enumerable>(enumerable),
@@ -121,14 +121,14 @@ make_transformed(Enumerable &&enumerable, Predicate &&predicate){
 	);
 }
 
-template<class TransformPredicate>
+template<class Predicate>
 class transform_factory {
 public:
-	explicit transform_factory(TransformPredicate &&transformPredicate) :
-		m_transformPredicate(std::forward<TransformPredicate>(transformPredicate)){}
+	explicit transform_factory(Predicate &&transformPredicate) :
+		m_transformPredicate(std::forward<Predicate>(transformPredicate)){}
 
 	template<class Enumerable>
-	auto
+	transformed_sequence<Enumerable, const Predicate &>
 	create(Enumerable &&enumerable) const & {
 		return make_transformed(
 			std::forward<Enumerable>(enumerable),
@@ -137,30 +137,30 @@ public:
 	}
 
 	template<class Enumerable>
-	auto
+	transformed_sequence<Enumerable, Predicate>
 	create(Enumerable &&enumerable) && {
 		return make_transformed(
 			std::forward<Enumerable>(enumerable),
-			std::forward<TransformPredicate>(m_transformPredicate)
+			std::forward<Predicate>(m_transformPredicate)
 		);
 	}
 private:
-	TransformPredicate m_transformPredicate;
+	Predicate m_transformPredicate;
 };
 
-template<class TransformPredicate>
-transform_factory<TransformPredicate>
-transform(TransformPredicate &&transformPredicate){
-	return transform_factory<TransformPredicate>(std::forward<TransformPredicate>(transformPredicate));
+template<class Predicate>
+transform_factory<Predicate>
+transform(Predicate &&transformPredicate){
+	return transform_factory<Predicate>(std::forward<Predicate>(transformPredicate));
 }
 
 template<
 	class Enumerable,
-   	class TransformPredicate,
+   	class Predicate,
    	class = typename std::enable_if<meta::is_enumerable<std::decay_t<Enumerable>>::value>::type
 >
-auto
-operator|(Enumerable &&enumerable, const transform_factory<TransformPredicate> &factory){
+transformed_sequence<Enumerable, Predicate>
+operator|(Enumerable &&enumerable, const transform_factory<Predicate> &factory){
 	return factory.create(
 		std::forward<Enumerable>(enumerable)
 	);
@@ -168,28 +168,28 @@ operator|(Enumerable &&enumerable, const transform_factory<TransformPredicate> &
 
 template<
 	class Enumerable,
-   	class TransformPredicate,
+   	class Predicate,
    	class = typename std::enable_if<meta::is_enumerable<std::decay_t<Enumerable>>::value>::type
 >
-auto
-operator|(Enumerable &&enumerable, transform_factory<TransformPredicate> &&factory){
+transformed_sequence<Enumerable, Predicate>
+operator|(Enumerable &&enumerable, transform_factory<Predicate> &&factory){
 	return std::move(factory).create(
 		std::forward<Enumerable>(enumerable)
 	);
 }
 
-template<class Factory, class TransformPredicate>
-auto
-operator|(const transform_factory<TransformPredicate> &factory, Factory &&other){
+template<class Factory, class Predicate>
+composite_factory<const transform_factory<Predicate> &, Factory>
+operator|(const transform_factory<Predicate> &factory, Factory &&other){
 	return make_composite(
 		factory,
 	   	std::forward<Factory>(other)
 	);
 }
 
-template<class Factory, class TransformPredicate>
-auto
-operator|(transform_factory<TransformPredicate> &&factory, Factory &&other){
+template<class Factory, class Predicate>
+composite_factory<transform_factory<Predicate>, Factory>
+operator|(transform_factory<Predicate> &&factory, Factory &&other){
 	return make_composite(
 		std::move(factory),
 	   	std::forward<Factory>(other)

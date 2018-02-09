@@ -12,21 +12,21 @@
 
 namespace tpl{
 
-template<class Enumerable, class ComparePredicate>
+template<class Enumerable, class Comparison>
 class sorted_sequence :
 	meta::enforce_enumerable<Enumerable> {
 public:
 	using enumerable_traits = meta::enumerable_traits<Enumerable>;
 	using value_type = typename enumerable_traits::value_type;
-	using sorted_t = std::multiset<value_type, ComparePredicate>;
+	using sorted_t = std::multiset<value_type, Comparison>;
 	using const_iterator = typename sorted_t::const_iterator;
 	using iterator = typename sorted_t::iterator;
 
 	sorted_sequence(
 		Enumerable &&enumerable,
-	   	ComparePredicate &&comparePredicate
+	   	Comparison &&compareComparison
 	) :
-		m_sorted(std::forward<ComparePredicate>(comparePredicate)),
+		m_sorted(std::forward<Comparison>(compareComparison)),
 		m_enumerable(std::forward<Enumerable>(enumerable)){ }
 
 	sorted_sequence &operator=(sorted_sequence &) = delete;
@@ -70,55 +70,55 @@ private:
 	Enumerable m_enumerable;
 };
 
-template<class Enumerable, class Predicate>
-auto
-make_sorted(Enumerable &&enumerable, Predicate &&predicate){
-	return sorted_sequence<Enumerable, Predicate>(
+template<class Enumerable, class Comparison>
+sorted_sequence<Enumerable, Comparison>
+make_sorted(Enumerable &&enumerable, Comparison &&predicate){
+	return sorted_sequence<Enumerable, Comparison>(
 		std::forward<Enumerable>(enumerable),
-		std::forward<Predicate>(predicate)
+		std::forward<Comparison>(predicate)
 	);
 }
 
-template<class ComparePredicate>
+template<class Comparison>
 class compare_factory {
 public:
-	explicit compare_factory(ComparePredicate &&comparePredicate) :
-		m_comparePredicate(std::forward<ComparePredicate>(comparePredicate)){}
+	explicit compare_factory(Comparison &&compareComparison) :
+		m_compareComparison(std::forward<Comparison>(compareComparison)){}
 
 	template<class Enumerable>
-	auto
+	sorted_sequence<Enumerable, const Comparison &>
 	create(Enumerable &&enumerable) const & {
 		return make_sorted(
 			std::forward<Enumerable>(enumerable),
-			m_comparePredicate
+			m_compareComparison
 		);
 	}
 
 	template<class Enumerable>
-	auto
+	sorted_sequence<Enumerable, Comparison>
 	create(Enumerable &&enumerable) && {
 		return make_sorted(
 			std::forward<Enumerable>(enumerable),
-			std::forward<ComparePredicate>(m_comparePredicate)
+			std::forward<Comparison>(m_compareComparison)
 		);
 	}
 private:
-	ComparePredicate m_comparePredicate;
+	Comparison m_compareComparison;
 };
 
-template<class ComparePredicate>
-compare_factory<ComparePredicate>
-sort(ComparePredicate &&comparePredicate){
-	return compare_factory<ComparePredicate>(std::forward<ComparePredicate>(comparePredicate));
+template<class Comparison>
+compare_factory<Comparison>
+sort(Comparison &&compareComparison){
+	return compare_factory<Comparison>(std::forward<Comparison>(compareComparison));
 }
 
 template<
 	class Enumerable,
-   	class ComparePredicate,
+   	class Comparison,
    	class = typename std::enable_if<meta::is_enumerable<std::decay_t<Enumerable>>::value>::type
 >
-sorted_sequence<Enumerable, ComparePredicate>
-operator|(Enumerable &&enumerable, const compare_factory<ComparePredicate> &factory) {
+sorted_sequence<Enumerable, Comparison>
+operator|(Enumerable &&enumerable, const compare_factory<Comparison> &factory) {
 	return factory.create(
 		std::forward<Enumerable>(enumerable)
 	);
@@ -126,28 +126,28 @@ operator|(Enumerable &&enumerable, const compare_factory<ComparePredicate> &fact
 
 template<
 	class Enumerable,
-   	class ComparePredicate,
+   	class Comparison,
    	class = typename std::enable_if<meta::is_enumerable<std::decay_t<Enumerable>>::value>::type
 >
-sorted_sequence<Enumerable, ComparePredicate>
-operator|(Enumerable &&enumerable, compare_factory<ComparePredicate> &&factory){
+sorted_sequence<Enumerable, Comparison>
+operator|(Enumerable &&enumerable, compare_factory<Comparison> &&factory){
 	return std::move(factory).create(
 		std::forward<Enumerable>(enumerable)
 	);
 }
 
-template<class Factory, class ComparePredicate>
-auto
-operator|(const compare_factory<ComparePredicate> &factory, Factory &&other){
+template<class Factory, class Comparison>
+composite_factory<const compare_factory<Comparison> &, Factory>
+operator|(const compare_factory<Comparison> &factory, Factory &&other){
 	return make_composite(
 		factory,
 	   	std::forward<Factory>(other)
 	);
 }
 
-template<class Factory, class ComparePredicate>
-auto
-operator|(compare_factory<ComparePredicate> &&factory, Factory &&other){
+template<class Factory, class Comparison>
+composite_factory<compare_factory<Comparison>, Factory>
+operator|(compare_factory<Comparison> &&factory, Factory &&other){
 	return make_composite(
 		std::move(factory),
 	   	std::forward<Factory>(other)

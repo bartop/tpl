@@ -108,7 +108,7 @@ public:
 
 
 template<class Enumerable>
-auto
+keys_sequence<Enumerable>
 operator|(Enumerable &&enumerable, const keys_factory &factory){
 	return factory.create(
 		std::forward<Enumerable>(enumerable)
@@ -116,7 +116,7 @@ operator|(Enumerable &&enumerable, const keys_factory &factory){
 }
 
 template<class Factory>
-auto
+composite_factory<const keys_factory &, Factory>
 operator|(const keys_factory &factory, Factory &&other){
 	return make_composite(std::move(factory), std::forward<Factory>(other));
 }

@@ -129,7 +129,7 @@ private:
 };
 
 template<class Enumerable1, class Enumerable2>
-auto
+ziped_sequence<Enumerable1, Enumerable2>
 make_zipped(Enumerable1 &&enumerable1, Enumerable2 &&enumerable2){
 	return ziped_sequence<Enumerable1, Enumerable2>(
 		std::forward<Enumerable1>(enumerable1),
@@ -144,7 +144,7 @@ public:
 		m_enumerable(std::forward<Enumerable>(enumerable)){}
 
 	template<class Enumerable2>
-	auto
+	ziped_sequence<Enumerable2, const Enumerable &>
 	create(Enumerable2 &&enumerable) const & {
 		return make_zipped(
 			std::forward<Enumerable2>(enumerable),
@@ -153,7 +153,7 @@ public:
 	}
 
 	template<class Enumerable2>
-	auto
+	ziped_sequence<Enumerable2, Enumerable>
 	create(Enumerable2 &&enumerable) && {
 		return make_zipped(
 			std::forward<Enumerable2>(enumerable),
@@ -171,7 +171,7 @@ zip(Enumerable &&enumerable){
 }
 
 template<class Enumerable, class Enumerable2>
-auto
+ziped_sequence<Enumerable2, Enumerable>
 operator|(Enumerable &&enumerable, const zipped_enumerable_factory<Enumerable2> &factory){
 	return factory.create(
 		std::forward<Enumerable>(enumerable)
@@ -179,7 +179,7 @@ operator|(Enumerable &&enumerable, const zipped_enumerable_factory<Enumerable2> 
 }
 
 template<class Enumerable, class Enumerable2>
-auto
+ziped_sequence<Enumerable2, Enumerable>
 operator|(Enumerable &&enumerable, zipped_enumerable_factory<Enumerable2> &&factory){
 	return std::forward<zipped_enumerable_factory<Enumerable2>>(factory).create(
 		std::forward<Enumerable>(enumerable)
@@ -187,7 +187,7 @@ operator|(Enumerable &&enumerable, zipped_enumerable_factory<Enumerable2> &&fact
 }
 
 template<class Factory, class Enumerable2>
-auto
+composite_factory<const zipped_enumerable_factory<Enumerable2> &, Factory>
 operator|(const zipped_enumerable_factory<Enumerable2> &factory, Factory &&other){
 	return make_composite(
 		factory,
@@ -196,7 +196,7 @@ operator|(const zipped_enumerable_factory<Enumerable2> &factory, Factory &&other
 }
 
 template<class Factory, class Enumerable2>
-auto
+composite_factory<zipped_enumerable_factory<Enumerable2>, Factory>
 operator|(zipped_enumerable_factory<Enumerable2> &&factory, Factory &&other){
 	return make_composite(
 		std::forward<zipped_enumerable_factory<Enumerable2>>(factory),

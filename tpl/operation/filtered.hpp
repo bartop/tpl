@@ -120,7 +120,7 @@ private:
 };
 
 template<class Enumerable, class FilterPredicate>
-auto
+filtered_sequence<Enumerable, FilterPredicate>
 make_filtered(Enumerable &&enumerable, FilterPredicate &&predicate){
 	return filtered_sequence<Enumerable, FilterPredicate>(
 		std::forward<Enumerable>(enumerable),
@@ -135,7 +135,7 @@ public:
 		m_filterPredicate(std::forward<FilterPredicate>(filterPredicate)){}
 
 	template<class Enumerable>
-	auto
+	filtered_sequence<Enumerable, const FilterPredicate &>
 	create(Enumerable &&enumerable) const & {
 		return make_filtered(
 			std::forward<Enumerable>(enumerable),
@@ -144,7 +144,7 @@ public:
 	}
 
 	template<class Enumerable>
-	auto
+	filtered_sequence<Enumerable, FilterPredicate>
 	create(Enumerable &&enumerable) && {
 		return make_filtered(
 			std::forward<Enumerable>(enumerable),
@@ -166,7 +166,7 @@ template<
 	class FilterPredicate,
    	class = typename std::enable_if<meta::is_enumerable<Enumerable>::value>::type
 >
-auto
+filtered_sequence<Enumerable, FilterPredicate>
 operator|(Enumerable &&enumerable, const filter_factory<FilterPredicate> &factory){
 	return factory.create(
 		std::forward<Enumerable>(enumerable)
@@ -178,7 +178,7 @@ template<
 	class FilterPredicate,
    	class = typename std::enable_if<meta::is_enumerable<Enumerable>::value>::type
 >
-auto
+filtered_sequence<Enumerable, FilterPredicate>
 operator|(Enumerable &&enumerable, filter_factory<FilterPredicate> &&factory){
 	return std::move(factory).create(
 		std::forward<Enumerable>(enumerable)
@@ -186,13 +186,13 @@ operator|(Enumerable &&enumerable, filter_factory<FilterPredicate> &&factory){
 }
 
 template<class Factory, class FilterPredicate>
-auto
+composite_factory<const filter_factory<FilterPredicate> &, Factory>
 operator|(const filter_factory<FilterPredicate> &factory, Factory &&other){
 	return make_composite(factory, std::forward<Factory>(other));
 }
 
 template<class Factory, class FilterPredicate>
-auto
+composite_factory<filter_factory<FilterPredicate>, Factory>
 operator|(filter_factory<FilterPredicate> &&factory, Factory &&other){
 	return make_composite(std::move(factory), std::forward<Factory>(other));
 }

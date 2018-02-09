@@ -80,7 +80,15 @@ take(unsigned toTake){
 }
 
 template<class Enumerable>
-auto
+taken_sequence<Enumerable>
+operator|(Enumerable &&enumerable, take_factory &&factory){
+	return std::move(factory).create(
+		std::forward<Enumerable>(enumerable)
+	);
+}
+
+template<class Enumerable>
+taken_sequence<Enumerable>
 operator|(Enumerable &&enumerable, const take_factory &factory){
 	return factory.create(
 		std::forward<Enumerable>(enumerable)
@@ -88,7 +96,7 @@ operator|(Enumerable &&enumerable, const take_factory &factory){
 }
 
 template<class Factory>
-auto
+composite_factory<const take_factory &, Factory>
 operator|(const take_factory &factory, Factory &&other){
 	return make_composite(
 		factory,
@@ -96,16 +104,8 @@ operator|(const take_factory &factory, Factory &&other){
 	);
 }
 
-template<class Enumerable>
-auto
-operator|(Enumerable &&enumerable, take_factory &&factory){
-	return std::move(factory).create(
-		std::forward<Enumerable>(enumerable)
-	);
-}
-
 template<class Factory>
-auto
+composite_factory<take_factory, Factory>
 operator|(take_factory &&factory, Factory &&other){
 	return make_composite(
 		std::move(factory),

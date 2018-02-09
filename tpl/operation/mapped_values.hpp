@@ -108,7 +108,7 @@ public:
 } mapped_values;
 
 template<class Enumerable>
-auto
+mapped_values_sequence<Enumerable>
 operator|(Enumerable &&enumerable, const mapped_values_factory &factory){
 	return factory.create(
 		std::forward<Enumerable>(enumerable)
@@ -116,7 +116,7 @@ operator|(Enumerable &&enumerable, const mapped_values_factory &factory){
 }
 
 template<class Factory>
-auto
+composite_factory<const mapped_values_factory &, Factory>
 operator|(const mapped_values_factory &factory, Factory &&other){
 	return make_composite(
 		factory,

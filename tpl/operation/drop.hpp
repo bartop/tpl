@@ -82,25 +82,25 @@ drop(unsigned toDrop){
 }
 
 template<class Enumerable>
-auto
+dropping_sequence<Enumerable>
 operator|(Enumerable &&enumerable, const drop_factory &factory){
 	return factory.create(std::forward<Enumerable>(enumerable));
 }
 
 template<class Enumerable>
-auto
+dropping_sequence<Enumerable>
 operator|(Enumerable &&enumerable, drop_factory &&factory){
 	return std::move(factory).create(std::forward<Enumerable>(enumerable));
 }
 
 template<class Factory>
-auto
+composite_factory<const drop_factory &, Factory>
 operator|(const drop_factory &factory, Factory &&other){
 	return make_composite(factory, std::forward<Factory>(other));
 }
 
 template<class Factory>
-auto
+composite_factory<drop_factory, Factory>
 operator|(drop_factory &&factory, Factory &&other){
 	return make_composite(std::move(factory), std::forward<Factory>(other));
 }

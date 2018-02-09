@@ -53,19 +53,22 @@ template<
 	class OutputIterator,
    	class = typename std::enable_if<meta::is_enumerable<std::decay_t<Enumerable>>::value>::type
 >
-auto
+void
 operator|(Enumerable &&enumerable, copy_to_factory<OutputIterator> &&factory){
-	return std::forward<copy_to_factory<OutputIterator>>(factory).create(
+	std::forward<copy_to_factory<OutputIterator>>(factory).create(
 		std::forward<Enumerable>(enumerable)
 	);
 }
 
-template<class Factory, class OutputIterator>
-auto
-operator|(copy_to_factory<OutputIterator> &&factory, Factory &&other){
-	return make_composite(
-		std::forward<copy_to_factory<OutputIterator>>(factory),
-	   	std::forward<Factory>(other)
+template<
+	class Enumerable,
+	class OutputIterator,
+   	class = typename std::enable_if<meta::is_enumerable<std::decay_t<Enumerable>>::value>::type
+>
+void
+operator|(Enumerable &&enumerable, const copy_to_factory<OutputIterator> &factory){
+	factory.create(
+		std::forward<Enumerable>(enumerable)
 	);
 }
 
