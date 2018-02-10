@@ -33,37 +33,34 @@ public:
 
 	iterator
 	begin() {
-		fillCache();
+		sort();
 		return std::begin(m_sorted);
 	}
 
 	iterator
 	end() {
-		fillCache();
 		return std::end(m_sorted);
 	}
 
 	const_iterator
 	begin() const {
-		fillCache();
+		sort();
 		return std::begin(m_sorted);
 	}
 
 	const_iterator
 	end() const {
-		fillCache();
 		return std::end(m_sorted);
 	}
 
 private:
-	void fillCache() const {
-		if(m_sorted.empty()) {
-			std::copy(
-				std::begin(m_enumerable),
-				std::end(m_enumerable),
-				std::inserter(m_sorted, m_sorted.begin())
-			);
-		}
+	void sort() const {
+		m_sorted.clear();
+		std::copy(
+			std::begin(m_enumerable),
+			std::end(m_enumerable),
+			std::inserter(m_sorted, m_sorted.begin())
+		);
 	}
 
 	mutable sorted_t m_sorted;
