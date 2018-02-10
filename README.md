@@ -90,7 +90,7 @@ int main(){
 }
 ```
 
-### Peparere operations for further use
+### Pepare operations for further use
 ```C++
 #include <tpl.hpp>
 #include <iostream>
