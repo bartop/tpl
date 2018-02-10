@@ -23,7 +23,7 @@ public:
 		const GeneratingFunction &generatingFunction,
 		ValueType initialValue
 	) :
-		m_generatingFunction(std::move(generatingFunction)),
+		m_generatingFunction(generatingFunction),
    		m_currentValue(std::move(initialValue)){}
 
 	generating_iterator &
