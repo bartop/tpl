@@ -14,24 +14,12 @@ public:
 		m_enumerable(std::forward<Enumerable>(enumerable)),
 		m_logicalPredicate(std::forward<LogicalPredicate>(logicalPredicate)){}
 
-	true_for_any &
-	operator=(true_for_any otherAny) {
-		this->swap(otherAny);
-		return *this;
-	}
-
 	operator bool() const {
 		for(const auto &element : m_enumerable) {
 			if(m_logicalPredicate(element))
 				return true;
 		}
 		return false;
-	}
-
-	void
-	swap(true_for_any &other){
-		std::swap(m_enumerable, other.m_enumerable);
-		std::swap(m_logicalPredicate, other.m_logicalPredicate);
 	}
 
 private:

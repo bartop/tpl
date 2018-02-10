@@ -36,13 +36,6 @@ public:
 		return std::accumulate(std::begin(m_enumerable), std::end(m_enumerable), m_initialValue, m_predicate);
 	}
 
-	void
-	swap(initialized_fold_left &other){
-		std::swap(m_enumerable, other.m_enumerable);
-		std::swap(m_predicate, other.m_predicate);
-		std::swap(m_initialValue, other.m_initialValue);
-	}
-
 private:
 	Enumerable m_enumerable;
 	BinaryPredicate m_predicate;

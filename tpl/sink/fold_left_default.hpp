@@ -38,12 +38,6 @@ public:
 		);
 	}
 
-	void
-	swap(default_fold_left &other){
-		std::swap(m_enumerable, other.m_enumerable);
-		std::swap(m_predicate, other.m_predicate);
-	}
-
 private:
 	Enumerable m_enumerable;
 	BinaryPredicate m_predicate;

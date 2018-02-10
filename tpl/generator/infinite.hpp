@@ -43,10 +43,6 @@ public:
 		return false;
 	}
 
-	void swap(infinite_iterator &other) {
-		std::swap(this->m_value, other.m_value);
-	}
-
 private:
 	ValueType m_value;
 };
@@ -62,11 +58,6 @@ public:
 		ValueType &&value
 	) :
 		m_value(std::forward<ValueType>(value)){}
-
-	void
-	swap(infinite_sequence &other){
-		std::swap(m_value, other.m_value);
-	}
 
 	iterator
 	begin() {
