@@ -52,11 +52,6 @@ public:
 		return false;
 	}
 
-	void
-	swap(cycle_iterator &other) {
-		std::swap(this->m_enumerable, other.m_enumerable);
-	}
-
 private:
 	Enumerable m_enumerable;
 	typename enumerable_traits::const_iterator m_currentIterator;
@@ -74,11 +69,6 @@ public:
 		Enumerable &&enumerable
 	) :
 		m_enumerable(std::forward<Enumerable>(enumerable)){}
-
-	void
-	swap(cycle_sequence &other){
-		std::swap(m_enumerable, other.m_enumerable);
-	}
 
 	iterator
 	begin() {

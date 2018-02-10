@@ -23,12 +23,6 @@ public:
 		return i;
 	}
 
-	void
-	swap(count_compliant &other){
-		std::swap(m_enumerable, other.m_enumerable);
-		std::swap(m_logicalPredicate, other.m_logicalPredicate);
-	}
-
 private:
 	Enumerable m_enumerable;
 	LogicalPredicate m_logicalPredicate;
