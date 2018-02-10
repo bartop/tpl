@@ -20,7 +20,7 @@ public:
 	~generating_iterator() noexcept = default;
 
 	generating_iterator(
-		GeneratingFunction generatingFunction,
+		const GeneratingFunction &generatingFunction,
 		ValueType initialValue
 	) :
 		m_generatingFunction(std::move(generatingFunction)),
@@ -47,12 +47,8 @@ public:
 		return false;
 	}
 
-	void swap(generating_iterator &other) {
-		std::swap(this->m_generatingFunction, other.m_generatingFunction);
-	}
-
 private:
-	GeneratingFunction m_generatingFunction;
+	const GeneratingFunction &m_generatingFunction;
 	ValueType m_currentValue;
 };
 
@@ -69,12 +65,6 @@ public:
 	) :
 		m_generatingFunction(std::forward<GeneratingFunction>(generatingFunction)),
 		m_initialValue(std::forward<ValueType>(initialValue)){}
-
-	void
-	swap(generated_sequence &other){
-		std::swap(m_generatingFunction, other.m_generatingFunction);
-		std::swap(m_initialValue, other.m_initialValue);
-	}
 
 	iterator
 	begin() {
