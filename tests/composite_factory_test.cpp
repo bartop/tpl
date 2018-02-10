@@ -3,9 +3,9 @@
 
 #include <vector>
 
-#include <operation/filtered.hpp>
-#include <operation/transformed.hpp>
-#include <operation/sorted.hpp>
+#include <tpl/operator/filtered.hpp>
+#include <tpl/operator/transformed.hpp>
+#include <tpl/operator/sorted.hpp>
 
 using namespace tpl;
 

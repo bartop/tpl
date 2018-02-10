@@ -46,7 +46,7 @@ set(CATCH_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/External/Catch)
 add_library(Catch INTERFACE)
 target_include_directories(Catch INTERFACE ${CATCH_INCLUDE_DIR})
 
-include_directories(${PROJECT_NAME} INTERFACE "${CMAKE_SOURCE_DIR}/tpl")
+include_directories(${PROJECT_NAME} INTERFACE "${CMAKE_SOURCE_DIR}/include")
 include_directories(${CATCH_INCLUDE_DIR})
 
 add_library(${PROJECT_NAME} INTERFACE)
