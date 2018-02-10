@@ -38,7 +38,7 @@ Using ideas from functional languages and some more modern imperative languages 
 For library:
 - C++14 compliant compiler (compilers that work for sure are listed above)
 
-For tests:
+Catch framework is shipped with the library so for test You need:
 - cmake tool
 
 ## Installation
