@@ -38,7 +38,7 @@ Using ideas from functional languages and some more modern imperative languages 
 For library:
 - C++14 compliant compiler (compilers that work for sure are listed above)
 
-Catch framework is shipped with the library so for test You need:
+Catch framework is shipped with the library so for building and running tests You need:
 - cmake tool
 
 ## Installation
@@ -51,7 +51,7 @@ If you want to build the tests You have to do the following:
 - enter main directory of the repository `cd tpl`
 - make directory for build and enter it `mkdir build && cd build`
 - generate files for desired build system using `cmake .. -G <name_of_cmake_generator>`
-
+- (if using makefiles) to run all tests use `ctest`
 ## Sample code
 
 ### Filter collection
