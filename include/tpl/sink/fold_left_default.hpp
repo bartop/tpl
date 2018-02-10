@@ -1,7 +1,7 @@
 
 #pragma once
 
-#include "meta/enumerable_traits.hpp"
+#include "../meta/enumerable_traits.hpp"
 
 #include <iterator>
 #include <numeric>

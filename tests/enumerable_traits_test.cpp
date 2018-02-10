@@ -1,9 +1,9 @@
 #define CATCH_CONFIG_MAIN  // This tells Catch to provide a main() - only do this in one cpp file
 #include <catch.hpp>
 
-#include <meta/enumerable_traits.hpp>
-#include <operation/filtered.hpp>
-#include <operation/transformed.hpp>
+#include <tpl/meta/enumerable_traits.hpp>
+#include <tpl/operator/filtered.hpp>
+#include <tpl/operator/transformed.hpp>
 
 #include <vector>
 #include <map>
