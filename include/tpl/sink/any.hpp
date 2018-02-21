@@ -15,6 +15,11 @@ public:
 		m_logicalPredicate(std::forward<LogicalPredicate>(logicalPredicate)){}
 
 	operator bool() const {
+		return result();
+	}
+
+	bool
+	result() const {
 		for(const auto &element : m_enumerable) {
 			if(m_logicalPredicate(element))
 				return true;

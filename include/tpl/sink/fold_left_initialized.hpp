@@ -33,7 +33,17 @@ public:
 	using conversion_type = ConversionType;
 
 	operator conversion_type() const {
-		return std::accumulate(std::begin(m_enumerable), std::end(m_enumerable), m_initialValue, m_predicate);
+		return result();
+	}
+
+	conversion_type
+	result() const {
+		return std::accumulate(
+			std::begin(m_enumerable),
+		   	std::end(m_enumerable),
+		   	m_initialValue,
+		   	m_predicate
+		);
 	}
 
 private:
