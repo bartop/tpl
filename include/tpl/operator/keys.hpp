@@ -58,41 +58,72 @@ private:
 };
 
 template<class Enumerable>
-class keys_sequence :
-	meta::enforce_enumerable<Enumerable>,
-	meta::enforce_associative<Enumerable>{
+class keys_operator {
 public:
 	using enumerable_traits = meta::enumerable_traits<Enumerable>;
 	using value_type = typename enumerable_traits::value_type;
 	using const_iterator = keys_iterator<typename enumerable_traits::const_iterator>;
 	using iterator = keys_iterator<typename enumerable_traits::iterator>;
 
+	iterator
+	first(Enumerable &enumerable) {
+		return iterator(std::begin(enumerable));
+	}
+
+	iterator
+	last(Enumerable &enumerable) {
+		return iterator(std::end(enumerable));
+	}
+
+	const_iterator
+	first(const Enumerable &enumerable) const {
+		return const_iterator(std::begin(enumerable));
+	}
+
+	const_iterator
+	last(const Enumerable &enumerable) const {
+		return const_iterator(std::end(enumerable));
+	}
+};
+
+template<class Enumerable>
+class keys_sequence :
+	meta::enforce_enumerable<Enumerable>,
+	meta::enforce_associative<Enumerable> {
+public:
+	using operator_t = keys_operator<Enumerable>;
+	using value_type = typename operator_t::value_type;
+	using const_iterator = typename operator_t::const_iterator;
+	using iterator = typename operator_t::iterator;
+
 	keys_sequence(
 		Enumerable &&enumerable
 	) :
-		m_enumerable(std::forward<Enumerable>(enumerable)) { }
+		m_enumerable(std::forward<Enumerable>(enumerable)),
+	   	m_operator() {}
 
 	iterator
 	begin() {
-		return iterator(std::begin(m_enumerable));
+		return m_operator.first(m_enumerable);
 	}
 
 	iterator
 	end() {
-		return iterator(std::end(m_enumerable));
+		return m_operator.last(m_enumerable);
 	}
 
 	const_iterator
 	begin() const {
-		return const_iterator(std::begin(m_enumerable));
+		return m_operator.first(m_enumerable);
 	}
 
 	const_iterator
 	end() const {
-		return const_iterator(std::end(m_enumerable));
+		return m_operator.last(m_enumerable);
 	}
 private:
 	Enumerable m_enumerable;
+	keys_operator<Enumerable> m_operator;
 };
 
 class keys_factory {

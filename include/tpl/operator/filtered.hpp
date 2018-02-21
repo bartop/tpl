@@ -64,59 +64,103 @@ private:
 };
 
 template<class Enumerable, class FilterPredicate>
-class filtered_sequence :
-	meta::enforce_enumerable<Enumerable> {
+class filtering_operator {
 public:
 	using enumerable_traits = meta::enumerable_traits<Enumerable>;
 	using value_type = typename enumerable_traits::value_type;
-	using const_iterator = filtering_iterator<typename enumerable_traits::const_iterator, FilterPredicate>;
-	using iterator = filtering_iterator<typename enumerable_traits::iterator, FilterPredicate>;
+	using const_iterator = filtering_iterator<
+		typename enumerable_traits::const_iterator,
+		FilterPredicate
+	>;
+	using iterator = filtering_iterator<
+		typename enumerable_traits::iterator,
+		FilterPredicate
+	>;
 
-	filtered_sequence(
-		Enumerable &&enumerable,
+	filtering_operator(
 		FilterPredicate &&predicate
 	) :
-		m_enumerable(std::forward<Enumerable>(enumerable)),
-		m_filterPredicate(std::forward<FilterPredicate>(predicate)){}
+		m_filterPredicate(std::forward<FilterPredicate>(predicate)) {}
 
 	iterator
-	begin() {
+	first(Enumerable &enumerable) {
 		return iterator(
-			std::begin(m_enumerable),
-		   	std::end(m_enumerable),
+			std::begin(enumerable),
+		   	std::end(enumerable),
 			m_filterPredicate
 		);
 	}
 
 	iterator
-	end() {
+	last(Enumerable &enumerable) {
 		return iterator(
-			std::end(m_enumerable),
-		   	std::end(m_enumerable),
+			std::end(enumerable),
+		   	std::end(enumerable),
 			m_filterPredicate
 		);
 	}
 
 	const_iterator
-	begin() const {
+	first(const Enumerable &enumerable) const {
 		return const_iterator(
-			std::begin(m_enumerable),
-		   	std::end(m_enumerable),
+			std::begin(enumerable),
+		   	std::end(enumerable),
 			m_filterPredicate
 		);
 	}
 
 	const_iterator
-	end() const {
+	last(const Enumerable &enumerable) const {
 		return const_iterator(
-			std::end(m_enumerable),
-		   	std::end(m_enumerable),
+			std::end(enumerable),
+		   	std::end(enumerable),
 			m_filterPredicate
 		);
 	}
 private:
-	Enumerable m_enumerable;
 	FilterPredicate m_filterPredicate;
+};
+
+
+template<class Enumerable, class FilterPredicate>
+class filtered_sequence : meta::enforce_enumerable<Enumerable> {
+public:
+	using operator_t = filtering_operator<Enumerable, FilterPredicate>;
+	using value_type = typename operator_t::value_type;
+	using const_iterator = typename operator_t::const_iterator;
+	using iterator = typename operator_t::iterator;
+
+	template<class T>
+	filtered_sequence(
+		Enumerable &&enumerable,
+		T &&op
+	) :
+		m_enumerable(std::forward<Enumerable>(enumerable)),
+		m_operator(std::forward<T>(op)) {}
+
+	iterator
+	begin() {
+		return m_operator.first(m_enumerable);
+	}
+
+	iterator
+	end() {
+		return m_operator.last(m_enumerable);
+	}
+
+	const_iterator
+	begin() const {
+		return m_operator.first(m_enumerable);
+	}
+
+	const_iterator
+	end() const {
+		return m_operator.last(m_enumerable);
+	}
+
+private:
+	Enumerable m_enumerable;
+	filtering_operator<Enumerable, FilterPredicate> m_operator;
 };
 
 template<class Enumerable, class FilterPredicate>

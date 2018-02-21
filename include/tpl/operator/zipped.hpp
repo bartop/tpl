@@ -66,9 +66,9 @@ private:
 	SubIterator2 m_subIterator2;
 };
 
+
 template<class Enumerable1, class Enumerable2>
-class ziped_sequence :
-	meta::enforce_enumerable<Enumerable1> {
+class zipping_operator {
 public:
 	using enumerable_traits1 = meta::enumerable_traits<Enumerable1>;
 	using enumerable_traits2 = meta::enumerable_traits<Enumerable2>;
@@ -85,47 +85,83 @@ public:
 		typename enumerable_traits2::iterator
 	>;
 
+	zipping_operator(Enumerable2 &&enumerable2) :
+	   	m_enumerable2(std::forward<Enumerable2>(enumerable2)) {}
+
+	iterator
+	first(Enumerable1 &enumerable1) {
+		return iterator(
+			std::begin(enumerable1),
+		   	std::begin(m_enumerable2)
+		);
+	}
+
+	iterator
+	last(Enumerable1 &enumerable1) {
+		return iterator(
+			std::end(enumerable1),
+		   	std::end(m_enumerable2)
+		);
+	}
+
+	const_iterator
+	first(const Enumerable1 &enumerable1) const {
+		return const_iterator(
+			std::begin(enumerable1),
+		   	std::begin(m_enumerable2)
+		);
+	}
+
+	const_iterator
+	last(const Enumerable1 &enumerable1) const {
+		return const_iterator(
+			std::end(enumerable1),
+		   	std::end(m_enumerable2)
+		);
+	}
+
+private:
+	Enumerable2 m_enumerable2;
+};
+
+template<class Enumerable1, class Enumerable2>
+class ziped_sequence : meta::enforce_enumerable<Enumerable1> {
+public:
+	using operator_t = zipping_operator<Enumerable1, Enumerable2>;
+	using value_type = typename operator_t::value_type;
+	using const_iterator = typename operator_t::const_iterator;
+	using iterator = typename operator_t::iterator;
+
+	template<class T>
 	ziped_sequence(
 		Enumerable1 &&enumerable1,
-		Enumerable2 &&enumerable2
+		T &&op
 	) :
 		m_enumerable1(std::forward<Enumerable1>(enumerable1)),
-		m_enumerable2(std::forward<Enumerable2>(enumerable2)){}
+		m_operator(std::forward<T>(op)){}
 
 	iterator
 	begin() {
-		return iterator(
-			std::begin(m_enumerable1),
-		   	std::begin(m_enumerable2)
-		);
+		return m_operator.first(m_enumerable1);
 	}
 
 	iterator
 	end() {
-		return iterator(
-			std::end(m_enumerable1),
-		   	std::end(m_enumerable2)
-		);
+		return m_operator.last(m_enumerable1);
 	}
 
 	const_iterator
 	begin() const {
-		return const_iterator(
-			std::begin(m_enumerable1),
-		   	std::begin(m_enumerable2)
-		);
+		return m_operator.first(m_enumerable1);
 	}
 
 	const_iterator
 	end() const {
-		return const_iterator(
-			std::end(m_enumerable1),
-		   	std::end(m_enumerable2)
-		);
+		return m_operator.last(m_enumerable1);
 	}
 private:
 	Enumerable1 m_enumerable1;
-	Enumerable2 m_enumerable2;
+	zipping_operator<Enumerable1, Enumerable2> m_operator;
 };
 
 template<class Enumerable1, class Enumerable2>
