@@ -13,8 +13,7 @@
 namespace tpl{
 
 template<class Enumerable, class Comparison>
-class sorted_sequence :
-	meta::enforce_enumerable<Enumerable> {
+class sorted_operator {
 public:
 	using enumerable_traits = meta::enumerable_traits<Enumerable>;
 	using value_type = typename enumerable_traits::value_type;
@@ -22,49 +21,88 @@ public:
 	using const_iterator = typename sorted_t::const_iterator;
 	using iterator = typename sorted_t::iterator;
 
-	sorted_sequence(
-		Enumerable &&enumerable,
-	   	Comparison &&compareComparison
-	) :
-		m_sorted(std::forward<Comparison>(compareComparison)),
-		m_enumerable(std::forward<Enumerable>(enumerable)){ }
-
-	sorted_sequence &operator=(sorted_sequence &) = delete;
+	sorted_operator(Comparison &&comparison) :
+	   	m_sorted(std::forward<Comparison>(comparison)) {}
 
 	iterator
-	begin() {
-		sort();
+	first(Enumerable &enumerable) {
+		sort(enumerable);
 		return std::begin(m_sorted);
 	}
 
 	iterator
-	end() {
+	last(Enumerable &) {
 		return std::end(m_sorted);
 	}
 
 	const_iterator
-	begin() const {
-		sort();
+	first(const Enumerable &enumerable) const {
+		sort(enumerable);
 		return std::begin(m_sorted);
 	}
 
 	const_iterator
-	end() const {
+	last(const Enumerable &) const {
 		return std::end(m_sorted);
 	}
 
 private:
-	void sort() const {
+	void
+	sort(const Enumerable &enumerable) const {
 		m_sorted.clear();
 		std::copy(
-			std::begin(m_enumerable),
-			std::end(m_enumerable),
+			std::begin(enumerable),
+			std::end(enumerable),
 			std::inserter(m_sorted, m_sorted.begin())
 		);
 	}
 
 	mutable sorted_t m_sorted;
+};
+
+
+template<class Enumerable, class Comparison>
+class sorted_sequence :
+	meta::enforce_enumerable<Enumerable> {
+public:
+	using operator_t = sorted_operator<Enumerable, Comparison>;
+	using value_type = typename operator_t::value_type;
+	using const_iterator = typename operator_t::const_iterator;
+	using iterator = typename operator_t::iterator;
+
+	template<class T>
+	sorted_sequence(
+		Enumerable &&enumerable,
+	   	T &&op
+	) :
+		m_enumerable(std::forward<Enumerable>(enumerable)),
+		m_operator(std::forward<T>(op)) {}
+
+	sorted_sequence &operator=(sorted_sequence &) = delete;
+
+	iterator
+	begin() {
+		return m_operator.first(m_enumerable);
+	}
+
+	iterator
+	end() {
+		return m_operator.last(m_enumerable);
+	}
+
+	const_iterator
+	begin() const {
+		return m_operator.first(m_enumerable);
+	}
+
+	const_iterator
+	end() const {
+		return m_operator.last(m_enumerable);
+	}
+
+private:
 	Enumerable m_enumerable;
+	sorted_operator<Enumerable, Comparison> m_operator;
 };
 
 template<class Enumerable, class Comparison>
