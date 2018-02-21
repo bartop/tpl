@@ -15,6 +15,11 @@ public:
 		m_logicalPredicate(std::forward<LogicalPredicate>(logicalPredicate)){}
 
 	operator unsigned() const {
+		return result();
+	}
+
+	unsigned
+	result() const {
 		unsigned i = 0;
 		for(const auto &element : m_enumerable) {
 			if(m_logicalPredicate(element))

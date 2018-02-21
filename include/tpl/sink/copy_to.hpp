@@ -7,9 +7,24 @@
 
 namespace tpl{
 
+template<class Enumerable>
+class number_of_copied {
+public:
+	number_of_copied(Enumerable &&enumerable) :
+		m_enumerable(std::forward<Enumerable>(enumerable)) {}
+
+	unsigned
+	result() const {
+		return std::distance(std::begin(m_enumerable), std::end(m_enumerable));
+	}
+
+private:
+	Enumerable m_enumerable;
+};
+
 template<class Enumerable, class OutputIterator>
 void
-copy_to_function(Enumerable &&enumerable, OutputIterator &&outputIterator){
+copy_to_function(const Enumerable &enumerable, OutputIterator &&outputIterator){
 	std::copy(std::begin(enumerable), std::end(enumerable), outputIterator);
 }
 
@@ -20,21 +35,23 @@ public:
 		m_outputIterator(std::forward<OutputIterator>(outputIterator)){}
 
 	template<class Enumerable>
-	void
+	number_of_copied<Enumerable>
 	create(Enumerable &&enumerable) const & {
 		copy_to_function(
-			std::forward<Enumerable>(enumerable),
+			enumerable,
 			m_outputIterator
 		);
+		return number_of_copied<Enumerable>(std::forward<Enumerable>(enumerable));
 	}
 
 	template<class Enumerable>
-	void
+	number_of_copied<Enumerable>
 	create(Enumerable &&enumerable) && {
 		copy_to_function(
-			std::forward<Enumerable>(enumerable),
+			enumerable,
 			std::forward<OutputIterator>(m_outputIterator)
 		);
+		return number_of_copied<Enumerable>(std::forward<Enumerable>(enumerable));
 	}
 private:
 	OutputIterator m_outputIterator;
