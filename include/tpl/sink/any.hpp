@@ -1,8 +1,7 @@
 
 #pragma once
 
-#include <iterator>
-
+#include "../common/sink.hpp"
 #include "../common/composite_factory.hpp"
 
 namespace tpl{
@@ -10,17 +9,21 @@ namespace tpl{
 template<class Enumerable, class LogicalPredicate>
 class true_for_any {
 public:
-	true_for_any(Enumerable &&enumerable, LogicalPredicate &&logicalPredicate) :
-		m_enumerable(std::forward<Enumerable>(enumerable)),
-		m_logicalPredicate(std::forward<LogicalPredicate>(logicalPredicate)){}
+	true_for_any(LogicalPredicate &&predicate) :
+		m_logicalPredicate(std::forward<LogicalPredicate>(predicate)) {}
 
-	operator bool() const {
-		return result();
+	bool
+	operator()(Enumerable &enumerable) {
+		for(auto &element : enumerable) {
+			if(m_logicalPredicate(element))
+				return true;
+		}
+		return false;
 	}
 
 	bool
-	result() const {
-		for(const auto &element : m_enumerable) {
+	operator()(const Enumerable &enumerable) const {
+		for(const auto &element : enumerable) {
 			if(m_logicalPredicate(element))
 				return true;
 		}
@@ -28,75 +31,75 @@ public:
 	}
 
 private:
-	Enumerable m_enumerable;
 	LogicalPredicate m_logicalPredicate;
 };
 
 template<class Enumerable, class Predicate>
-auto
-make_true_for_any(Enumerable &&enumerable, Predicate &&predicate){
+true_for_any<Enumerable, Predicate>
+make_true_for_any(Predicate &&predicate) {
 	return true_for_any<Enumerable, Predicate>(
-		std::forward<Enumerable>(enumerable),
 		std::forward<Predicate>(predicate)
 	);
 }
 
-template<class LogicalPredicate>
-class true_for_any_factory {
+template<class Predicate>
+class any_sink_factory {
 public:
-	explicit true_for_any_factory(LogicalPredicate &&logicalPredicate) :
-		m_logicalPredicate(std::forward<LogicalPredicate>(logicalPredicate)){}
+	explicit any_sink_factory(Predicate &&predicate) :
+		m_predicate(std::forward<Predicate>(predicate)){}
 
 	template<class Enumerable>
-	true_for_any<Enumerable, const LogicalPredicate &>
+	sink<Enumerable, true_for_any<Enumerable, const Predicate &>>
 	create(Enumerable &&enumerable) const & {
-		return make_true_for_any(
+		return make_sink(
 			std::forward<Enumerable>(enumerable),
-			m_logicalPredicate
+			make_true_for_any<Enumerable>(m_predicate)
 		);
 	}
 
 	template<class Enumerable>
-	true_for_any<Enumerable, LogicalPredicate>
+	sink<Enumerable, true_for_any<Enumerable, Predicate>>
 	create(Enumerable &&enumerable) && {
-		return make_true_for_any(
+		return make_sink(
 			std::forward<Enumerable>(enumerable),
-			std::forward<LogicalPredicate>(m_logicalPredicate)
+			make_true_for_any<Enumerable>(
+				std::forward<Predicate>(m_predicate)
+			)
 		);
 	}
+
 private:
-	LogicalPredicate m_logicalPredicate;
+	Predicate m_predicate;
 };
 
-
 template<class LogicalPredicate>
-true_for_any_factory<LogicalPredicate>
-any(LogicalPredicate &&logicalPredicate){
-	return true_for_any_factory<LogicalPredicate>(
+any_sink_factory<LogicalPredicate>
+any(LogicalPredicate &&logicalPredicate) {
+	return any_sink_factory<LogicalPredicate>(
 		std::forward<LogicalPredicate>(logicalPredicate)
 	);
 }
 
 template<
 	class Enumerable,
-	class LogicalPredicate,
+	class Predicate,
    	class = typename std::enable_if<meta::is_enumerable<std::decay_t<Enumerable>>::value>::type
 >
-true_for_any<Enumerable, const LogicalPredicate &>
-operator|(Enumerable &&enumerable, const true_for_any_factory<LogicalPredicate> &factory){
-	return factory.create(
+sink<Enumerable, true_for_any<Enumerable, Predicate>>
+operator|(Enumerable &&enumerable, any_sink_factory<Predicate> &&factory){
+	return std::forward<any_sink_factory<Predicate>>(factory).create(
 		std::forward<Enumerable>(enumerable)
 	);
 }
 
 template<
 	class Enumerable,
-	class LogicalPredicate,
+	class Predicate,
    	class = typename std::enable_if<meta::is_enumerable<std::decay_t<Enumerable>>::value>::type
 >
-true_for_any<Enumerable, LogicalPredicate>
-operator|(Enumerable &&enumerable, true_for_any_factory<LogicalPredicate> &&factory){
-	return std::forward<true_for_any_factory<LogicalPredicate>>(factory).create(
+sink<Enumerable, true_for_any<Enumerable, Predicate>>
+operator|(Enumerable &&enumerable, const any_sink_factory<Predicate> &factory){
+	return factory.create(
 		std::forward<Enumerable>(enumerable)
 	);
 }

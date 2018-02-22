@@ -1,8 +1,7 @@
 
 #pragma once
 
-#include <iterator>
-
+#include "../common/sink.hpp"
 #include "../common/composite_factory.hpp"
 
 namespace tpl{
@@ -10,18 +9,23 @@ namespace tpl{
 template<class Enumerable, class LogicalPredicate>
 class count_compliant {
 public:
-	count_compliant(Enumerable &&enumerable, LogicalPredicate &&logicalPredicate) :
-		m_enumerable(std::forward<Enumerable>(enumerable)),
+	count_compliant(LogicalPredicate &&logicalPredicate) :
 		m_logicalPredicate(std::forward<LogicalPredicate>(logicalPredicate)){}
 
-	operator unsigned() const {
-		return result();
+	unsigned
+	operator()(Enumerable &enumerable) {
+		unsigned i = 0;
+		for(auto &element : enumerable) {
+			if(m_logicalPredicate(element))
+				++i;
+		}
+		return i;
 	}
 
 	unsigned
-	result() const {
+	operator()(const Enumerable &enumerable) const {
 		unsigned i = 0;
-		for(const auto &element : m_enumerable) {
+		for(const auto &element : enumerable) {
 			if(m_logicalPredicate(element))
 				++i;
 		}
@@ -29,15 +33,13 @@ public:
 	}
 
 private:
-	Enumerable m_enumerable;
 	LogicalPredicate m_logicalPredicate;
 };
 
 template<class Enumerable, class Predicate>
 count_compliant<Enumerable, Predicate>
-make_count(Enumerable &&enumerable, Predicate &&predicate){
+make_count(Predicate &&predicate){
 	return count_compliant<Enumerable, Predicate>(
-		std::forward<Enumerable>(enumerable),
 		std::forward<Predicate>(predicate)
 	);
 }
@@ -49,20 +51,22 @@ public:
 		m_logicalPredicate(std::forward<LogicalPredicate>(logicalPredicate)){}
 
 	template<class Enumerable>
-	count_compliant<Enumerable, const LogicalPredicate &>
+	sink<Enumerable, count_compliant<Enumerable, const LogicalPredicate &>>
 	create(Enumerable &&enumerable) const & {
-		return make_count(
+		return make_sink(
 			std::forward<Enumerable>(enumerable),
-			m_logicalPredicate
+			make_count<Enumerable>(m_logicalPredicate)
 		);
 	}
 
 	template<class Enumerable>
-	count_compliant<Enumerable, LogicalPredicate>
+	sink<Enumerable, count_compliant<Enumerable, LogicalPredicate>>
 	create(Enumerable &&enumerable) && {
-		return make_count(
+		return make_sink(
 			std::forward<Enumerable>(enumerable),
-			std::forward<LogicalPredicate>(m_logicalPredicate)
+			make_count<Enumerable>(
+				std::forward<LogicalPredicate>(m_logicalPredicate)
+			)
 		);
 	}
 private:
@@ -82,7 +86,7 @@ template<
 	class LogicalPredicate,
    	class = typename std::enable_if<meta::is_enumerable<std::decay_t<Enumerable>>::value>::type
 >
-	count_compliant<Enumerable, LogicalPredicate>
+sink<Enumerable, count_compliant<Enumerable, LogicalPredicate>>
 operator|(Enumerable &&enumerable, count_factory<LogicalPredicate> &&factory){
 	return std::forward<count_factory<LogicalPredicate>>(factory).create(
 		std::forward<Enumerable>(enumerable)
@@ -94,7 +98,7 @@ template<
 	class LogicalPredicate,
    	class = typename std::enable_if<meta::is_enumerable<std::decay_t<Enumerable>>::value>::type
 >
-count_compliant<Enumerable, const LogicalPredicate &>
+sink<Enumerable, count_compliant<Enumerable, LogicalPredicate>>
 operator|(Enumerable &&enumerable, const count_factory<LogicalPredicate> &factory){
 	return factory.create(
 		std::forward<Enumerable>(enumerable)

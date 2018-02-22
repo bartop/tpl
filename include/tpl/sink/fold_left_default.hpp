@@ -21,30 +21,33 @@ template<
 class default_fold_left {
 public:
 	default_fold_left(
-		Enumerable &&enumerable,
 		BinaryPredicate &&predicate
 	) :
-		m_enumerable(std::forward<Enumerable>(enumerable)),
 		m_predicate(std::forward<BinaryPredicate>(predicate)) {}
 
 	using conversion_type = ConversionType;
 
-	operator conversion_type() const {
-		return result();
+	conversion_type
+	operator()(Enumerable &enumerable) {
+		return std::accumulate(
+			std::begin(enumerable),
+		   	std::end(enumerable),
+		   	typename meta::enumerable_traits<Enumerable>::value_type(),
+			m_predicate
+		);
 	}
 
 	conversion_type
-	result() const {
+	operator()(const Enumerable &enumerable) const{
 		return std::accumulate(
-			std::begin(m_enumerable),
-		   	std::end(m_enumerable),
+			std::begin(enumerable),
+		   	std::end(enumerable),
 		   	typename meta::enumerable_traits<Enumerable>::value_type(),
 			m_predicate
 		);
 	}
 
 private:
-	Enumerable m_enumerable;
 	BinaryPredicate m_predicate;
 };
 
