@@ -29,7 +29,7 @@ public:
 	create(Enumerable &&enumerable) const & {
 		return make_sink(
 			std::forward<Enumerable>(enumerable),
-			make_fold_left<Enumerable>(m_predicate)
+			make_fold_left<Enumerable, const Predicate &>(m_predicate)
 		);
 	}
 
@@ -38,7 +38,7 @@ public:
 	create(Enumerable &&enumerable) && {
 		return make_sink(
 			std::forward<Enumerable>(enumerable),
-			make_fold_left<Enumerable>(
+			make_fold_left<Enumerable, Predicate>(
 				std::forward<Predicate>(m_predicate)
 			)
 		);
@@ -105,7 +105,7 @@ public:
 	create(Enumerable &&enumerable) const & {
 		return make_sink(
 			std::forward<Enumerable>(enumerable),
-			make_initialized_fold_left<Enumerable>(
+			make_initialized_fold_left<Enumerable, const Predicate &, const InitialValue &>(
 				m_predicate,
 				m_initialValue
 			)
@@ -117,7 +117,7 @@ public:
 	create(Enumerable &&enumerable) && {
 		return make_sink(
 			std::forward<Enumerable>(enumerable),
-			make_initialized_fold_left<Enumerable>(
+			make_initialized_fold_left<Enumerable, Predicate, InitialValue>(
 				std::forward<Predicate>(m_predicate),
 				std::forward<InitialValue>(m_initialValue)
 			)
