@@ -13,7 +13,8 @@
 namespace tpl{
 
 template<class Enumerable, class Comparison>
-class sorted_operator {
+class sorted_sequence :
+	meta::enforce_enumerable<Enumerable> {
 public:
 	using enumerable_traits = meta::enumerable_traits<Enumerable>;
 	using value_type = typename enumerable_traits::value_type;
@@ -21,28 +22,35 @@ public:
 	using const_iterator = typename sorted_t::const_iterator;
 	using iterator = typename sorted_t::iterator;
 
-	sorted_operator(Comparison &&comparison) :
-	   	m_sorted(std::forward<Comparison>(comparison)) {}
+	template<class T>
+	sorted_sequence(
+		Enumerable &&enumerable,
+	   	T &&op
+	) :
+		m_enumerable(std::forward<Enumerable>(enumerable)),
+		m_sorted(std::forward<T>(op)) {}
+
+	sorted_sequence &operator=(sorted_sequence &) = delete;
 
 	iterator
-	first(Enumerable &enumerable) {
-		sort(enumerable);
+	begin() {
+		sort(m_enumerable);
 		return std::begin(m_sorted);
 	}
 
 	iterator
-	last(Enumerable &) {
+	end() {
 		return std::end(m_sorted);
 	}
 
 	const_iterator
-	first(const Enumerable &enumerable) const {
-		sort(enumerable);
+	begin() const {
+		sort(m_enumerable);
 		return std::begin(m_sorted);
 	}
 
 	const_iterator
-	last(const Enumerable &) const {
+	end() const {
 		return std::end(m_sorted);
 	}
 
@@ -57,52 +65,8 @@ private:
 		);
 	}
 
-	mutable sorted_t m_sorted;
-};
-
-
-template<class Enumerable, class Comparison>
-class sorted_sequence :
-	meta::enforce_enumerable<Enumerable> {
-public:
-	using operator_t = sorted_operator<Enumerable, Comparison>;
-	using value_type = typename operator_t::value_type;
-	using const_iterator = typename operator_t::const_iterator;
-	using iterator = typename operator_t::iterator;
-
-	template<class T>
-	sorted_sequence(
-		Enumerable &&enumerable,
-	   	T &&op
-	) :
-		m_enumerable(std::forward<Enumerable>(enumerable)),
-		m_operator(std::forward<T>(op)) {}
-
-	sorted_sequence &operator=(sorted_sequence &) = delete;
-
-	iterator
-	begin() {
-		return m_operator.first(m_enumerable);
-	}
-
-	iterator
-	end() {
-		return m_operator.last(m_enumerable);
-	}
-
-	const_iterator
-	begin() const {
-		return m_operator.first(m_enumerable);
-	}
-
-	const_iterator
-	end() const {
-		return m_operator.last(m_enumerable);
-	}
-
-private:
 	Enumerable m_enumerable;
-	sorted_operator<Enumerable, Comparison> m_operator;
+	mutable sorted_t m_sorted;
 };
 
 template<class Enumerable, class Comparison>

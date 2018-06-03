@@ -12,7 +12,7 @@
 namespace tpl{
 
 template<class Enumerable>
-class caching_operator{
+class cached_sequence : meta::enforce_enumerable<Enumerable> {
 public:
 	using enumerable_traits = meta::enumerable_traits<Enumerable>;
 	using value_type = typename enumerable_traits::value_type;
@@ -20,31 +20,34 @@ public:
 	using const_iterator = typename cached_t::const_iterator;
 	using iterator = typename cached_t::iterator;
 
-	caching_operator() :
+	cached_sequence(
+		Enumerable &&enumerable
+	) :
+		m_enumerable(std::forward<Enumerable>(enumerable)),
 		m_wasFilled(false),
 		m_cached() {}
 
 	iterator
-	first(Enumerable &enumerable) {
-		fillCache(enumerable);
+	begin() {
+		fillCache(m_enumerable);
 		return std::begin(m_cached);
-	}
+	} 
 
 	iterator
-	last(Enumerable &enumerable) {
-		fillCache(enumerable);
+	end() {
+		fillCache(m_enumerable);
 		return std::end(m_cached);
 	}
 
 	const_iterator
-	first(const Enumerable &enumerable) const {
-		fillCache(enumerable);
+	begin() const {
+		fillCache(m_enumerable);
 		return std::begin(m_cached);
 	}
 
 	const_iterator
-	last(const Enumerable &enumerable) const {
-		fillCache(enumerable);
+	end() const {
+		fillCache(m_enumerable);
 		return std::end(m_cached);
 	}
 
@@ -61,48 +64,9 @@ private:
 		}
 	}
 
+	Enumerable m_enumerable;
 	mutable bool m_wasFilled = false;
 	mutable cached_t m_cached;
-};
-
-template<class Enumerable>
-class cached_sequence : meta::enforce_enumerable<Enumerable> {
-public:
-	using operator_t = caching_operator<Enumerable>;
-	using enumerable_traits = typename operator_t::enumerable_traits;
-	using value_type = typename operator_t::value_type;
-	using const_iterator = typename operator_t::const_iterator;
-	using iterator = typename operator_t::iterator;
-
-	cached_sequence(
-		Enumerable &&enumerable
-	) :
-		m_enumerable(std::forward<Enumerable>(enumerable)),
-		m_operator() {}
-
-	iterator
-	begin() {
-		return m_operator.first(m_enumerable);
-	}
-
-	iterator
-	end() {
-		return m_operator.last(m_enumerable);
-	}
-
-	const_iterator
-	begin() const {
-		return m_operator.first(m_enumerable);
-	}
-
-	const_iterator
-	end() const {
-		return m_operator.last(m_enumerable);
-	}
-
-private:
-	Enumerable m_enumerable;
-	caching_operator<Enumerable> m_operator;
 };
 
 class cache_factory {
