@@ -13,83 +13,48 @@
 namespace tpl{
 
 template<class Enumerable>
-class taking_operator {
+class taken_sequence :
+	meta::enforce_enumerable<Enumerable> {
 public:
 	using enumerable_traits = meta::enumerable_traits<Enumerable>;
 	using value_type = typename enumerable_traits::value_type;
 	using const_iterator = typename enumerable_traits::const_iterator;
 	using iterator = typename enumerable_traits::iterator;
 
-	taking_operator(unsigned toTake) : m_toTake(toTake) {}
-
-	iterator
-	first(Enumerable &enumerable) {
-		return std::begin(enumerable);
-	}
-
-	iterator
-	last(Enumerable &enumerable) {
-		return std::distance(std::begin(enumerable), std::end(enumerable)) > m_toTake ?
-			std::next(std::begin(enumerable), m_toTake) :
-			std::end(enumerable);
-	}
-
-	const_iterator
-	first(const Enumerable &enumerable) const {
-		return std::begin(enumerable);
-	}
-
-	const_iterator
-	last(const Enumerable &enumerable) const {
-		return std::distance(std::begin(enumerable), std::end(enumerable)) > m_toTake ?
-			std::next(std::begin(enumerable), m_toTake) :
-			std::end(enumerable);
-	}
-
-private:
-	unsigned m_toTake;
-};
-
-template<class Enumerable>
-class taken_sequence :
-	meta::enforce_enumerable<Enumerable> {
-public:
-	using operator_t = taking_operator<Enumerable>;
-	using value_type = typename operator_t::value_type;
-	using const_iterator = typename operator_t::const_iterator;
-	using iterator = typename operator_t::iterator;
-
-	template<class T>
 	taken_sequence(
 		Enumerable &&enumerable,
-		T &&op
+		unsigned toTake
 	) :
 		m_enumerable(std::forward<Enumerable>(enumerable)),
-		m_operator(std::forward<T>(op)) {}
+		m_toTake(toTake) {}
 
 	iterator
 	begin() {
-		return m_operator.first(m_enumerable);
+		return std::begin(m_enumerable);
 	}
 
 	iterator
 	end() {
-		return m_operator.last(m_enumerable);
+		return std::distance(std::begin(m_enumerable), std::end(m_enumerable)) > m_toTake ?
+			std::next(std::begin(m_enumerable), m_toTake) :
+			std::end(m_enumerable);
 	}
 
 	const_iterator
 	begin() const {
-		return m_operator.first(m_enumerable);
+		return std::begin(m_enumerable);
 	}
 
 	const_iterator
 	end() const {
-		return m_operator.last(m_enumerable);
+		return std::distance(std::begin(m_enumerable), std::end(m_enumerable)) > m_toTake ?
+			std::next(std::begin(m_enumerable), m_toTake) :
+			std::end(m_enumerable);
 	}
 
 private:
 	Enumerable m_enumerable;
-	taking_operator<Enumerable> m_operator;
+	unsigned m_toTake;
 };
 
 class take_factory {

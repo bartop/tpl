@@ -59,72 +59,40 @@ private:
 };
 
 template<class Enumerable>
-class mapped_values_operator {
+class mapped_values_sequence :
+	meta::enforce_enumerable<Enumerable>,
+	meta::enforce_associative<Enumerable> {
 public:
 	using enumerable_traits = meta::enumerable_traits<Enumerable>;
 	using value_type = typename enumerable_traits::value_type;
 	using const_iterator = mapped_values_iterator<typename enumerable_traits::const_iterator>;
 	using iterator = mapped_values_iterator<typename enumerable_traits::iterator>;
 
-	iterator
-	first(Enumerable &enumerable) {
-		return iterator(std::begin(enumerable));
-	}
-
-	iterator
-	last(Enumerable &enumerable) {
-		return iterator(std::end(enumerable));
-	}
-
-	const_iterator
-	first(const Enumerable &enumerable) const {
-		return const_iterator(std::begin(enumerable));
-	}
-
-	const_iterator
-	last(const Enumerable &enumerable) const {
-		return const_iterator(std::end(enumerable));
-	}
-};
-
-template<class Enumerable>
-class mapped_values_sequence :
-	meta::enforce_enumerable<Enumerable>,
-	meta::enforce_associative<Enumerable> {
-public:
-	using operator_t = mapped_values_operator<Enumerable>;
-	using value_type = typename operator_t::value_type;
-	using const_iterator = typename operator_t::const_iterator;
-	using iterator = typename operator_t::iterator;
-
 	mapped_values_sequence(
 		Enumerable &&enumerable
-	) :
-		m_enumerable(std::forward<Enumerable>(enumerable)),
-	   	m_operator() {}
+	) : m_enumerable(std::forward<Enumerable>(enumerable)) {}
 
 	iterator
 	begin() {
-		return m_operator.first(m_enumerable);
+		return iterator(std::begin(m_enumerable));
 	}
 
 	iterator
 	end() {
-		return m_operator.last(m_enumerable);
+		return iterator(std::begin(m_enumerable));
 	}
 
 	const_iterator
 	begin() const {
-		return m_operator.first(m_enumerable);
+		return const_iterator(std::begin(m_enumerable));
 	}
 
 	const_iterator
 	end() const {
-		return m_operator.last(m_enumerable);
+		return const_iterator(std::end(m_enumerable));
 	}
 private:
 	Enumerable m_enumerable;
-	mapped_values_operator<Enumerable> m_operator;
 };
 
 class mapped_values_factory {

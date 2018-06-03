@@ -15,83 +15,48 @@
 namespace tpl{
 
 template<class Enumerable>
-class dropping_operator {
+class dropping_sequence :
+	meta::enforce_enumerable<Enumerable> {
 public:
 	using enumerable_traits = meta::enumerable_traits<Enumerable>;
 	using value_type = typename enumerable_traits::value_type;
 	using const_iterator = typename enumerable_traits::const_iterator;
 	using iterator = typename enumerable_traits::iterator;
 
-	dropping_operator(unsigned toDrop) : m_toDrop(toDrop) {}
-
-	iterator
-	first(Enumerable &enumerable) {
-		return std::distance(std::begin(enumerable), std::end(enumerable)) > m_toDrop ?
-			std::next(std::begin(enumerable), m_toDrop) :
-			std::end(enumerable);
-	}
-
-	iterator
-	last(Enumerable &enumerable) {
-		return std::end(enumerable);
-	}
-
-	const_iterator
-	first(const Enumerable &enumerable) const {
-		return std::distance(std::begin(enumerable), std::end(enumerable)) > m_toDrop ?
-			std::next(std::begin(enumerable), m_toDrop) :
-			std::end(enumerable);
-	}
-
-	const_iterator
-	last(const Enumerable &enumerable) const {
-		return std::end(enumerable);
-	}
-
-private:
-	unsigned m_toDrop;
-};
-
-template<class Enumerable>
-class dropping_sequence :
-	meta::enforce_enumerable<Enumerable> {
-public:
-	using operator_t = dropping_operator<Enumerable>;
-	using value_type = typename operator_t::value_type;
-	using const_iterator = typename operator_t::const_iterator;
-	using iterator = typename operator_t::iterator;
-
-	template<class T>
 	dropping_sequence(
 		Enumerable &&enumerable,
-		T &&op
+		unsigned toDrop
 	) :
 		m_enumerable(std::forward<Enumerable>(enumerable)),
-		m_operator(std::forward<T>(op)) {}
+		m_toDrop(toDrop) {}
 
 	iterator
 	begin() {
-		return m_operator.first(m_enumerable);
+		return std::distance(std::begin(m_enumerable), std::end(m_enumerable)) > m_toDrop ?
+			std::next(std::begin(m_enumerable), m_toDrop) :
+			std::end(m_enumerable);
 	}
 
 	iterator
 	end() {
-		return m_operator.last(m_enumerable);
+		return std::end(m_enumerable);
 	}
 
 	const_iterator
 	begin() const {
-		return m_operator.first(m_enumerable);
+		return std::distance(std::begin(m_enumerable), std::end(m_enumerable)) > m_toDrop ?
+			std::next(std::begin(m_enumerable), m_toDrop) :
+			std::end(m_enumerable);
 	}
 
 	const_iterator
 	end() const {
-		return m_operator.last(m_enumerable);
+		return std::end(m_enumerable);
 	}
 
 private:
 	Enumerable m_enumerable;
-	dropping_operator<Enumerable> m_operator;
+	unsigned m_toDrop;
 };
 
 class drop_factory {

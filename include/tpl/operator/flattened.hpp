@@ -89,7 +89,9 @@ private:
 };
 
 template<class Enumerable>
-class flattening_operator {
+class flattened_sequence :
+	meta::enforce_enumerable<Enumerable>,
+	meta::enforce_enumerable<typename meta::enumerable_traits<Enumerable>::value_type>{
 public:
 	using enumerable_traits = meta::enumerable_traits<Enumerable>;
 	using internal_enumerable_traits = meta::enumerable_traits<
@@ -105,66 +107,32 @@ public:
 		typename internal_enumerable_traits::iterator
 	>;
 
-	iterator
-	first(Enumerable &enumerable) {
-		return iterator(std::begin(enumerable), std::end(enumerable));
-	}
-
-	iterator
-	last(Enumerable &enumerable) {
-		return iterator(std::end(enumerable), std::end(enumerable));
-	}
-
-	const_iterator
-	first(const Enumerable &enumerable) const {
-		return const_iterator(std::begin(enumerable), std::end(enumerable));
-	}
-
-	const_iterator
-	last(const Enumerable &enumerable) const {
-		return const_iterator(std::end(enumerable), std::end(enumerable));
-	}
-
-};
-
-template<class Enumerable>
-class flattened_sequence :
-	meta::enforce_enumerable<Enumerable>,
-	meta::enforce_enumerable<typename meta::enumerable_traits<Enumerable>::value_type>{
-public:
-	using operator_t = flattening_operator<Enumerable>;
-	using value_type = typename operator_t::value_type;
-	using const_iterator = typename operator_t::const_iterator;
-	using iterator = typename operator_t::iterator;
-
 	flattened_sequence(
 		Enumerable &&enumerable
 	) :
-		m_enumerable(std::forward<Enumerable>(enumerable)),
-		m_operator() {}
+		m_enumerable(std::forward<Enumerable>(enumerable)) {} 
 
 	iterator
 	begin() {
-		return m_operator.first(m_enumerable);
+		return iterator(std::begin(m_enumerable), std::end(m_enumerable));
 	}
 
 	iterator
 	end() {
-		return m_operator.last(m_enumerable);
+		return iterator(std::end(m_enumerable), std::end(m_enumerable));
 	}
 
 	const_iterator
 	begin() const {
-		return m_operator.first(m_enumerable);
+		return const_iterator(std::begin(m_enumerable), std::end(m_enumerable));
 	}
 
 	const_iterator
 	end() const {
-		return m_operator.last(m_enumerable);
+		return const_iterator(std::end(m_enumerable), std::end(m_enumerable));
 	}
 private:
 	Enumerable m_enumerable;
-	flattening_operator<Enumerable> m_operator;
 };
 
 class flatten_factory {

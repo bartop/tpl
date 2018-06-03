@@ -65,9 +65,8 @@ private:
 	const Predicate &m_transformPredicate;
 };
 
-
 template<class Enumerable, class Predicate>
-class transforming_operator {
+class transformed_sequence : meta::enforce_enumerable<Enumerable> {
 public:
 	using enumerable_traits = meta::enumerable_traits<Enumerable>;
 	using value_type =
@@ -79,72 +78,37 @@ public:
 	using const_iterator = transforming_iterator<typename enumerable_traits::const_iterator, Predicate>;
 	using iterator = transforming_iterator<typename enumerable_traits::iterator, Predicate>;
 
-	transforming_operator(Predicate &&predicate) :
-		m_predicate(std::forward<Predicate>(predicate)){}
-
-	iterator
-	first(Enumerable &enumerable) {
-		return const_iterator(std::begin(enumerable), m_predicate);
-	}
-
-	iterator
-	last(Enumerable &enumerable) {
-		return const_iterator(std::end(enumerable), m_predicate);
-	}
-
-	const_iterator
-	first(const Enumerable &enumerable) const {
-		return const_iterator(std::begin(enumerable), m_predicate);
-	}
-
-	const_iterator
-	last(const Enumerable &enumerable) const {
-		return const_iterator(std::end(enumerable), m_predicate);
-	}
-
-private:
-	Predicate m_predicate;
-};
-
-template<class Enumerable, class Predicate>
-class transformed_sequence : meta::enforce_enumerable<Enumerable> {
-public:
-	using operator_t = transforming_operator<Enumerable, Predicate>;
-	using value_type = typename operator_t::value_type;
-	using const_iterator = typename operator_t::const_iterator;
-	using iterator = typename operator_t::iterator;
-
 	template<class T>
 	transformed_sequence(
 		Enumerable &&enumerable,
 	   	T &&op
 	) :
 		m_enumerable(std::forward<Enumerable>(enumerable)),
-		m_operator(std::forward<T>(op)){}
+		m_predicate(std::forward<T>(op)){}
 
 	iterator
 	begin() {
-		return m_operator.first(m_enumerable);
+		return const_iterator(std::begin(m_enumerable), m_predicate);
 	}
 
 	iterator
 	end() {
-		return m_operator.last(m_enumerable);
+		return const_iterator(std::end(m_enumerable), m_predicate);
 	}
 
 	const_iterator
 	begin() const {
-		return m_operator.first(m_enumerable);
+		return const_iterator(std::begin(m_enumerable), m_predicate);
 	}
 
 	const_iterator
 	end() const {
-		return m_operator.last(m_enumerable);
+		return const_iterator(std::end(m_enumerable), m_predicate);
 	}
 
 private:
 	Enumerable m_enumerable;
-	transforming_operator<Enumerable, Predicate> m_operator;
+	Predicate m_predicate;
 };
 
 template<class Enumerable, class Predicate>
