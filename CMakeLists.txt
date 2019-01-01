@@ -27,6 +27,7 @@ set(TEST_SOURCES
     tests/all_test.cpp
     tests/count_test.cpp
     tests/is_enumerable_test.cpp
+    tests/is_factory_test.cpp
     tests/is_associative_test.cpp
     tests/enumerable_traits_test.cpp
     tests/keys_test.cpp

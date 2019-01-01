@@ -3,6 +3,7 @@
 
 #include "../common/sink.hpp"
 #include "../common/composite_factory.hpp"
+#include "../common/apply_operator.hpp"
 
 namespace tpl{
 
@@ -78,30 +79,6 @@ count_factory<LogicalPredicate>
 count(LogicalPredicate &&logicalPredicate){
 	return count_factory<LogicalPredicate>(
 		std::forward<LogicalPredicate>(logicalPredicate)
-	);
-}
-
-template<
-	class Enumerable,
-	class LogicalPredicate,
-   	class = typename std::enable_if<meta::is_enumerable<std::decay_t<Enumerable>>::value>::type
->
-sink<Enumerable, count_compliant<Enumerable, LogicalPredicate>>
-operator|(Enumerable &&enumerable, count_factory<LogicalPredicate> &&factory){
-	return std::forward<count_factory<LogicalPredicate>>(factory).create(
-		std::forward<Enumerable>(enumerable)
-	);
-}
-
-template<
-	class Enumerable,
-	class LogicalPredicate,
-   	class = typename std::enable_if<meta::is_enumerable<std::decay_t<Enumerable>>::value>::type
->
-sink<Enumerable, count_compliant<Enumerable, LogicalPredicate>>
-operator|(Enumerable &&enumerable, const count_factory<LogicalPredicate> &factory){
-	return factory.create(
-		std::forward<Enumerable>(enumerable)
 	);
 }
 

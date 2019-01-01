@@ -3,6 +3,7 @@
 
 #include "../common/sink.hpp"
 #include "../common/composite_factory.hpp"
+#include "../common/apply_operator.hpp"
 
 namespace tpl{
 
@@ -77,30 +78,6 @@ all_sink_factory<LogicalPredicate>
 all(LogicalPredicate &&logicalPredicate) {
 	return all_sink_factory<LogicalPredicate>(
 		std::forward<LogicalPredicate>(logicalPredicate)
-	);
-}
-
-template<
-	class Enumerable,
-	class Predicate,
-   	class = typename std::enable_if<meta::is_enumerable<std::decay_t<Enumerable>>::value>::type
->
-sink<Enumerable, true_for_all<Enumerable, Predicate>>
-operator|(Enumerable &&enumerable, all_sink_factory<Predicate> &&factory){
-	return std::forward<all_sink_factory<Predicate>>(factory).create(
-		std::forward<Enumerable>(enumerable)
-	);
-}
-
-template<
-	class Enumerable,
-	class Predicate,
-   	class = typename std::enable_if<meta::is_enumerable<std::decay_t<Enumerable>>::value>::type
->
-sink<Enumerable, true_for_all<Enumerable, Predicate>>
-operator|(Enumerable &&enumerable, const all_sink_factory<Predicate> &factory){
-	return factory.create(
-		std::forward<Enumerable>(enumerable)
 	);
 }
 

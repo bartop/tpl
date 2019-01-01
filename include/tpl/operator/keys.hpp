@@ -8,6 +8,7 @@
 #include "../detail/iterator_base.hpp"
 
 #include "../common/composite_factory.hpp"
+#include "../common/apply_operator.hpp"
 
 #include <iterator>
 #include <algorithm>
@@ -106,20 +107,5 @@ public:
 		);
 	}
 } keys;
-
-
-template<class Enumerable>
-keys_sequence<Enumerable>
-operator|(Enumerable &&enumerable, const keys_factory &factory){
-	return factory.create(
-		std::forward<Enumerable>(enumerable)
-	);
-}
-
-template<class Factory>
-composite_factory<const keys_factory &, Factory>
-operator|(const keys_factory &factory, Factory &&other){
-	return make_composite(std::move(factory), std::forward<Factory>(other));
-}
 
 }

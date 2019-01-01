@@ -1,7 +1,10 @@
 
 #pragma once
 
+#include "apply_operator.hpp"
+
 #include "../meta/is_enumerable.hpp"
+#include "../meta/is_factory.hpp"
 
 #include <type_traits>
 
@@ -65,50 +68,17 @@ compose(Factory &&factory){
 }
 
 template<
-	class Enumerable,
-   	class SubFactory1,
-	class SubFactory2,
-   	class = typename std::enable_if<meta::is_enumerable<Enumerable>::value>::type
+	class Factory1,
+	class Factory2,
+	class = typename std::enable_if<
+		meta::is_factory<Factory1>::value && meta::is_factory<Factory2>::value
+	>::type
 >
-auto
-operator|(Enumerable &&enumerable, const composite_factory<SubFactory1, SubFactory2> &factory){
-	return factory.create(std::forward<Enumerable>(enumerable));
-}
-
-template<
-	class Enumerable,
-	class SubFactory1,
-	class SubFactory2,
-	class = typename std::enable_if<meta::is_enumerable<Enumerable>::value>::type
->
-auto
-operator|(Enumerable &&enumerable, composite_factory<SubFactory1, SubFactory2> &&factory) {
-	return std::move(factory).create(std::forward<Enumerable>(enumerable));
-}
-
-template<
-	class Factory,
-	class SubFactory1,
-	class SubFactory2
->
-auto
-operator|(const composite_factory<SubFactory1, SubFactory2> &factory, Factory &&other) {
+composite_factory<Factory1, Factory2>
+operator|(Factory1 &&factory1, Factory2 &&factory2){
 	return make_composite(
-		factory,
-		std::forward<Factory>(other)
-	);
-}
-
-template<
-	class Factory,
-   	class SubFactory1,
-	class SubFactory2
->
-auto
-operator|(composite_factory<SubFactory1, SubFactory2> &&factory, Factory &&other){
-	return make_composite(
-		std::forward<composite_factory<SubFactory1, SubFactory2>>(factory),
-	   	std::forward<Factory>(other)
+		std::forward<Factory1>(factory1),
+		std::forward<Factory2>(factory2)
 	);
 }
 

@@ -5,6 +5,7 @@
 #include "../meta/enumerable_traits.hpp"
 
 #include "../common/composite_factory.hpp"
+#include "../common/apply_operator.hpp"
 
 #include <iterator>
 #include <vector>
@@ -79,25 +80,5 @@ public:
 		);
 	}
 } cache;
-
-template<
-	class Enumerable,
-   	class = typename std::enable_if<meta::is_enumerable<Enumerable>::value>::type
->
-cached_sequence<Enumerable>
-operator|(Enumerable &&enumerable, const cache_factory &factory) {
-	return factory.create(
-		std::forward<Enumerable>(enumerable)
-	);
-}
-
-template<class Factory>
-composite_factory<const cache_factory &, Factory>
-operator|(const cache_factory &factory, Factory &&other){
-	return make_composite(
-		factory,
-	   	std::forward<Factory>(other)
-	);
-}
 
 }

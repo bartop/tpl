@@ -9,6 +9,7 @@
 #include "../detail/iterator_base.hpp"
 
 #include "../common/composite_factory.hpp"
+#include "../common/apply_operator.hpp"
 
 #include <iterator>
 #include <algorithm>
@@ -168,40 +169,6 @@ template<class Enumerable>
 zipped_enumerable_factory<Enumerable>
 zip(Enumerable &&enumerable){
 	return zipped_enumerable_factory<Enumerable>(std::forward<Enumerable>(enumerable));
-}
-
-template<class Enumerable, class Enumerable2>
-ziped_sequence<Enumerable2, Enumerable>
-operator|(Enumerable &&enumerable, const zipped_enumerable_factory<Enumerable2> &factory){
-	return factory.create(
-		std::forward<Enumerable>(enumerable)
-	);
-}
-
-template<class Enumerable, class Enumerable2>
-ziped_sequence<Enumerable2, Enumerable>
-operator|(Enumerable &&enumerable, zipped_enumerable_factory<Enumerable2> &&factory){
-	return std::forward<zipped_enumerable_factory<Enumerable2>>(factory).create(
-		std::forward<Enumerable>(enumerable)
-	);
-}
-
-template<class Factory, class Enumerable2>
-composite_factory<const zipped_enumerable_factory<Enumerable2> &, Factory>
-operator|(const zipped_enumerable_factory<Enumerable2> &factory, Factory &&other){
-	return make_composite(
-		factory,
-	   	std::forward<Factory>(other)
-	);
-}
-
-template<class Factory, class Enumerable2>
-composite_factory<zipped_enumerable_factory<Enumerable2>, Factory>
-operator|(zipped_enumerable_factory<Enumerable2> &&factory, Factory &&other){
-	return make_composite(
-		std::forward<zipped_enumerable_factory<Enumerable2>>(factory),
-	   	std::forward<Factory>(other)
-	);
 }
 
 }

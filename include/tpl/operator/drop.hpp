@@ -8,6 +8,7 @@
 #include "../detail/iterator_base.hpp"
 
 #include "../common/composite_factory.hpp"
+#include "../common/apply_operator.hpp"
 
 #include <iterator>
 #include <algorithm>
@@ -80,30 +81,6 @@ private:
 drop_factory
 drop(unsigned toDrop){
 	return drop_factory(toDrop);
-}
-
-template<class Enumerable>
-dropping_sequence<Enumerable>
-operator|(Enumerable &&enumerable, const drop_factory &factory){
-	return factory.create(std::forward<Enumerable>(enumerable));
-}
-
-template<class Enumerable>
-dropping_sequence<Enumerable>
-operator|(Enumerable &&enumerable, drop_factory &&factory){
-	return std::move(factory).create(std::forward<Enumerable>(enumerable));
-}
-
-template<class Factory>
-composite_factory<const drop_factory &, Factory>
-operator|(const drop_factory &factory, Factory &&other){
-	return make_composite(factory, std::forward<Factory>(other));
-}
-
-template<class Factory>
-composite_factory<drop_factory, Factory>
-operator|(drop_factory &&factory, Factory &&other){
-	return make_composite(std::move(factory), std::forward<Factory>(other));
 }
 
 }
