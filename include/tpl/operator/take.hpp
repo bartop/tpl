@@ -6,6 +6,7 @@
 #include "../meta/enumerable_traits.hpp"
 
 #include "../common/composite_factory.hpp"
+#include "../common/apply_operator.hpp"
 
 #include <iterator>
 #include <algorithm>
@@ -78,40 +79,6 @@ private:
 take_factory
 take(unsigned toTake){
 	return take_factory(toTake);
-}
-
-template<class Enumerable>
-taken_sequence<Enumerable>
-operator|(Enumerable &&enumerable, take_factory &&factory){
-	return std::move(factory).create(
-		std::forward<Enumerable>(enumerable)
-	);
-}
-
-template<class Enumerable>
-taken_sequence<Enumerable>
-operator|(Enumerable &&enumerable, const take_factory &factory){
-	return factory.create(
-		std::forward<Enumerable>(enumerable)
-	);
-}
-
-template<class Factory>
-composite_factory<const take_factory &, Factory>
-operator|(const take_factory &factory, Factory &&other){
-	return make_composite(
-		factory,
-	   	std::forward<Factory>(other)
-	);
-}
-
-template<class Factory>
-composite_factory<take_factory, Factory>
-operator|(take_factory &&factory, Factory &&other){
-	return make_composite(
-		std::move(factory),
-	   	std::forward<Factory>(other)
-	);
 }
 
 }

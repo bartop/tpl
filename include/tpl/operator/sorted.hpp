@@ -6,6 +6,7 @@
 #include "../meta/enumerable_traits.hpp"
 
 #include "../common/composite_factory.hpp"
+#include "../common/apply_operator.hpp"
 
 #include <iterator>
 #include <set>
@@ -109,48 +110,6 @@ template<class Comparison>
 compare_factory<Comparison>
 sort(Comparison &&compareComparison){
 	return compare_factory<Comparison>(std::forward<Comparison>(compareComparison));
-}
-
-template<
-	class Enumerable,
-   	class Comparison,
-   	class = typename std::enable_if<meta::is_enumerable<std::decay_t<Enumerable>>::value>::type
->
-sorted_sequence<Enumerable, Comparison>
-operator|(Enumerable &&enumerable, const compare_factory<Comparison> &factory) {
-	return factory.create(
-		std::forward<Enumerable>(enumerable)
-	);
-}
-
-template<
-	class Enumerable,
-   	class Comparison,
-   	class = typename std::enable_if<meta::is_enumerable<std::decay_t<Enumerable>>::value>::type
->
-sorted_sequence<Enumerable, Comparison>
-operator|(Enumerable &&enumerable, compare_factory<Comparison> &&factory){
-	return std::move(factory).create(
-		std::forward<Enumerable>(enumerable)
-	);
-}
-
-template<class Factory, class Comparison>
-composite_factory<const compare_factory<Comparison> &, Factory>
-operator|(const compare_factory<Comparison> &factory, Factory &&other){
-	return make_composite(
-		factory,
-	   	std::forward<Factory>(other)
-	);
-}
-
-template<class Factory, class Comparison>
-composite_factory<compare_factory<Comparison>, Factory>
-operator|(compare_factory<Comparison> &&factory, Factory &&other){
-	return make_composite(
-		std::move(factory),
-	   	std::forward<Factory>(other)
-	);
 }
 
 }

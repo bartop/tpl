@@ -6,6 +6,7 @@
 #include <tpl/operator/filtered.hpp>
 #include <tpl/operator/transformed.hpp>
 #include <tpl/operator/sorted.hpp>
+#include <tpl/common/apply_operator.hpp>
 
 using namespace tpl;
 

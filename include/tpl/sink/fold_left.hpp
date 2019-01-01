@@ -5,6 +5,7 @@
 
 #include "../common/sink.hpp"
 #include "../common/composite_factory.hpp"
+#include "../common/apply_operator.hpp"
 
 namespace tpl{
 
@@ -134,32 +135,6 @@ fold_left(Predicate &&predicate, InitialValue &&initialValue){
 	return initialized_fold_left_factory<Predicate, InitialValue>(
 		std::forward<Predicate>(predicate),
 		std::forward<InitialValue>(initialValue)
-	);
-}
-
-template<
-	class Enumerable,
-	class Predicate,
-	class InitialValue,
-   	class = typename std::enable_if<meta::is_enumerable<std::decay_t<Enumerable>>::value>::type
->
-sink<Enumerable, initialized_fold_left<Enumerable, Predicate, InitialValue>>
-operator|(Enumerable &&enumerable, initialized_fold_left_factory<Predicate, InitialValue> &&factory){
-	return std::forward<initialized_fold_left_factory<Predicate, InitialValue>>(factory).create(
-		std::forward<Enumerable>(enumerable)
-	);
-}
-
-template<
-	class Enumerable,
-	class Predicate,
-	class InitialValue,
-   	class = typename std::enable_if<meta::is_enumerable<std::decay_t<Enumerable>>::value>::type
->
-sink<Enumerable, initialized_fold_left<Enumerable, Predicate, InitialValue>>
-operator|(Enumerable &&enumerable, const initialized_fold_left_factory<Predicate, InitialValue> &factory){
-	return factory.create(
-		std::forward<Enumerable>(enumerable)
 	);
 }
 

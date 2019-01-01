@@ -3,6 +3,7 @@
 
 #include "../common/sink.hpp"
 #include "../common/composite_factory.hpp"
+#include "../common/apply_operator.hpp"
 
 namespace tpl{
 
@@ -66,30 +67,6 @@ copy_to_factory<OutputIterator>
 copy_to(OutputIterator &&outputIterator){
 	return copy_to_factory<OutputIterator>(
 		std::forward<OutputIterator>(outputIterator)
-	);
-}
-
-template<
-	class Enumerable,
-	class OutputIterator,
-   	class = typename std::enable_if<meta::is_enumerable<std::decay_t<Enumerable>>::value>::type
->
-sink<Enumerable, copied<Enumerable>>
-operator|(Enumerable &&enumerable, copy_to_factory<OutputIterator> &&factory){
-	return std::forward<copy_to_factory<OutputIterator>>(factory).create(
-		std::forward<Enumerable>(enumerable)
-	);
-}
-
-template<
-	class Enumerable,
-	class OutputIterator,
-   	class = typename std::enable_if<meta::is_enumerable<std::decay_t<Enumerable>>::value>::type
->
-sink<Enumerable, copied<Enumerable>>
-operator|(Enumerable &&enumerable, const copy_to_factory<OutputIterator> &factory){
-	return factory.create(
-		std::forward<Enumerable>(enumerable)
 	);
 }
 

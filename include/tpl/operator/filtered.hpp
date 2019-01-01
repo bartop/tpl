@@ -8,6 +8,7 @@
 #include "../detail/iterator_base.hpp"
 
 #include "../common/composite_factory.hpp"
+#include "../common/apply_operator.hpp"
 
 #include <iterator>
 #include <algorithm>
@@ -166,42 +167,6 @@ template<class FilterPredicate>
 filter_factory<FilterPredicate>
 filter(FilterPredicate &&filterPredicate){
 	return filter_factory<FilterPredicate>(std::forward<FilterPredicate>(filterPredicate));
-}
-
-template<
-	class Enumerable,
-	class FilterPredicate,
-   	class = typename std::enable_if<meta::is_enumerable<Enumerable>::value>::type
->
-filtered_sequence<Enumerable, FilterPredicate>
-operator|(Enumerable &&enumerable, const filter_factory<FilterPredicate> &factory){
-	return factory.create(
-		std::forward<Enumerable>(enumerable)
-	);
-}
-
-template<
-	class Enumerable,
-	class FilterPredicate,
-   	class = typename std::enable_if<meta::is_enumerable<Enumerable>::value>::type
->
-filtered_sequence<Enumerable, FilterPredicate>
-operator|(Enumerable &&enumerable, filter_factory<FilterPredicate> &&factory){
-	return std::move(factory).create(
-		std::forward<Enumerable>(enumerable)
-	);
-}
-
-template<class Factory, class FilterPredicate>
-composite_factory<const filter_factory<FilterPredicate> &, Factory>
-operator|(const filter_factory<FilterPredicate> &factory, Factory &&other){
-	return make_composite(factory, std::forward<Factory>(other));
-}
-
-template<class Factory, class FilterPredicate>
-composite_factory<filter_factory<FilterPredicate>, Factory>
-operator|(filter_factory<FilterPredicate> &&factory, Factory &&other){
-	return make_composite(std::move(factory), std::forward<Factory>(other));
 }
 
 }

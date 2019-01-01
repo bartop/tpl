@@ -8,6 +8,7 @@
 #include "../detail/iterator_base.hpp"
 
 #include "../common/composite_factory.hpp"
+#include "../common/apply_operator.hpp"
 
 #include <iterator>
 #include <algorithm>
@@ -105,22 +106,5 @@ public:
 		);
 	}
 } mapped_values;
-
-template<class Enumerable>
-mapped_values_sequence<Enumerable>
-operator|(Enumerable &&enumerable, const mapped_values_factory &factory){
-	return factory.create(
-		std::forward<Enumerable>(enumerable)
-	);
-}
-
-template<class Factory>
-composite_factory<const mapped_values_factory &, Factory>
-operator|(const mapped_values_factory &factory, Factory &&other){
-	return make_composite(
-		factory,
-	   	std::forward<Factory>(other)
-	);
-}
 
 }

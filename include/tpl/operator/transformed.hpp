@@ -9,6 +9,7 @@
 #include "../detail/iterator_base.hpp"
 
 #include "../common/composite_factory.hpp"
+#include "../common/apply_operator.hpp"
 
 #include <iterator>
 #include <type_traits>
@@ -151,48 +152,6 @@ template<class Predicate>
 transform_factory<Predicate>
 transform(Predicate &&transformPredicate){
 	return transform_factory<Predicate>(std::forward<Predicate>(transformPredicate));
-}
-
-template<
-	class Enumerable,
-   	class Predicate,
-   	class = typename std::enable_if<meta::is_enumerable<std::decay_t<Enumerable>>::value>::type
->
-transformed_sequence<Enumerable, Predicate>
-operator|(Enumerable &&enumerable, const transform_factory<Predicate> &factory){
-	return factory.create(
-		std::forward<Enumerable>(enumerable)
-	);
-}
-
-template<
-	class Enumerable,
-   	class Predicate,
-   	class = typename std::enable_if<meta::is_enumerable<std::decay_t<Enumerable>>::value>::type
->
-transformed_sequence<Enumerable, Predicate>
-operator|(Enumerable &&enumerable, transform_factory<Predicate> &&factory){
-	return std::move(factory).create(
-		std::forward<Enumerable>(enumerable)
-	);
-}
-
-template<class Factory, class Predicate>
-composite_factory<const transform_factory<Predicate> &, Factory>
-operator|(const transform_factory<Predicate> &factory, Factory &&other){
-	return make_composite(
-		factory,
-	   	std::forward<Factory>(other)
-	);
-}
-
-template<class Factory, class Predicate>
-composite_factory<transform_factory<Predicate>, Factory>
-operator|(transform_factory<Predicate> &&factory, Factory &&other){
-	return make_composite(
-		std::move(factory),
-	   	std::forward<Factory>(other)
-	);
 }
 
 }
