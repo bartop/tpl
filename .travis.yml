@@ -35,7 +35,18 @@ matrix:
             - g++-7
       env:
         - MATRIX_EVAL="export CC=gcc-7 CXX=g++-7"
-
+   
+    - os: linux
+      compiler: gcc
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-8
+      env:
+        - MATRIX_EVAL="export CC=gcc-8 CXX=g++-8"
+        
     - os: linux
       compiler: gcc
       addons:
@@ -83,6 +94,33 @@ matrix:
             - g++-4.9
       env:
         - MATRIX_EVAL="export CC=clang-5.0 CXX=clang++-5.0"
+
+    - os: linux
+      compiler: clang
+      addons:
+        apt:
+          sources:
+            - llvm-toolchain-trusty-6.0
+            - ubuntu-toolchain-r-test
+          packages:
+            - clang-6.0
+            - g++-4.9
+      env:
+        - MATRIX_EVAL="export CC=clang-6.0 CXX=clang++-6.0"
+
+    - os: linux
+      compiler: clang
+      addons:
+        apt:
+          sources:
+            - llvm-toolchain-trusty-7
+            - ubuntu-toolchain-r-test
+          packages:
+            - clang-7
+            - g++-4.9
+      env:
+        - MATRIX_EVAL="export CC=clang-7 CXX=clang++-7"
+
 
 before_install:
   - mkdir $HOME/usr
