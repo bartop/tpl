@@ -17,17 +17,17 @@ Using ideas from functional languages and some more modern imperative languages 
 
 ### Linux gcc 4.9+
 
-| gcc 4.9 | gcc 5 | gcc 6 | gcc 7 |
-| ------- | ----- | ----- | ----- |
-| [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/bartop/tpl/branches/master/4)](https://travis-ci.org/bartop/tpl) | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/bartop/tpl/branches/master/1)](https://travis-ci.org/bartop/tpl) | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/bartop/tpl/branches/master/2)](https://travis-ci.org/bartop/tpl) | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/bartop/tpl/branches/master/3)](https://travis-ci.org/bartop/tpl) 
+| gcc 4.9 | gcc 5 | gcc 6 | gcc 7 | gcc 8 |
+| ------- | ----- | ----- | ----- | ----- |
+| [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/bartop/tpl/branches/devel/5)](https://travis-ci.org/bartop/tpl) | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/bartop/tpl/branches/devel/1)](https://travis-ci.org/bartop/tpl) | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/bartop/tpl/branches/devel/2)](https://travis-ci.org/bartop/tpl) | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/bartop/tpl/branches/devel/3)](https://travis-ci.org/bartop/tpl) | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/bartop/tpl/branches/devel/4)](https://travis-ci.org/bartop/tpl) |
 
 ### Linux clang 3.9+
 
-| clang 3.9 | clang 4 | clang 5 |
-| --------- | ------- | ------- | 
-| [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/bartop/tpl/branches/master/5)](https://travis-ci.org/bartop/tpl) | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/bartop/tpl/branches/master/6)](https://travis-ci.org/bartop/tpl) | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/bartop/tpl/branches/master/7)](https://travis-ci.org/bartop/tpl) |
+| clang 3.9 | clang 4 | clang 5 | clang 6 | clang 7 |
+| --------- | ------- | ------- | ------- | ------- |
+| [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/bartop/tpl/branches/devel/6)](https://travis-ci.org/bartop/tpl) | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/bartop/tpl/branches/devel/7)](https://travis-ci.org/bartop/tpl) | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/bartop/tpl/branches/devel/8)](https://travis-ci.org/bartop/tpl) | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/bartop/tpl/branches/devel/9)](https://travis-ci.org/bartop/tpl) |[![Build Status](https://travis-matrix-badges.herokuapp.com/repos/bartop/tpl/branches/devel/10)](https://travis-ci.org/bartop/tpl) |
 
-### Visual Studio
+### Visual Studio 2015+
 
 | Visual Studio 2015/2017 |
 | ------------------ |
