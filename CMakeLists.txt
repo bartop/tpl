@@ -41,6 +41,7 @@ set(TEST_SOURCES
     tests/drop_test.cpp
     tests/composite_factory_test.cpp
     tests/cache_test.cpp
+    tests/no_operation_test.cpp
 )
 
 set(CATCH_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/External/Catch)
