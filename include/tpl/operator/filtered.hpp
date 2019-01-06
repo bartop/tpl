@@ -17,7 +17,7 @@ namespace tpl{
 
 template<class SubIterator, class FilterPredicate>
 class filtering_iterator :
-	public detail::iterator_base<filtering_iterator<SubIterator, FilterPredicate>> {
+	public detail::input_iterator_base<filtering_iterator<SubIterator, FilterPredicate>> {
 public:
 	using sub_traits_t = std::iterator_traits<SubIterator>;
 	using value_type = typename sub_traits_t::value_type;

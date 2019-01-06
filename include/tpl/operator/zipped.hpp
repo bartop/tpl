@@ -18,7 +18,7 @@ namespace tpl{
 
 template<class SubIterator1, class SubIterator2>
 class zipped_iterator :
-	public detail::iterator_base<zipped_iterator<SubIterator1, SubIterator2>> {
+	public detail::input_iterator_base<zipped_iterator<SubIterator1, SubIterator2>> {
 public:
 	using sub_traits_t1 = std::iterator_traits<SubIterator1>;
 	using sub_traits_t2 = std::iterator_traits<SubIterator2>;

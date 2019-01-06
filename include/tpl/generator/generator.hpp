@@ -9,7 +9,7 @@ namespace tpl{
 
 template<class GeneratingFunction, class ValueType>
 class generating_iterator :
-	public detail::iterator_base<generating_iterator<GeneratingFunction, ValueType>> {
+	public detail::input_iterator_base<generating_iterator<GeneratingFunction, ValueType>> {
 public:
 	using value_type = ValueType;
 	using difference_type = ptrdiff_t;

@@ -11,7 +11,7 @@
 namespace tpl{
 
 template<class Enumerable>
-class cycle_iterator : public detail::iterator_base<cycle_iterator<Enumerable>> {
+class cycle_iterator : public detail::input_iterator_base<cycle_iterator<Enumerable>> {
 public:
 	using enumerable_traits = meta::enumerable_traits<typename std::decay<Enumerable>::type>;
 	using value_type = typename enumerable_traits::value_type;

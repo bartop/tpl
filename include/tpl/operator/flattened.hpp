@@ -17,7 +17,7 @@ namespace tpl{
 
 template<class OuterIterator, class InnerIterator>
 class flattening_iterator :
-	public detail::iterator_base<flattening_iterator<OuterIterator, InnerIterator>> {
+	public detail::input_iterator_base<flattening_iterator<OuterIterator, InnerIterator>> {
 public:
 	using sub_traits_t = std::iterator_traits<InnerIterator>;
 	using value_type = typename sub_traits_t::value_type;

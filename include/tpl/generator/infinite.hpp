@@ -8,7 +8,7 @@
 namespace tpl{
 
 template<class ValueType>
-class infinite_iterator : public detail::iterator_base<infinite_iterator<ValueType>> {
+class infinite_iterator : public detail::input_iterator_base<infinite_iterator<ValueType>> {
 public:
 	using value_type = ValueType;
 	using difference_type = ptrdiff_t;

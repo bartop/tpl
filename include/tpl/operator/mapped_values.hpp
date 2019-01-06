@@ -17,7 +17,7 @@ namespace tpl{
 
 template<class SubIterator>
 class mapped_values_iterator :
-	public detail::iterator_base<mapped_values_iterator<SubIterator>> {
+	public detail::input_iterator_base<mapped_values_iterator<SubIterator>> {
 public:
 	using sub_traits_t = std::iterator_traits<SubIterator>;
 	using associative_traits_t = meta::associative_element_traits<typename sub_traits_t::value_type>;
