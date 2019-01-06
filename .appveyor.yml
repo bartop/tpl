@@ -16,6 +16,12 @@ configuration:
     - Release
     - Debug
 
+branches:
+    only:
+      - master
+      - devel
+      - ci-experiments
+
 install:
     - git submodule update --init --recursive
 

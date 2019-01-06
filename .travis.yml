@@ -121,6 +121,11 @@ matrix:
       env:
         - MATRIX_EVAL="export CC=clang-7 CXX=clang++-7"
 
+branches:
+    only:
+      - master
+      - devel
+      - ci-experiments
 
 before_install:
   - mkdir $HOME/usr
