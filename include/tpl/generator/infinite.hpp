@@ -39,7 +39,7 @@ public:
 	}
 
 	bool
-	operator==(const infinite_iterator &other) const {
+	operator==(const infinite_iterator &) const {
 		return false;
 	}
 

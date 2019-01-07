@@ -43,7 +43,7 @@ public:
 	}
 
 	bool
-	operator==(const generating_iterator &other) const {
+	operator==(const generating_iterator &) const {
 		return false;
 	}
 

@@ -48,7 +48,7 @@ public:
 	}
 
 	bool
-	operator==(const cycle_iterator &other) const {
+	operator==(const cycle_iterator &) const {
 		return false;
 	}
 
