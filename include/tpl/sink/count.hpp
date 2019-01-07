@@ -15,22 +15,22 @@ public:
 
 	unsigned
 	operator()(Enumerable &enumerable) {
-		unsigned i = 0;
+		unsigned elements_number = 0;
 		for(auto &element : enumerable) {
 			if(m_logicalPredicate(element))
-				++i;
+				++elements_number;
 		}
-		return i;
+		return elements_number;
 	}
 
 	unsigned
 	operator()(const Enumerable &enumerable) const {
-		unsigned i = 0;
+		unsigned elements_number = 0;
 		for(const auto &element : enumerable) {
 			if(m_logicalPredicate(element))
-				++i;
+				++elements_number;
 		}
-		return i;
+		return elements_number;
 	}
 
 private:
