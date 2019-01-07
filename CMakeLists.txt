@@ -7,7 +7,7 @@ if ("${CMAKE_SOURCE_DIR}" STREQUAL "${CMAKE_BINARY_DIR}")
 endif ()
 
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Weffc++ -Wnull-dereference -Wold-style-cast -Wshadow")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Weffc++ -Wnull-dereference -Wold-style-cast -Wshadow -pedantic-errors")
 endif()
 
 if ( CMAKE_COMPILER_IS_GNUCC )
@@ -18,7 +18,7 @@ if ( CMAKE_COMPILER_IS_GNUCC )
 		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wduplicated-branches" )
 	endif()
 
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Weffc++ -Wlogical-op -Wold-style-cast -Wuseless-cast -Wshadow")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Weffc++ -Wlogical-op -Wold-style-cast -Wuseless-cast -Wshadow -pedantic-errors")
 endif ( CMAKE_COMPILER_IS_GNUCC )
 if ( MSVC )
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4")
