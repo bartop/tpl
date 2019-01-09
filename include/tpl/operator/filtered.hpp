@@ -12,6 +12,7 @@
 
 #include <iterator>
 #include <algorithm>
+#include <functional>
 
 namespace tpl{
 
@@ -61,7 +62,7 @@ public:
 private:
 	SubIterator m_subIterator;
 	SubIterator m_endIterator;
-	const FilterPredicate &m_filterPredicate;
+	std::reference_wrapper<const FilterPredicate> m_filterPredicate;
 };
 
 template<class Enumerable, class FilterPredicate>
@@ -71,11 +72,11 @@ public:
 	using value_type = typename enumerable_traits::value_type;
 	using const_iterator = filtering_iterator<
 		typename enumerable_traits::const_iterator,
-		FilterPredicate
+		typename std::remove_reference<FilterPredicate>::type
 	>;
 	using iterator = filtering_iterator<
 		typename enumerable_traits::iterator,
-		FilterPredicate
+		typename std::remove_reference<FilterPredicate>::type
 	>;
 
 	template<class T>

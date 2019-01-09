@@ -13,6 +13,7 @@
 
 #include <iterator>
 #include <type_traits>
+#include <functional>
 
 namespace tpl{
 
@@ -63,7 +64,7 @@ public:
 
 private:
 	SubIterator m_subIterator;
-	const Predicate &m_transformPredicate;
+	std::reference_wrapper<const Predicate> m_transformPredicate;
 };
 
 template<class Enumerable, class Predicate>
@@ -76,8 +77,14 @@ public:
 				std::declval<typename std::remove_reference<Enumerable>::type::value_type>()
 			)
 		);
-	using const_iterator = transforming_iterator<typename enumerable_traits::const_iterator, Predicate>;
-	using iterator = transforming_iterator<typename enumerable_traits::iterator, Predicate>;
+	using const_iterator = transforming_iterator<
+		typename enumerable_traits::const_iterator,
+		typename std::remove_reference<Predicate>::type
+	>;
+	using iterator = transforming_iterator<
+		typename enumerable_traits::iterator,
+		typename std::remove_reference<Predicate>::type
+		>;
 
 	template<class T>
 	transformed_sequence(
