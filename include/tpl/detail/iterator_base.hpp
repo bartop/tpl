@@ -19,7 +19,19 @@ protected:
 };
 
 template<class Derived>
-class input_iterator_base : public recurring_template_pattern_base<Derived> {
+class equality_comparable : public recurring_template_pattern_base<Derived> {
+public:
+	bool operator!=(const Derived &other) const {
+		return !(this->derived_this() == other);
+	}
+
+protected:
+	~equality_comparable() noexcept = default;
+
+};
+
+template<class Derived>
+class input_iterator_base : public equality_comparable<Derived> {
 public:
 	#if defined(__clang__)
 	#pragma clang diagnostic push
@@ -41,10 +53,6 @@ public:
 	#pragma GCC diagnostic pop
 	#endif
 
-	bool operator!=(const Derived &other) const {
-		return !(this->derived_this() == other);
-	}
-
 protected:
 	~input_iterator_base() noexcept = default;
 };
@@ -60,7 +68,7 @@ public:
 	#pragma GCC diagnostic ignored "-Weffc++"
 	#endif
 
-	Derived operator++(int) {
+	Derived operator--(int) {
 		auto temp = this->derived_this();
 		--(this->derived_this());
 		return temp;
