@@ -36,12 +36,12 @@ public:
 	) :
 		m_subIterator(std::find_if(subIterator, endIterator, filterPredicate)),
 		m_endIterator(std::move(endIterator)),
-		m_filterPredicate(filterPredicate) {}
+		m_filterPredicate(&filterPredicate) {}
 
 	filtering_iterator &
 	operator++() {
 		++m_subIterator;
-		m_subIterator = std::find_if(m_subIterator, m_endIterator, m_filterPredicate);
+		m_subIterator = std::find_if(m_subIterator, m_endIterator, *m_filterPredicate);
 		return *this;
 	}
 
@@ -62,7 +62,7 @@ public:
 private:
 	SubIterator m_subIterator;
 	SubIterator m_endIterator;
-	std::reference_wrapper<const FilterPredicate> m_filterPredicate;
+	const FilterPredicate *m_filterPredicate;
 };
 
 template<class Enumerable, class FilterPredicate>

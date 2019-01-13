@@ -33,26 +33,11 @@ protected:
 template<class Derived>
 class input_iterator_base : public equality_comparable<Derived> {
 public:
-	#if defined(__clang__)
-	#pragma clang diagnostic push
-	#pragma clang diagnostic ignored "-Weffc++"
-	#elif defined(__GNUC__) || defined(__GNUG__)
-	#pragma GCC diagnostic push
-	#pragma GCC diagnostic ignored "-Weffc++"
-	#endif
-
 	Derived operator++(int) {
 		auto temp = this->derived_this();
 		++(this->derived_this());
 		return temp;
 	}
-
-	#if defined(__clang__)
-	#pragma clang diagnostic pop
-	#elif defined(__GNUC__) || defined(__GNUG__)
-	#pragma GCC diagnostic pop
-	#endif
-
 protected:
 	~input_iterator_base() noexcept = default;
 };
@@ -60,25 +45,11 @@ protected:
 template<class Derived>
 class bidirectional_iterator_base : public input_iterator_base<Derived> {
 public:
-	#if defined(__clang__)
-	#pragma clang diagnostic push
-	#pragma clang diagnostic ignored "-Weffc++"
-	#elif defined(__GNUC__) || defined(__GNUG__)
-	#pragma GCC diagnostic push
-	#pragma GCC diagnostic ignored "-Weffc++"
-	#endif
-
 	Derived operator--(int) {
 		auto temp = this->derived_this();
 		--(this->derived_this());
 		return temp;
 	}
-
-	#if defined(__clang__)
-	#pragma clang diagnostic pop
-	#elif defined(__GNUC__) || defined(__GNUG__)
-	#pragma GCC diagnostic pop
-	#endif
 
 protected:
 	~bidirectional_iterator_base() noexcept = default;

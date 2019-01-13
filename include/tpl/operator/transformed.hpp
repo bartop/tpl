@@ -39,7 +39,7 @@ public:
 		const Predicate &transformPredicate
 	) :
 		m_subIterator(std::move(subIterator)),
-		m_transformPredicate(transformPredicate) {}
+		m_transformPredicate(&transformPredicate) {}
 
 	transforming_iterator &
 	operator++() {
@@ -49,7 +49,7 @@ public:
 
 	reference
 	operator*() const {
-		return m_transformPredicate(*m_subIterator);
+		return (*m_transformPredicate)(*m_subIterator);
 	}
 
 	pointer
@@ -64,7 +64,7 @@ public:
 
 private:
 	SubIterator m_subIterator;
-	std::reference_wrapper<const Predicate> m_transformPredicate;
+	const Predicate *m_transformPredicate;
 };
 
 template<class Enumerable, class Predicate>

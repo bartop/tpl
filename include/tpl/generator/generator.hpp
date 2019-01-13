@@ -23,12 +23,12 @@ public:
 		const GeneratingFunction &generatingFunction,
 		ValueType initialValue
 	) :
-		m_generatingFunction(generatingFunction),
+		m_generatingFunction(&generatingFunction),
    		m_currentValue(std::move(initialValue)){}
 
 	generating_iterator &
 	operator++() {
-		m_currentValue = m_generatingFunction(m_currentValue);
+		m_currentValue = (*m_generatingFunction)(m_currentValue);
 		return *this;
 	}
 
@@ -48,7 +48,7 @@ public:
 	}
 
 private:
-	const GeneratingFunction &m_generatingFunction;
+	const GeneratingFunction *m_generatingFunction;
 	ValueType m_currentValue;
 };
 
