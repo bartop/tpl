@@ -4,11 +4,12 @@
 #include <tpl/operator/flattened.hpp>
 
 #include <vector>
+#include <list>
 
-using namespace std;
-using namespace tpl;
 
 TEST_CASE( "Vector of vectors flattening", "[flattened_test]" ) {
+	using namespace std;
+	using namespace tpl;
 	vector<vector<int>> v;
 	vector<int> expected;
 	SECTION("Test 1"){
@@ -36,5 +37,23 @@ TEST_CASE( "Vector of vectors flattening", "[flattened_test]" ) {
 		const auto res = v | flatten;
 		vector<int> result(res.begin(), res.end());
 		REQUIRE(result == expected);
+	}
+}
+
+TEST_CASE( "Compilation tests", "[flattened_test]" ) {
+	using namespace std;
+	SECTION("Iterator compilation"){
+		tpl::flattening_iterator<vector<vector<int>>::iterator, vector<int>::iterator>
+			nestedVectorsIterator;
+		tpl::flattening_iterator<list<vector<int>>::iterator, vector<int>::iterator>
+			listOfVectorsIterator;
+		tpl::flattening_iterator<vector<list<int>>::iterator, list<int>::iterator>
+			vectorOfListsIterator;
+		REQUIRE((tpl::flattening_iterator<vector<vector<int>>::iterator, vector<int>::iterator>() ==
+			nestedVectorsIterator));
+		REQUIRE((tpl::flattening_iterator<list<vector<int>>::iterator, vector<int>::iterator>() ==
+			listOfVectorsIterator));
+		REQUIRE((tpl::flattening_iterator<vector<list<int>>::iterator, list<int>::iterator>() ==
+			vectorOfListsIterator));
 	}
 }

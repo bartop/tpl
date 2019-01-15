@@ -20,6 +20,8 @@ public:
 	using pointer = const value_type *;
 	using iterator_category = std::input_iterator_tag;
 
+	cycle_iterator() = default;
+
 	~cycle_iterator() noexcept = default;
 
 	cycle_iterator(

@@ -4,6 +4,7 @@
 #include <tpl/operator/filtered.hpp>
 
 #include <vector>
+#include <list>
 
 TEST_CASE( "Vector filtering", "[filtered_test]" ) {
 	using namespace std;
@@ -64,5 +65,16 @@ TEST_CASE( "Vector filtering without using namespace tpl", "[filtered_test]" ) {
 		const auto vf = v | tpl::filter([](const auto &i){ return i > 5; });
 		vector<int> result(vf.begin(), vf.end());
 		REQUIRE((vector<int>{ 6, 7, 8, 9, 10 }) == result);
+	}
+}
+
+TEST_CASE( "Compilation tests", "[filtered_test]" ) {
+	SECTION("Iterator compilation"){
+		tpl::filtering_iterator<std::vector<int>::iterator, bool (*)(int)> vectorAndFunctionPointerIterator;
+		tpl::filtering_iterator<std::list<double>::iterator, bool (*)(double)> listAndFunctionPointerIterator;
+		REQUIRE((tpl::filtering_iterator<std::vector<int>::iterator, bool (*)(int)>() ==
+				vectorAndFunctionPointerIterator));
+		REQUIRE((tpl::filtering_iterator<std::list<double>::iterator, bool (*)(double)>() ==
+				listAndFunctionPointerIterator));
 	}
 }

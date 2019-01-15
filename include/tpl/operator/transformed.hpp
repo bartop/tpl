@@ -32,6 +32,8 @@ public:
 	using pointer = detail::pointer_proxy<value_type>;
 	using iterator_category = std::input_iterator_tag;
 
+	transforming_iterator() = default;
+
 	~transforming_iterator() noexcept = default;
 
 	transforming_iterator(

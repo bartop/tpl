@@ -40,4 +40,11 @@ TEST_CASE( "Testing cyclic sequence", "[cycle_test]" ) {
 		REQUIRE((*result.begin() == "a"s));
 		REQUIRE((*(++result.begin()) == "a"s));
 	}
+
+	SECTION("Default iterator constructor compilation") {
+		tpl::cycle_iterator<std::vector<int>> vectorIterator;
+		tpl::cycle_iterator<std::string> stringIterator;
+		REQUIRE((tpl::cycle_iterator<std::vector<int>>() != vectorIterator));
+		REQUIRE((tpl::cycle_iterator<std::string>() != stringIterator));
+	}
 }

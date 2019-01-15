@@ -4,11 +4,13 @@
 #include <tpl/operator/keys.hpp>
 
 #include <vector>
-
-using namespace std;
-using namespace tpl;
+#include <string>
+#include <map>
 
 TEST_CASE( "Keys", "[keys_test]" ) {
+	using namespace std;
+	using namespace tpl;
+
 	SECTION("Test 1"){
 		map<int, int> m{ {1, 2}, {3, 4}, {5, 6}, {7, 8}, {9, 10} };
 		const auto vf = m | keys;
@@ -29,5 +31,17 @@ TEST_CASE( "Keys", "[keys_test]" ) {
 		vector<int> result(vf.begin(), vf.end());
 		vector<int> expected{ 2, 4, 6, 8, 11 };
 		REQUIRE(expected == result);
+	}
+}
+
+TEST_CASE( "Compilation tests", "[keys_test]" ) {
+	using namespace std;
+
+	SECTION("Iterator compilation"){
+		tpl::keys_iterator<map<int, int>::iterator> intMapIterator;
+		tpl::keys_iterator<map<string, string>::iterator> stringMapIterator;
+
+		REQUIRE((tpl::keys_iterator<map<int, int>::iterator>() == intMapIterator));
+		REQUIRE((tpl::keys_iterator<map<string, string>::iterator>() == stringMapIterator));
 	}
 }

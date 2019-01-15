@@ -27,6 +27,8 @@ public:
 	using pointer = const value_type *;
 	using iterator_category = std::input_iterator_tag;
 
+	filtering_iterator() = default;
+
 	~filtering_iterator() noexcept = default;
 
 	filtering_iterator(

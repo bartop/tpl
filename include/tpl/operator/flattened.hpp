@@ -26,6 +26,8 @@ public:
 	using pointer = const value_type *;
 	using iterator_category = std::input_iterator_tag;
 
+	flattening_iterator() = default;
+
 	~flattening_iterator() noexcept = default;
 
 	flattening_iterator(

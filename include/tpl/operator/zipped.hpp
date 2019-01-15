@@ -28,6 +28,8 @@ public:
 	using pointer = detail::pointer_proxy<value_type>;
 	using iterator_category = std::input_iterator_tag;
 
+	zipped_iterator() = default;
+
 	~zipped_iterator() noexcept = default;
 
 	zipped_iterator(

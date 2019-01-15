@@ -27,4 +27,11 @@ TEST_CASE( "Testing infinite sequence", "[infinite_test]" ) {
 		REQUIRE((*result.begin() == "a"s));
 		REQUIRE((*(++result.begin()) == "a"s));
 	}
+
+	SECTION("Default iterator constructor compilation") {
+		tpl::infinite_iterator<int> intIterator;
+		tpl::infinite_iterator<std::string> stringIterator;
+		REQUIRE((tpl::infinite_iterator<int>() != intIterator));
+		REQUIRE((tpl::infinite_iterator<std::string>() != stringIterator));
+	}
 }

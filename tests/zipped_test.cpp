@@ -4,6 +4,7 @@
 #include <tpl/operator/zipped.hpp>
 
 #include <vector>
+#include <list>
 
 TEST_CASE( "Vector zipping", "[zipped_test]" ) {
 	using namespace std;
@@ -28,5 +29,20 @@ TEST_CASE( "Vector zipping", "[zipped_test]" ) {
 		vector<std::pair<int, int>> result(vf.begin(), vf.end());
 		vector<std::pair<int, int>> expected{{3, 5}, {4, 6}, {5, 7}, {6, 8}, {7, 9}, {8, 10} };
 		REQUIRE(expected == result);
+	}
+}
+
+TEST_CASE( "Compilation tests", "[zipped_test]" ) {
+	using namespace std;
+
+	SECTION("Iterator compilation"){
+		tpl::zipped_iterator<vector<int>::iterator, vector<int>::iterator> 
+			vectorAndvectorIterator;
+		tpl::zipped_iterator<list<int>::iterator, vector<int>::iterator> 
+			listAndvectorIterator;
+		REQUIRE((tpl::zipped_iterator<vector<int>::iterator, vector<int>::iterator>() ==
+					vectorAndvectorIterator));
+		REQUIRE((tpl::zipped_iterator<list<int>::iterator, vector<int>::iterator>() ==
+					listAndvectorIterator));
 	}
 }

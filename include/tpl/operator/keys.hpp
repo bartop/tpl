@@ -26,6 +26,8 @@ public:
 	using pointer = const value_type *;
 	using iterator_category = std::input_iterator_tag;
 
+	keys_iterator() = default;
+
 	~keys_iterator() noexcept = default;
 
 	keys_iterator(

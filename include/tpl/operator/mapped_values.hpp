@@ -27,6 +27,8 @@ public:
 	using pointer = const value_type *;
 	using iterator_category = std::input_iterator_tag;
 
+	mapped_values_iterator() = default;
+
 	~mapped_values_iterator() noexcept = default;
 
 	mapped_values_iterator(

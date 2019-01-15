@@ -16,6 +16,8 @@ public:
 	using pointer = const value_type *;
 	using iterator_category = std::input_iterator_tag;
 
+	infinite_iterator() = default;
+
 	~infinite_iterator() noexcept = default;
 
 	infinite_iterator(

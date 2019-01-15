@@ -17,6 +17,8 @@ public:
 	using pointer = const value_type *;
 	using iterator_category = std::input_iterator_tag;
 
+	generating_iterator() = default;
+
 	~generating_iterator() noexcept = default;
 
 	generating_iterator(
