@@ -50,5 +50,10 @@ struct type_wrapper{
 template<class>
 using demote_to_input_tag = type_wrapper<std::input_iterator_tag>;
 
+template<class Iterator>
+std::reverse_iterator<Iterator> make_reverse_iterator(Iterator iter){
+	return std::reverse_iterator<Iterator>(std::move(iter));
+}
+
 }
 }

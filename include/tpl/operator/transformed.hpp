@@ -19,7 +19,7 @@ namespace tpl{
 
 template<class SubIterator, class Predicate>
 class transforming_iterator :
-	public detail::input_iterator_base<transforming_iterator<SubIterator, Predicate>> {
+	public detail::bidirectional_iterator_base<transforming_iterator<SubIterator, Predicate>> {
 public:
 	using sub_traits_t = std::iterator_traits<SubIterator>;
 	using value_type = decltype(
@@ -46,6 +46,12 @@ public:
 	transforming_iterator &
 	operator++() {
 		++m_subIterator;
+		return *this;
+	}
+
+	transforming_iterator &
+	operator--() {
+		--m_subIterator;
 		return *this;
 	}
 
