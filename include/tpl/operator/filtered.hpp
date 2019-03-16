@@ -92,8 +92,8 @@ public:
 	iterator
 	begin() {
 		return iterator(
-			std::begin(m_enumerable),
-		   	std::end(m_enumerable),
+			enumerable_traits::begin(m_enumerable),
+		   	enumerable_traits::end(m_enumerable),
 			m_filterPredicate
 		);
 	}
@@ -101,8 +101,8 @@ public:
 	iterator
 	end() {
 		return iterator(
-			std::end(m_enumerable),
-		   	std::end(m_enumerable),
+			enumerable_traits::end(m_enumerable),
+		   	enumerable_traits::end(m_enumerable),
 			m_filterPredicate
 		);
 	}
@@ -110,8 +110,8 @@ public:
 	const_iterator
 	begin() const {
 		return const_iterator(
-			std::begin(m_enumerable),
-		   	std::end(m_enumerable),
+			enumerable_traits::begin(m_enumerable),
+		   	enumerable_traits::end(m_enumerable),
 			m_filterPredicate
 		);
 	}
@@ -119,8 +119,8 @@ public:
 	const_iterator
 	end() const {
 		return const_iterator(
-			std::end(m_enumerable),
-		   	std::end(m_enumerable),
+			enumerable_traits::end(m_enumerable),
+		   	enumerable_traits::end(m_enumerable),
 			m_filterPredicate
 		);
 	}

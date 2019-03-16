@@ -5,6 +5,10 @@
 #include "../common/composite_factory.hpp"
 #include "../common/apply_operator.hpp"
 
+#include "../meta/enumerable_traits.hpp"
+
+#include <algorithm>
+
 namespace tpl{
 
 template<class Enumerable, class LogicalPredicate>
@@ -15,20 +19,18 @@ public:
 
 	bool
 	operator()(Enumerable &enumerable) {
-		for(auto &element : enumerable) {
-			if(m_logicalPredicate(element))
-				return true;
-		}
-		return false;
+		using traits = meta::enumerable_traits<Enumerable>;
+		return std::any_of(traits::begin(enumerable), traits::end(enumerable),
+				m_logicalPredicate
+		);
 	}
 
 	bool
 	operator()(const Enumerable &enumerable) const {
-		for(const auto &element : enumerable) {
-			if(m_logicalPredicate(element))
-				return true;
-		}
-		return false;
+		using traits = meta::enumerable_traits<Enumerable>;
+		return std::any_of(traits::begin(enumerable), traits::end(enumerable),
+				m_logicalPredicate
+		);
 	}
 
 private:

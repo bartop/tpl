@@ -5,6 +5,10 @@
 #include "../common/composite_factory.hpp"
 #include "../common/apply_operator.hpp"
 
+#include "../meta/enumerable_traits.hpp"
+
+#include <algorithm>
+
 namespace tpl{
 
 template<class Enumerable, class LogicalPredicate>
@@ -15,22 +19,18 @@ public:
 
 	unsigned
 	operator()(Enumerable &enumerable) {
-		unsigned elements_number = 0;
-		for(auto &element : enumerable) {
-			if(m_logicalPredicate(element))
-				++elements_number;
-		}
-		return elements_number;
+		using traits = meta::enumerable_traits<Enumerable>;
+		return static_cast<unsigned>(std::count_if(traits::begin(enumerable), traits::end(enumerable),
+				m_logicalPredicate
+		));
 	}
 
 	unsigned
 	operator()(const Enumerable &enumerable) const {
-		unsigned elements_number = 0;
-		for(const auto &element : enumerable) {
-			if(m_logicalPredicate(element))
-				++elements_number;
-		}
-		return elements_number;
+		using traits = meta::enumerable_traits<Enumerable>;
+		return static_cast<unsigned>(std::count_if(traits::begin(enumerable), traits::end(enumerable),
+				m_logicalPredicate
+		));
 	}
 
 private:

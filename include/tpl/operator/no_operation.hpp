@@ -29,22 +29,22 @@ public:
 
 	iterator
 	begin() {
-		return std::begin(m_enumerable);
+		return enumerable_traits::begin(m_enumerable);
 	}
 
 	iterator
 	end() {
-		return std::end(m_enumerable);
+		return enumerable_traits::end(m_enumerable);
 	}
 
 	const_iterator
 	begin() const {
-		return std::begin(m_enumerable);
+		return enumerable_traits::begin(m_enumerable);
 	}
 
 	const_iterator
 	end() const {
-		return std::end(m_enumerable);
+		return enumerable_traits::end(m_enumerable);
 	}
 
 private:

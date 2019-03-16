@@ -31,26 +31,26 @@ public:
 
 	iterator
 	begin() {
-		return std::begin(m_enumerable);
+		return enumerable_traits::begin(m_enumerable);
 	}
 
 	iterator
 	end() {
-		return std::distance(std::begin(m_enumerable), std::end(m_enumerable)) > m_toTake ?
-			std::next(std::begin(m_enumerable), m_toTake) :
-			std::end(m_enumerable);
+		return std::distance(enumerable_traits::begin(m_enumerable), enumerable_traits::end(m_enumerable)) > m_toTake ?
+			std::next(enumerable_traits::begin(m_enumerable), m_toTake) :
+			enumerable_traits::end(m_enumerable);
 	}
 
 	const_iterator
 	begin() const {
-		return std::begin(m_enumerable);
+		return enumerable_traits::begin(m_enumerable);
 	}
 
 	const_iterator
 	end() const {
-		return std::distance(std::begin(m_enumerable), std::end(m_enumerable)) > m_toTake ?
-			std::next(std::begin(m_enumerable), m_toTake) :
-			std::end(m_enumerable);
+		return std::distance(enumerable_traits::begin(m_enumerable), enumerable_traits::end(m_enumerable)) > m_toTake ?
+			std::next(enumerable_traits::begin(m_enumerable), m_toTake) :
+			enumerable_traits::end(m_enumerable);
 	}
 
 private:

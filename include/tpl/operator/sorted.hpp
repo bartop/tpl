@@ -60,8 +60,8 @@ private:
 	sort(const Enumerable &enumerable) const {
 		m_sorted.clear();
 		std::copy(
-			std::begin(enumerable),
-			std::end(enumerable),
+			enumerable_traits::begin(enumerable),
+			enumerable_traits::end(enumerable),
 			std::inserter(m_sorted, m_sorted.begin())
 		);
 	}

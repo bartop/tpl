@@ -5,6 +5,10 @@
 #include "../common/composite_factory.hpp"
 #include "../common/apply_operator.hpp"
 
+#include "../meta/enumerable_traits.hpp"
+
+#include <algorithm>
+
 namespace tpl{
 
 template<class Enumerable>
@@ -24,7 +28,8 @@ public:
 template<class Enumerable, class OutputIterator>
 void
 copy_to_function(const Enumerable &enumerable, OutputIterator &&outputIterator){
-	std::copy(std::begin(enumerable), std::end(enumerable), outputIterator);
+	using traits = meta::enumerable_traits<Enumerable>;
+	std::copy(traits::begin(enumerable), traits::end(enumerable), outputIterator);
 }
 
 template<class OutputIterator>

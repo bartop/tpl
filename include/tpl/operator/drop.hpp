@@ -33,26 +33,30 @@ public:
 
 	iterator
 	begin() {
-		return std::distance(std::begin(m_enumerable), std::end(m_enumerable)) > m_toDrop ?
-			std::next(std::begin(m_enumerable), m_toDrop) :
-			std::end(m_enumerable);
+		return std::distance(enumerable_traits::begin(m_enumerable),
+			enumerable_traits::end(m_enumerable)) > m_toDrop ?
+				std::next(enumerable_traits::begin(m_enumerable), m_toDrop) :
+				enumerable_traits::end(m_enumerable
+		);
 	}
 
 	iterator
 	end() {
-		return std::end(m_enumerable);
+		return enumerable_traits::end(m_enumerable);
 	}
 
 	const_iterator
 	begin() const {
-		return std::distance(std::begin(m_enumerable), std::end(m_enumerable)) > m_toDrop ?
-			std::next(std::begin(m_enumerable), m_toDrop) :
-			std::end(m_enumerable);
+		return std::distance(enumerable_traits::begin(m_enumerable), 
+			enumerable_traits::end(m_enumerable)) > m_toDrop ?
+				std::next(enumerable_traits::begin(m_enumerable), m_toDrop) :
+				enumerable_traits::end(m_enumerable
+		);
 	}
 
 	const_iterator
 	end() const {
-		return std::end(m_enumerable);
+		return enumerable_traits::end(m_enumerable);
 	}
 
 private:

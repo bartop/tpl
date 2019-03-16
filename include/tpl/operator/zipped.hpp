@@ -97,32 +97,32 @@ public:
 	iterator
 	begin() {
 		return iterator(
-			std::begin(m_enumerable1),
-		   	std::begin(m_enumerable2)
+			enumerable_traits1::begin(m_enumerable1),
+		   	enumerable_traits2::begin(m_enumerable2)
 		);
 	}
 
 	iterator
 	end() {
 		return iterator(
-			std::end(m_enumerable1),
-		   	std::end(m_enumerable2)
+			enumerable_traits1::end(m_enumerable1),
+		   	enumerable_traits2::end(m_enumerable2)
 		);
 	}
 
 	const_iterator
 	begin() const {
 		return const_iterator(
-			std::begin(m_enumerable1),
-		   	std::begin(m_enumerable2)
+			enumerable_traits1::begin(m_enumerable1),
+		   	enumerable_traits2::begin(m_enumerable2)
 		);
 	}
 
 	const_iterator
 	end() const {
 		return const_iterator(
-			std::end(m_enumerable1),
-		   	std::end(m_enumerable2)
+			enumerable_traits1::end(m_enumerable1),
+		   	enumerable_traits2::end(m_enumerable2)
 		);
 	}
 

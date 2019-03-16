@@ -21,6 +21,7 @@ class flattening_iterator :
 public:
 	using sub_traits_t = std::iterator_traits<InnerIterator>;
 	using value_type = typename sub_traits_t::value_type;
+	using enumerable_traits = meta::enumerable_traits<decltype(*std::declval<OuterIterator>())>;
 	using difference_type = typename sub_traits_t::difference_type;
 	using reference = const value_type &;
 	using pointer = const value_type *;
@@ -37,35 +38,35 @@ public:
 		m_outerIterator(std::move(outerIterator)),
 		m_outerEnd(std::move(outerEnd)),
    		m_innerIterator() {
-		if(m_outerIterator != m_outerEnd && std::begin(*m_outerIterator) != std::end(*m_outerIterator))
-			m_innerIterator = std::begin(*m_outerIterator);
+		if(m_outerIterator != m_outerEnd && enumerable_traits::begin(*m_outerIterator) != enumerable_traits::end(*m_outerIterator))
+			m_innerIterator = enumerable_traits::begin(*m_outerIterator);
 		else{
 			m_outerIterator = std::find_if(
 				m_outerIterator,
 				m_outerEnd,
-				[](const auto &container) { return std::begin(container) != std::end(container); }
+				[](const auto &container) { return enumerable_traits::begin(container) != enumerable_traits::end(container); }
 			);
 
 			if (m_outerIterator != m_outerEnd)
-				m_innerIterator = std::begin(*m_outerIterator);
+				m_innerIterator = enumerable_traits::begin(*m_outerIterator);
 		}
 	}
 
 	flattening_iterator &
 	operator++() {
-		if (m_innerIterator != std::end(*m_outerIterator))
+		if (m_innerIterator != enumerable_traits::end(*m_outerIterator))
 			++m_innerIterator;
 
-		if (m_outerIterator != m_outerEnd && m_innerIterator == std::end(*m_outerIterator))	{
+		if (m_outerIterator != m_outerEnd && m_innerIterator == enumerable_traits::end(*m_outerIterator))	{
 			++m_outerIterator;
 
 			m_outerIterator = std::find_if(
 				m_outerIterator,
 				m_outerEnd,
-				[](const auto &container) { return std::begin(container) != std::end(container); }
+				[](const auto &container) { return enumerable_traits::begin(container) != enumerable_traits::end(container); }
 			);
 			if (m_outerIterator != m_outerEnd)
-				m_innerIterator = std::begin(*m_outerIterator);
+				m_innerIterator = enumerable_traits::begin(*m_outerIterator);
 		}
 		return *this;
 	}
@@ -117,22 +118,22 @@ public:
 
 	iterator
 	begin() {
-		return iterator(std::begin(m_enumerable), std::end(m_enumerable));
+		return iterator(enumerable_traits::begin(m_enumerable), enumerable_traits::end(m_enumerable));
 	}
 
 	iterator
 	end() {
-		return iterator(std::end(m_enumerable), std::end(m_enumerable));
+		return iterator(enumerable_traits::end(m_enumerable), enumerable_traits::end(m_enumerable));
 	}
 
 	const_iterator
 	begin() const {
-		return const_iterator(std::begin(m_enumerable), std::end(m_enumerable));
+		return const_iterator(enumerable_traits::begin(m_enumerable), enumerable_traits::end(m_enumerable));
 	}
 
 	const_iterator
 	end() const {
-		return const_iterator(std::end(m_enumerable), std::end(m_enumerable));
+		return const_iterator(enumerable_traits::end(m_enumerable), enumerable_traits::end(m_enumerable));
 	}
 private:
 	Enumerable m_enumerable;

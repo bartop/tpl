@@ -3,6 +3,7 @@
 
 #include "../meta/enumerable_traits.hpp"
 
+#include <algorithm>
 #include <iterator>
 #include <numeric>
 
@@ -32,9 +33,10 @@ public:
 
 	conversion_type
 	operator()(const Enumerable &enumerable) const {
+		using traits = meta::enumerable_traits<Enumerable>;
 		return std::accumulate(
-			std::begin(enumerable),
-		   	std::end(enumerable),
+			traits::begin(enumerable),
+		   	traits::end(enumerable),
 		   	m_initialValue,
 		   	m_predicate
 		);
@@ -42,9 +44,10 @@ public:
 
 	conversion_type
 	operator()(Enumerable &enumerable) {
+		using traits = meta::enumerable_traits<Enumerable>;
 		return std::accumulate(
-			std::begin(enumerable),
-		   	std::end(enumerable),
+			traits::begin(enumerable),
+		   	traits::end(enumerable),
 		   	m_initialValue,
 		   	m_predicate
 		);

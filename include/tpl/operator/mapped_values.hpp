@@ -77,22 +77,22 @@ public:
 
 	iterator
 	begin() {
-		return iterator(std::begin(m_enumerable));
+		return iterator(enumerable_traits::begin(m_enumerable));
 	}
 
 	iterator
 	end() {
-		return iterator(std::begin(m_enumerable));
+		return iterator(enumerable_traits::begin(m_enumerable));
 	}
 
 	const_iterator
 	begin() const {
-		return const_iterator(std::begin(m_enumerable));
+		return const_iterator(enumerable_traits::begin(m_enumerable));
 	}
 
 	const_iterator
 	end() const {
-		return const_iterator(std::end(m_enumerable));
+		return const_iterator(enumerable_traits::end(m_enumerable));
 	}
 private:
 	Enumerable m_enumerable;

@@ -104,22 +104,22 @@ public:
 
 	iterator
 	begin() {
-		return const_iterator(std::begin(m_enumerable), m_predicate);
+		return const_iterator(enumerable_traits::begin(m_enumerable), m_predicate);
 	}
 
 	iterator
 	end() {
-		return const_iterator(std::end(m_enumerable), m_predicate);
+		return const_iterator(enumerable_traits::end(m_enumerable), m_predicate);
 	}
 
 	const_iterator
 	begin() const {
-		return const_iterator(std::begin(m_enumerable), m_predicate);
+		return const_iterator(enumerable_traits::begin(m_enumerable), m_predicate);
 	}
 
 	const_iterator
 	end() const {
-		return const_iterator(std::end(m_enumerable), m_predicate);
+		return const_iterator(enumerable_traits::end(m_enumerable), m_predicate);
 	}
 
 private:
