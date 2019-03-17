@@ -48,7 +48,7 @@ TEST_CASE( "C array filtering", "[filtered_test]" ) {
 	}
 }
 
-TEST_CASE( "Vector filtering without using namespace tpl", "[filtered_test]" ) {
+TEST_CASE( "Vector filtering with using namespace tpl", "[filtered_test]" ) {
 	using namespace std;
 	vector<int> v{ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 	SECTION(" >= 1"){
@@ -68,13 +68,35 @@ TEST_CASE( "Vector filtering without using namespace tpl", "[filtered_test]" ) {
 	}
 }
 
+TEST_CASE( "Checking filtered iterator in backward iteration", "[filtered_test]" ) {
+	std::vector<int> v{ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+	SECTION(" >= 1"){
+		const auto vf = v | tpl::filter([](const auto &i){ return i >= 1; });
+		auto start = vf.begin();
+		REQUIRE(*start == 1);
+		REQUIRE(*(++start) == 2);
+		REQUIRE(*(++start) == 3);
+		REQUIRE(*(--start) == 2);
+		REQUIRE(*(--start) == 1);
+	}
+	SECTION("is even"){
+		const auto vf = v | tpl::filter([](const auto &i){ return i % 2 == 0; });
+		auto start = vf.begin();
+		REQUIRE(*(start) == 2);
+		REQUIRE(*(++start) == 4);
+		REQUIRE(*(++start) == 6);
+		REQUIRE(*(--start) == 4);
+		REQUIRE(*(--start) == 2);
+	}
+}
+
 TEST_CASE( "Compilation tests", "[filtered_test]" ) {
 	SECTION("Iterator compilation"){
-		tpl::filtering_iterator<std::vector<int>::iterator, bool (*)(int)> vectorAndFunctionPointerIterator;
-		tpl::filtering_iterator<std::list<double>::iterator, bool (*)(double)> listAndFunctionPointerIterator;
-		REQUIRE((tpl::filtering_iterator<std::vector<int>::iterator, bool (*)(int)>() ==
+		tpl::filtering_iterator<std::vector<int>::iterator, std::vector<int>, bool (*)(int)> vectorAndFunctionPointerIterator;
+		tpl::filtering_iterator<std::list<double>::iterator, std::vector<int>, bool (*)(double)> listAndFunctionPointerIterator;
+		REQUIRE((tpl::filtering_iterator<std::vector<int>::iterator, std::vector<int>, bool (*)(int)>() ==
 				vectorAndFunctionPointerIterator));
-		REQUIRE((tpl::filtering_iterator<std::list<double>::iterator, bool (*)(double)>() ==
+		REQUIRE((tpl::filtering_iterator<std::list<double>::iterator, std::vector<int>, bool (*)(double)>() ==
 				listAndFunctionPointerIterator));
 	}
 }

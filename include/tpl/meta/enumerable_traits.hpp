@@ -22,33 +22,33 @@ struct enumerable_traits<
 		>::value
 	>::type
 > : private enforce_enumerable<T> {
-	using decayed = typename std::decay<T>::type;
-	using value_type = typename decayed::value_type;
-	using iterator = typename decayed::iterator;
-	using const_iterator = typename decayed::const_iterator;
+	using enumerable_type = typename std::decay<T>::type;
+	using value_type = typename enumerable_type::value_type;
+	using iterator = typename enumerable_type::iterator;
+	using const_iterator = typename enumerable_type::const_iterator;
 
-	static iterator begin(decayed &enumerable){
+	static iterator begin(enumerable_type &enumerable){
 		return std::begin(enumerable);
 	}
 
-	static iterator end(decayed &enumerable){
+	static iterator end(enumerable_type &enumerable){
 		return std::end(enumerable);
 	}
 
-	static const_iterator begin(const decayed &enumerable){
+	static const_iterator begin(const enumerable_type &enumerable){
 		return std::begin(enumerable);
 	}
 
-	static const_iterator end(const decayed &enumerable){
+	static const_iterator end(const enumerable_type &enumerable){
 		return std::end(enumerable);
 	}
 
-	static const_iterator cbegin(decayed &enumerable){
-		return std::begin(const_cast<const decayed &>(enumerable));
+	static const_iterator cbegin(enumerable_type &enumerable){
+		return std::begin(const_cast<const enumerable_type &>(enumerable));
 	}
 
-	static const_iterator cend(decayed &enumerable){
-		return std::end(const_cast<const decayed &>(enumerable));
+	static const_iterator cend(enumerable_type &enumerable){
+		return std::end(const_cast<const enumerable_type &>(enumerable));
 	}
 };
 
@@ -65,24 +65,25 @@ struct enumerable_traits<
 		>::value
 	>::type
 > : private enforce_enumerable<T> {
+	using enumerable_type = typename std::remove_reference<T>::type;
 	using value_type = array_reference_value_type<T>;
 	using iterator = value_type *;
 	using const_iterator = const value_type *;
 
-	static iterator begin(T enumerable){
+	static iterator begin(enumerable_type &enumerable){
 		return std::begin(enumerable);
 	}
 
-	static iterator end(T enumerable){
+	static iterator end(enumerable_type &enumerable){
 		return std::end(enumerable);
 	}
 
-	static const_iterator cbegin(T enumerable){
-		return std::begin(const_cast<const T>(enumerable));
+	static const_iterator cbegin(enumerable_type &enumerable){
+		return std::begin(const_cast<const enumerable_type &>(enumerable));
 	}
 
-	static const_iterator cend(T enumerable){
-		return std::end(const_cast<const T>(enumerable));
+	static const_iterator cend(enumerable_type &enumerable){
+		return std::end(const_cast<const enumerable_type &>(enumerable));
 	}
 };
 

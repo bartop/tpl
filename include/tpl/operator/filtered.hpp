@@ -16,10 +16,13 @@
 
 namespace tpl{
 
-template<class SubIterator, class FilterPredicate>
+template<class SubIterator, class Enumerable, class FilterPredicate>
 class filtering_iterator :
-	public detail::input_iterator_base<filtering_iterator<SubIterator, FilterPredicate>> {
+	public detail::bidirectional_iterator_base<
+		filtering_iterator<SubIterator, Enumerable, FilterPredicate>
+	> {
 public:
+	using enumerable_traits = meta::enumerable_traits<Enumerable>;
 	using sub_traits_t = std::iterator_traits<SubIterator>;
 	using value_type = typename sub_traits_t::value_type;
 	using difference_type = typename sub_traits_t::difference_type;
@@ -33,17 +36,28 @@ public:
 
 	filtering_iterator(
 		SubIterator subIterator,
-		SubIterator endIterator,
+		const Enumerable *enumerable,
 		const FilterPredicate &filterPredicate
 	) :
-		m_subIterator(std::find_if(subIterator, endIterator, filterPredicate)),
-		m_endIterator(std::move(endIterator)),
+		m_subIterator(std::find_if(subIterator, enumerable_traits::end(*enumerable), filterPredicate)),
+		m_enumerable(enumerable),
 		m_filterPredicate(&filterPredicate) {}
 
 	filtering_iterator &
 	operator++() {
 		++m_subIterator;
-		m_subIterator = std::find_if(m_subIterator, m_endIterator, *m_filterPredicate);
+		m_subIterator = std::find_if(m_subIterator, enumerable_traits::end(*m_enumerable), *m_filterPredicate);
+		return *this;
+	}
+
+	filtering_iterator &
+	operator--() {
+		auto found = std::find_if(
+				std::reverse_iterator<SubIterator>(m_subIterator),
+				std::reverse_iterator<SubIterator>(enumerable_traits::begin(*m_enumerable)),
+				*m_filterPredicate
+		);
+		m_subIterator = --found.base();
 		return *this;
 	}
 
@@ -63,7 +77,7 @@ public:
 	}
 private:
 	SubIterator m_subIterator;
-	SubIterator m_endIterator;
+	const Enumerable *m_enumerable;
 	const FilterPredicate *m_filterPredicate;
 };
 
@@ -74,10 +88,12 @@ public:
 	using value_type = typename enumerable_traits::value_type;
 	using const_iterator = filtering_iterator<
 		typename enumerable_traits::const_iterator,
+		typename enumerable_traits::enumerable_type,
 		typename std::remove_reference<FilterPredicate>::type
 	>;
 	using iterator = filtering_iterator<
 		typename enumerable_traits::iterator,
+		typename enumerable_traits::enumerable_type,
 		typename std::remove_reference<FilterPredicate>::type
 	>;
 
@@ -93,7 +109,7 @@ public:
 	begin() {
 		return iterator(
 			enumerable_traits::begin(m_enumerable),
-		   	enumerable_traits::end(m_enumerable),
+		   	&m_enumerable,
 			m_filterPredicate
 		);
 	}
@@ -102,7 +118,7 @@ public:
 	end() {
 		return iterator(
 			enumerable_traits::end(m_enumerable),
-		   	enumerable_traits::end(m_enumerable),
+		   	&m_enumerable,
 			m_filterPredicate
 		);
 	}
@@ -111,7 +127,7 @@ public:
 	begin() const {
 		return const_iterator(
 			enumerable_traits::begin(m_enumerable),
-		   	enumerable_traits::end(m_enumerable),
+		   	&m_enumerable,
 			m_filterPredicate
 		);
 	}
@@ -120,7 +136,7 @@ public:
 	end() const {
 		return const_iterator(
 			enumerable_traits::end(m_enumerable),
-		   	enumerable_traits::end(m_enumerable),
+		   	&m_enumerable,
 			m_filterPredicate
 		);
 	}
