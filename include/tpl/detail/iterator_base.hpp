@@ -33,6 +33,10 @@ protected:
 template<class Derived>
 class input_iterator_base : public equality_comparable<Derived> {
 public:
+	Derived &operator++() {
+		return this->derived_this().next();
+	}
+
 	Derived operator++(int) {
 		auto temp = this->derived_this();
 		++(this->derived_this());
@@ -45,12 +49,15 @@ protected:
 template<class Derived>
 class bidirectional_iterator_base : public input_iterator_base<Derived> {
 public:
+	Derived &operator--() {
+		return this->derived_this().previous();
+	}
+
 	Derived operator--(int) {
 		auto temp = this->derived_this();
 		--(this->derived_this());
 		return temp;
 	}
-
 protected:
 	~bidirectional_iterator_base() noexcept = default;
 };

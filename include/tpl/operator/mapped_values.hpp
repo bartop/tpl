@@ -37,7 +37,7 @@ public:
 		m_subIterator(std::move(subIterator)) { }
 
 	mapped_values_iterator &
-	operator++() {
+	next() {
 		++m_subIterator;
 		return *this;
 	}

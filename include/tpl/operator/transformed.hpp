@@ -44,7 +44,7 @@ public:
 		m_transformPredicate(&transformPredicate) {}
 
 	transforming_iterator &
-	operator++() {
+	next() {
 		++m_subIterator;
 		return *this;
 	}

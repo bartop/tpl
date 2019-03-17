@@ -53,7 +53,7 @@ public:
 	}
 
 	flattening_iterator &
-	operator++() {
+	next() {
 		if (m_innerIterator != enumerable_traits::end(*m_outerIterator))
 			++m_innerIterator;
 

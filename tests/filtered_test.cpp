@@ -90,6 +90,19 @@ TEST_CASE( "Checking filtered iterator in backward iteration", "[filtered_test]"
 	}
 }
 
+TEST_CASE( "Checking filtered iterator postfix operators", "[filtered_test]" ) {
+	std::vector<int> v{ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+	SECTION("Checking postfix operators"){
+		const auto vf = v | tpl::filter([](const auto &i){ return i >= 1; });
+		auto start = vf.begin();
+		REQUIRE(*(start++) == 1);
+		REQUIRE(*(start++) == 2);
+		REQUIRE(*(start--) == 3);
+		REQUIRE(*(start--) == 2);
+		REQUIRE(*(start) == 1);
+	}
+}
+
 TEST_CASE( "Compilation tests", "[filtered_test]" ) {
 	SECTION("Iterator compilation"){
 		tpl::filtering_iterator<std::vector<int>::iterator, std::vector<int>, bool (*)(int)> vectorAndFunctionPointerIterator;

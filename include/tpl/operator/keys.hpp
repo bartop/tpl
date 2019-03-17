@@ -36,7 +36,7 @@ public:
 		m_subIterator(std::move(subIterator)) { }
 
 	keys_iterator &
-	operator++() {
+	next() {
 		++m_subIterator;
 		return *this;
 	}

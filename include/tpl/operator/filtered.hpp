@@ -44,14 +44,14 @@ public:
 		m_filterPredicate(&filterPredicate) {}
 
 	filtering_iterator &
-	operator++() {
+	next() {
 		++m_subIterator;
 		m_subIterator = std::find_if(m_subIterator, enumerable_traits::end(*m_enumerable), *m_filterPredicate);
 		return *this;
 	}
 
 	filtering_iterator &
-	operator--() {
+	previous() {
 		auto found = std::find_if(
 				std::reverse_iterator<SubIterator>(m_subIterator),
 				std::reverse_iterator<SubIterator>(enumerable_traits::begin(*m_enumerable)),

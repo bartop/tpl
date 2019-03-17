@@ -40,7 +40,7 @@ public:
 		m_subIterator2(std::move(subIterator2)) {}
 
 	zipped_iterator &
-	operator++() {
+	next() {
 		++m_subIterator1;
 		++m_subIterator2;
 		return *this;
