@@ -5,6 +5,8 @@
 
 #include <vector>
 #include <list>
+#include <utility>
+#include <forward_list>
 
 TEST_CASE( "Vector filtering", "[filtered_test]" ) {
 	using namespace std;
@@ -79,6 +81,7 @@ TEST_CASE( "Checking filtered iterator in backward iteration", "[filtered_test]"
 		REQUIRE(*(--start) == 2);
 		REQUIRE(*(--start) == 1);
 	}
+
 	SECTION("is even"){
 		const auto vf = v | tpl::filter([](const auto &i){ return i % 2 == 0; });
 		auto start = vf.begin();
@@ -88,10 +91,7 @@ TEST_CASE( "Checking filtered iterator in backward iteration", "[filtered_test]"
 		REQUIRE(*(--start) == 4);
 		REQUIRE(*(--start) == 2);
 	}
-}
 
-TEST_CASE( "Checking filtered iterator postfix operators", "[filtered_test]" ) {
-	std::vector<int> v{ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 	SECTION("Checking postfix operators"){
 		const auto vf = v | tpl::filter([](const auto &i){ return i >= 1; });
 		auto start = vf.begin();
@@ -103,7 +103,19 @@ TEST_CASE( "Checking filtered iterator postfix operators", "[filtered_test]" ) {
 	}
 }
 
-TEST_CASE( "Compilation tests", "[filtered_test]" ) {
+TEST_CASE( "Checking swap operation", "[filtered_test]" ) {
+	std::vector<int> v{ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+	const auto vf = v | tpl::filter([](const auto &i){ return i == 1 || i == 3; });
+	auto start = vf.begin();
+	auto second = std::next(start);
+	REQUIRE(*start == 1);
+	REQUIRE(*second == 3);
+	std::swap(start, second);
+	REQUIRE(*start == 3);
+	REQUIRE(*second == 1);
+}
+
+TEST_CASE( "Meta tests", "[filtered_test]" ) {
 	SECTION("Iterator compilation"){
 		tpl::filtering_iterator<std::vector<int>::iterator, std::vector<int>, bool (*)(int)> vectorAndFunctionPointerIterator;
 		tpl::filtering_iterator<std::list<double>::iterator, std::vector<int>, bool (*)(double)> listAndFunctionPointerIterator;
@@ -111,5 +123,12 @@ TEST_CASE( "Compilation tests", "[filtered_test]" ) {
 				vectorAndFunctionPointerIterator));
 		REQUIRE((tpl::filtering_iterator<std::list<double>::iterator, std::vector<int>, bool (*)(double)>() ==
 				listAndFunctionPointerIterator));
+	}
+
+	SECTION("Iterator compilation"){
+		tpl::filtering_iterator<std::vector<int>::iterator, std::vector<int>, bool (*)(int)> it;
+		tpl::filtering_iterator<std::forward_list<int>::iterator, std::forward_list<int>, bool (*)(int)> it2;
+		REQUIRE((std::is_same<decltype(it)::iterator_category, std::bidirectional_iterator_tag>::value));
+		REQUIRE((std::is_same<decltype(it2)::iterator_category, std::forward_iterator_tag>::value));
 	}
 }

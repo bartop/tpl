@@ -4,6 +4,7 @@
 #include "../meta/is_enumerable.hpp"
 #include "../meta/is_associative.hpp"
 #include "../meta/enumerable_traits.hpp"
+#include "../meta/iterators.hpp"
 
 #include "../detail/iterator_base.hpp"
 
@@ -28,9 +29,19 @@ public:
 	using difference_type = typename sub_traits_t::difference_type;
 	using reference = const value_type &;
 	using pointer = const value_type *;
-	using iterator_category = std::input_iterator_tag;
+	using iterator_category = typename meta::demote_to_bidirectional_tag<
+		sub_traits_t
+	>::type;
 
 	filtering_iterator() = default;
+	filtering_iterator(const filtering_iterator &) = default;
+	filtering_iterator(filtering_iterator &&) = default;
+
+	filtering_iterator &
+	operator=(const filtering_iterator &) = default;
+
+	filtering_iterator &
+	operator=(filtering_iterator &&) = default;
 
 	~filtering_iterator() noexcept = default;
 
