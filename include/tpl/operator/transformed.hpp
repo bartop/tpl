@@ -57,7 +57,7 @@ public:
 	}
 
 	transforming_iterator &
-	operator--() {
+	previous() {
 		--m_subIterator;
 		return *this;
 	}

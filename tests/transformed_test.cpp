@@ -42,7 +42,7 @@ TEST_CASE( "Vector transforming", "[transformed_test]" ) {
 	}
 }
 
-TEST_CASE( "Reverse iterators", "[transformed_test]" ) {
+TEST_CASE( "Iterators tests", "[transformed_test]" ) {
 	using namespace std;
 	using namespace tpl;
 	vector<int> v{ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
@@ -56,6 +56,14 @@ TEST_CASE( "Reverse iterators", "[transformed_test]" ) {
 		const auto vf = (v | transform([](const auto &i){ return i * 2; }));
 		vector<int> result(meta::make_reverse_iterator(vf.end()), meta::make_reverse_iterator(vf.begin()));
 		REQUIRE((vector<int>{ 20, 18, 16, 14, 12, 10, 8, 6, 4, 2 })== result);
+	}
+
+	SECTION("postdecrement try"){
+		const auto vf = (v | transform([](const auto &i){ return i * 2; }));
+		auto preEnd = vf.end();
+		auto end = preEnd--; 
+		REQUIRE(*preEnd == 20);
+		REQUIRE(end == vf.end());
 	}
 }
 
