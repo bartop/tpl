@@ -125,7 +125,7 @@ TEST_CASE( "Meta tests", "[filtered_test]" ) {
 				listAndFunctionPointerIterator));
 	}
 
-	SECTION("Iterator compilation"){
+	SECTION("Iterator category"){
 		tpl::filtering_iterator<std::vector<int>::iterator, std::vector<int>, bool (*)(int)> it;
 		tpl::filtering_iterator<std::forward_list<int>::iterator, std::forward_list<int>, bool (*)(int)> it2;
 		REQUIRE((std::is_same<decltype(it)::iterator_category, std::bidirectional_iterator_tag>::value));

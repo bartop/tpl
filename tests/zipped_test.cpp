@@ -32,6 +32,20 @@ TEST_CASE( "Vector zipping", "[zipped_test]" ) {
 	}
 }
 
+TEST_CASE( "Checking swap operation", "[zipped_test]" ) {
+	std::vector<int> v1{ 1, 2 };
+	std::vector<int> v2{ 3, 4 };
+	const auto res = v1 | tpl::zip(v2);
+
+	auto start = res.begin();
+	auto second = std::next(start);
+	REQUIRE((*start == std::make_pair(1, 3)));
+	REQUIRE((*second == std::make_pair(2, 4)));
+	std::swap(start, second);
+	REQUIRE((*start == std::make_pair(2, 4)));
+	REQUIRE((*second == std::make_pair(1, 3)));
+}
+
 TEST_CASE( "Compilation tests", "[zipped_test]" ) {
 	using namespace std;
 

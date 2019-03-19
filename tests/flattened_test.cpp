@@ -40,6 +40,19 @@ TEST_CASE( "Vector of vectors flattening", "[flattened_test]" ) {
 	}
 }
 
+TEST_CASE( "Checking swap operation", "[flattened_test]" ) {
+	std::vector<std::vector<int>> v = { {}, {4, 5} , {} };
+
+	const auto res = v | tpl::flatten;
+	auto start = res.begin();
+	auto second = std::next(start);
+	REQUIRE(*start == 4);
+	REQUIRE(*second == 5);
+	std::swap(start, second);
+	REQUIRE(*start == 5);
+	REQUIRE(*second == 4);
+}
+
 TEST_CASE( "Compilation tests", "[flattened_test]" ) {
 	using namespace std;
 	SECTION("Iterator compilation"){

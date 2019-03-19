@@ -39,7 +39,6 @@ public:
 
 	filtering_iterator &
 	operator=(const filtering_iterator &) = default;
-
 	filtering_iterator &
 	operator=(filtering_iterator &&) = default;
 

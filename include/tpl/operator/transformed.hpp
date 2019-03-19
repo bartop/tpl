@@ -33,6 +33,13 @@ public:
 	using iterator_category = std::input_iterator_tag;
 
 	transforming_iterator() = default;
+	transforming_iterator(const transforming_iterator &) = default;
+	transforming_iterator(transforming_iterator &&) = default;
+
+	transforming_iterator &
+	operator=(const transforming_iterator &) = default;
+	transforming_iterator &
+	operator=(transforming_iterator &&) = default;
 
 	~transforming_iterator() noexcept = default;
 

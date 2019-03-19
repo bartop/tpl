@@ -28,6 +28,13 @@ public:
 	using iterator_category = std::input_iterator_tag;
 
 	flattening_iterator() = default;
+	flattening_iterator(const flattening_iterator &) = default;
+	flattening_iterator(flattening_iterator &&) = default;
+
+	flattening_iterator &
+	operator=(const flattening_iterator &) = default;
+	flattening_iterator &
+	operator=(flattening_iterator &&) = default;
 
 	~flattening_iterator() noexcept = default;
 

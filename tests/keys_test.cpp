@@ -34,6 +34,19 @@ TEST_CASE( "Keys", "[keys_test]" ) {
 	}
 }
 
+TEST_CASE( "Checking swap operation", "[keys_test]" ) {
+	std::map<int, int> m{ {2, 2}, {4, 4} };
+	const auto res = m | tpl::keys;
+
+	auto start = res.begin();
+	auto second = std::next(start);
+	REQUIRE(*start == 2);
+	REQUIRE(*second == 4);
+	std::swap(start, second);
+	REQUIRE(*start == 4);
+	REQUIRE(*second == 2);
+}
+
 TEST_CASE( "Compilation tests", "[keys_test]" ) {
 	using namespace std;
 

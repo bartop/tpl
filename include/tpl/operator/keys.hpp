@@ -27,6 +27,13 @@ public:
 	using iterator_category = std::input_iterator_tag;
 
 	keys_iterator() = default;
+	keys_iterator(const keys_iterator &) = default;
+	keys_iterator(keys_iterator &&) = default;
+	
+	keys_iterator &
+	operator=(const keys_iterator &) = default;
+	keys_iterator &
+	operator=(keys_iterator &&) = default;
 
 	~keys_iterator() noexcept = default;
 

@@ -58,3 +58,16 @@ TEST_CASE( "Reverse iterators", "[transformed_test]" ) {
 		REQUIRE((vector<int>{ 20, 18, 16, 14, 12, 10, 8, 6, 4, 2 })== result);
 	}
 }
+
+TEST_CASE( "Checking swap operation", "[transformed_test]" ) {
+	std::vector<int> v{ 1, 2 };
+	const auto res = (v | tpl::transform([](const auto &i){ return i <= 1; }));
+
+	auto start = res.begin();
+	auto second = std::next(start);
+	REQUIRE(*start == true);
+	REQUIRE(*second == false);
+	std::swap(start, second);
+	REQUIRE(*start == false);
+	REQUIRE(*second == true);
+}

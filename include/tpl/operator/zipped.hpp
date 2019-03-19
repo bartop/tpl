@@ -29,6 +29,13 @@ public:
 	using iterator_category = std::input_iterator_tag;
 
 	zipped_iterator() = default;
+	zipped_iterator(const zipped_iterator &) = default;
+	zipped_iterator(zipped_iterator &&) = default;
+
+	zipped_iterator &
+	operator=(const zipped_iterator &) = default;
+	zipped_iterator &
+	operator=(zipped_iterator &&) = default;
 
 	~zipped_iterator() noexcept = default;
 

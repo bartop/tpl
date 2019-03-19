@@ -28,6 +28,13 @@ public:
 	using iterator_category = std::input_iterator_tag;
 
 	mapped_values_iterator() = default;
+	mapped_values_iterator(const mapped_values_iterator &) = default;
+	mapped_values_iterator(mapped_values_iterator &&) = default;
+
+	mapped_values_iterator &
+	operator=(const mapped_values_iterator &) = default;
+	mapped_values_iterator &
+	operator=(mapped_values_iterator &&) = default;
 
 	~mapped_values_iterator() noexcept = default;
 
