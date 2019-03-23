@@ -54,6 +54,7 @@ set(TEST_SOURCES
     tests/cache_test.cpp
     tests/no_operation_test.cpp
     tests/iterators_test.cpp
+    tests/reverse_test.cpp
 )
 
 set(CATCH_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/External/Catch)
