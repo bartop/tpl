@@ -4,6 +4,7 @@
 #include "../meta/is_enumerable.hpp"
 #include "../meta/is_associative.hpp"
 #include "../meta/enumerable_traits.hpp"
+#include "../meta/iterators.hpp"
 
 #include "../detail/iterator_base.hpp"
 
@@ -17,7 +18,7 @@ namespace tpl{
 
 template<class SubIterator>
 class mapped_values_iterator :
-	public detail::input_iterator_base<mapped_values_iterator<SubIterator>> {
+	public detail::bidirectional_iterator_base<mapped_values_iterator<SubIterator>> {
 public:
 	using sub_traits_t = std::iterator_traits<SubIterator>;
 	using associative_traits_t = meta::associative_element_traits<typename sub_traits_t::value_type>;
@@ -25,7 +26,9 @@ public:
 	using difference_type = typename sub_traits_t::difference_type;
 	using reference = value_type;
 	using pointer = const value_type *;
-	using iterator_category = std::input_iterator_tag;
+	using iterator_category = typename meta::demote_to_bidirectional_tag<
+		sub_traits_t
+	>::type;
 
 	mapped_values_iterator() = default;
 	mapped_values_iterator(const mapped_values_iterator &) = default;
@@ -46,6 +49,12 @@ public:
 	mapped_values_iterator &
 	next() {
 		++m_subIterator;
+		return *this;
+	}
+
+	mapped_values_iterator &
+	previous() {
+		--m_subIterator;
 		return *this;
 	}
 

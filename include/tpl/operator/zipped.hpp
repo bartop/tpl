@@ -4,6 +4,7 @@
 #include "../meta/is_enumerable.hpp"
 #include "../meta/is_associative.hpp"
 #include "../meta/enumerable_traits.hpp"
+#include "../meta/iterators.hpp"
 
 #include "../detail/pointer_proxy.hpp"
 #include "../detail/iterator_base.hpp"
@@ -18,7 +19,7 @@ namespace tpl{
 
 template<class SubIterator1, class SubIterator2>
 class zipped_iterator :
-	public detail::input_iterator_base<zipped_iterator<SubIterator1, SubIterator2>> {
+	public detail::bidirectional_iterator_base<zipped_iterator<SubIterator1, SubIterator2>> {
 public:
 	using sub_traits_t1 = std::iterator_traits<SubIterator1>;
 	using sub_traits_t2 = std::iterator_traits<SubIterator2>;
@@ -26,7 +27,9 @@ public:
 	using difference_type = typename sub_traits_t1::difference_type;
 	using reference = value_type;
 	using pointer = detail::pointer_proxy<value_type>;
-	using iterator_category = std::input_iterator_tag;
+	using iterator_category = typename meta::demote_to_bidirectional_tag<
+		sub_traits_t1
+	>::type;
 
 	zipped_iterator() = default;
 	zipped_iterator(const zipped_iterator &) = default;
@@ -50,6 +53,13 @@ public:
 	next() {
 		++m_subIterator1;
 		++m_subIterator2;
+		return *this;
+	}
+
+	zipped_iterator &
+	previous() {
+		--m_subIterator1;
+		--m_subIterator2;
 		return *this;
 	}
 

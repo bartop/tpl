@@ -56,17 +56,11 @@ TEST_CASE( "Checking swap operation", "[flattened_test]" ) {
 TEST_CASE( "Compilation tests", "[flattened_test]" ) {
 	using namespace std;
 	SECTION("Iterator compilation"){
-		tpl::flattening_iterator<vector<vector<int>>::iterator, vector<int>::iterator>
+		tpl::flattening_iterator<vector<vector<int>>::iterator, vector<vector<int>>, vector<int>::iterator>
 			nestedVectorsIterator;
-		tpl::flattening_iterator<list<vector<int>>::iterator, vector<int>::iterator>
+		tpl::flattening_iterator<list<vector<int>>::iterator, list<vector<int>>, vector<int>::iterator>
 			listOfVectorsIterator;
-		tpl::flattening_iterator<vector<list<int>>::iterator, list<int>::iterator>
+		tpl::flattening_iterator<vector<list<int>>::iterator, vector<list<int>>, list<int>::iterator>
 			vectorOfListsIterator;
-		REQUIRE((tpl::flattening_iterator<vector<vector<int>>::iterator, vector<int>::iterator>() ==
-			nestedVectorsIterator));
-		REQUIRE((tpl::flattening_iterator<list<vector<int>>::iterator, vector<int>::iterator>() ==
-			listOfVectorsIterator));
-		REQUIRE((tpl::flattening_iterator<vector<list<int>>::iterator, list<int>::iterator>() ==
-			vectorOfListsIterator));
 	}
 }

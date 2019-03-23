@@ -4,6 +4,7 @@
 #include "../meta/is_enumerable.hpp"
 #include "../meta/is_associative.hpp"
 #include "../meta/enumerable_traits.hpp"
+#include "../meta/iterators.hpp"
 
 #include "../detail/pointer_proxy.hpp"
 #include "../detail/iterator_base.hpp"
@@ -30,7 +31,9 @@ public:
 	using difference_type = typename sub_traits_t::difference_type;
 	using reference = value_type;
 	using pointer = detail::pointer_proxy<value_type>;
-	using iterator_category = std::input_iterator_tag;
+	using iterator_category = typename meta::demote_to_bidirectional_tag<
+		sub_traits_t
+	>::type;
 
 	transforming_iterator() = default;
 	transforming_iterator(const transforming_iterator &) = default;

@@ -63,8 +63,8 @@ public:
 	filtering_iterator &
 	previous() {
 		auto found = std::find_if(
-				std::reverse_iterator<SubIterator>(m_subIterator),
-				std::reverse_iterator<SubIterator>(enumerable_traits::begin(*m_enumerable)),
+				meta::make_reverse_iterator(m_subIterator),
+				meta::make_reverse_iterator(enumerable_traits::begin(*m_enumerable)),
 				*m_filterPredicate
 		);
 		m_subIterator = --found.base();
