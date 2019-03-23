@@ -34,3 +34,6 @@
 # cmake build directories
 Build
 Build_msvc
+
+# doxygen database
+doxygen_sqlite3.db
