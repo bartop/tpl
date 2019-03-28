@@ -1,4 +1,7 @@
-
+/**
+ * \file
+ * \brief File defining operator which allows zipping together two sequences.
+ */
 #pragma once
 
 #include "../meta/is_enumerable.hpp"
@@ -86,24 +89,52 @@ private:
 	SubIterator2 m_subIterator2;
 };
 
+/**
+ * \brief Sequence zipping together two sequences.
+ *
+ * This class can be safely used with infinite sequences.
+ *
+ * This class complies with is_enumerable trait, which allows it to be used in
+ * a pipeline.
+ *
+ * \tparam Enumerable1 Type of first sequence to be zipped.
+ * \tparam Enumerable2 Type of second sequence to be zipped.
+ */
 template<class Enumerable1, class Enumerable2>
 class ziped_sequence : meta::enforce_enumerable<Enumerable1> {
 public:
 	using enumerable_traits1 = meta::enumerable_traits<Enumerable1>;
 	using enumerable_traits2 = meta::enumerable_traits<Enumerable2>;
+
+	
+	//! Type of values returned from dereferencing iterators.
 	using value_type = std::pair<
 		typename enumerable_traits1::value_type,
 		typename enumerable_traits2::value_type
 	>;
+
+	//! Type of const_iterator.
 	using const_iterator = zipped_iterator<
 		typename enumerable_traits1::const_iterator,
 		typename enumerable_traits2::const_iterator
 	>;
+
+	//! Type of iterator.
 	using iterator = zipped_iterator<
 		typename enumerable_traits1::iterator,
 		typename enumerable_traits2::iterator
 	>;
 
+	/**
+	 * \brief Creates new ziped_sequence from given sequences.
+	 *
+	 * **Complexity** 
+	 * - O(1) for rvalue references of enumerable
+	 * - O(N) for lvalue references of enumerable (where N is size of enumerable)
+	 *
+	 * \param enumerable1 First sequence to be zipped.
+	 * \param enumerable2 Second sequence to be zipped.
+	 */
 	ziped_sequence(
 		Enumerable1 &&enumerable1,
 		Enumerable2 &&enumerable2
@@ -111,6 +142,9 @@ public:
 		m_enumerable1(std::forward<Enumerable1>(enumerable1)),
 		m_enumerable2(std::forward<Enumerable2>(enumerable2)){}
 
+	/**
+	 * \brief Creates and returns iterator pointing at the begin.
+	 */
 	iterator
 	begin() {
 		return iterator(
@@ -119,6 +153,9 @@ public:
 		);
 	}
 
+	/**
+	 * \brief Creates and returns iterator pointing at the end.
+	 */
 	iterator
 	end() {
 		return iterator(
@@ -127,6 +164,9 @@ public:
 		);
 	}
 
+	/**
+	 * \brief Creates and returns const_iterator pointing at the begin.
+	 */
 	const_iterator
 	begin() const {
 		return const_iterator(
@@ -135,6 +175,9 @@ public:
 		);
 	}
 
+	/**
+	 * \brief Creates and returns const_iterator pointing at the end.
+	 */
 	const_iterator
 	end() const {
 		return const_iterator(
@@ -184,6 +227,26 @@ private:
 	Enumerable m_enumerable;
 };
 
+/**
+ * \brief Piping operator zipping together two sequences the input one and the
+ *     one passed as a parameter.
+ *
+ * This operator can be safely used with infinite sequences.
+ *
+ * \tparam Enumerable Type of sequence with which input sequence is to be
+ *     zipped with.
+ *
+ * \param enumerable Sequence with which input enumerable is to be zipped with.
+ *
+ * **Example**
+ *
+ *     std::vector<int> input1 = { 1, 3, 5, 2, 4 };
+ *     std::vector<int> input2 = { 4, 8, 0, 1, 5 };
+ *     const auto out = input1 | tpl::zip(input2);
+ *     for (auto value : out) 
+ *         std::cout << value.first << ", " << value.second << ", ";
+ *         //output will be 1, 4, 3, 8, 5, 0, 2, 1, 4, 5, 
+ */
 template<class Enumerable>
 zipped_enumerable_factory<Enumerable>
 zip(Enumerable &&enumerable){

@@ -1,4 +1,7 @@
-
+/**
+ * \file
+ * \brief File defining cycle sequence generator.
+ */
 #pragma once
 
 #include "../meta/is_enumerable.hpp"
@@ -59,34 +62,72 @@ private:
 	typename enumerable_traits::const_iterator m_currentIterator;
 };
 
+/**
+ * \brief Infinite sequence generating repeating sequence of elements. E.g. 
+ *	    given sequence `{ 1, 2 }` the output sequence would be `{ 1, 2, 1, 2, 1,... }`.
+ *
+ * This class complies with is_enumerable trait, which allows it to be used in
+ * a pipeline.
+ *
+ * \tparam Enumerable Type of sequence to be repeated. Must satisfy is_enumerable trait.
+ */
 template<class Enumerable>
-class cycle_sequence
-	: meta::enforce_enumerable<Enumerable> {
+class cycle_sequence : meta::enforce_enumerable<Enumerable> {
 public:
+	//! Type of values returned from dereferencing iterators.
 	using value_type = typename meta::enumerable_traits<typename std::decay<Enumerable>::type>::value_type;
+
+	//! Type of const_iterator.
 	using const_iterator = cycle_iterator<Enumerable>;
+
+	//! Type of iterator.
 	using iterator = const_iterator;
 
+	/**
+	 * \brief Creates new cycle_sequence from given enumerable.
+	 *
+	 * Complexity:  
+	 * - O(1) for rvalue references (std::move is prefered)
+	 * - O(N) for lvalue references (where N is size of enumerable)
+	 *
+	 * \param enumerable Sequence to be infinitely repeated.
+	 */
 	cycle_sequence(
 		Enumerable &&enumerable
 	) :
 		m_enumerable(std::forward<Enumerable>(enumerable)){}
 
+	//! Creates and returns iterator pointing at the begin.
+	/**
+	 * O(N) complexity (where N is size of stored enumerable)
+	 */
 	iterator
 	begin() {
 		return iterator(m_enumerable);
 	}
 
+	//! Creates and returns iterator pointing at the end.
+	/**
+	 * O(N) complexity (where N is size of stored enumerable)
+	 */
 	iterator
 	end() {
 		return iterator(m_enumerable);
 	}
 
+	//! Creates and returns const_iterator pointing at the begin.
+	/**
+	 * O(N) complexity (where N is size of stored enumerable)
+	 */
 	const_iterator
 	begin() const {
 		return iterator(m_enumerable);
 	}
 
+	//! Creates and returns const_iterator pointing at the end.
+	/**
+	 * O(N) complexity (where N is size of stored enumerable)
+	 */
 	const_iterator
 	end() const {
 		return iterator(m_enumerable);
@@ -96,6 +137,20 @@ private:
 	Enumerable m_enumerable;
 };
 
+/**
+ * \brief Piping generator repeating infintely given sequence. E.g. given sequence 
+ *      `{ 1, 2 }` the output sequence would be `{ 1, 2, 1, 2, 1,... }`.
+ *
+ * Complexity:
+ * - O(1) for rvalue references (std::move is prefered) 
+ * - O(N) for lvalue references (N is size of enumerable)
+ *
+ * \tparam Enumerable Type of sequence to be repeated. This type must satisfy is_enumerable trait.
+ *
+ * \param  enumerable Sequence to be repeated.
+ *
+ * \return cycle_equence infinitely repeating given sequence.
+ */
 template<class Enumerable>
 cycle_sequence<Enumerable>
 cycle(Enumerable &&enumerable){

@@ -1,3 +1,8 @@
+/**
+ * \file
+ * \brief File defining sink which counts number of elements compliant with
+ *     given predicate.
+ */
 
 #pragma once
 
@@ -20,7 +25,10 @@ public:
 	unsigned
 	operator()(Enumerable &enumerable) {
 		using traits = meta::enumerable_traits<Enumerable>;
-		return static_cast<unsigned>(std::count_if(traits::begin(enumerable), traits::end(enumerable),
+		return static_cast<unsigned>(
+			std::count_if(
+				traits::begin(enumerable),
+				traits::end(enumerable),
 				m_logicalPredicate
 		));
 	}
@@ -28,7 +36,10 @@ public:
 	unsigned
 	operator()(const Enumerable &enumerable) const {
 		using traits = meta::enumerable_traits<Enumerable>;
-		return static_cast<unsigned>(std::count_if(traits::begin(enumerable), traits::end(enumerable),
+		return static_cast<unsigned>(
+				std::count_if(
+				traits::begin(enumerable),
+				traits::end(enumerable),
 				m_logicalPredicate
 		));
 	}
@@ -74,6 +85,23 @@ private:
 	LogicalPredicate m_logicalPredicate;
 };
 
+/**
+ * \brief Sink counting number of elements complying with given predicate.
+ *
+ * This is a sink, which means it can be used as final part of a pipeline.
+ *
+ * \tparam LogicalPredicate Type of output iterator. Its value_type must be
+ *     constructible from input sequence value_type.
+ *
+ * \param logicalPredicate Predicate telling returning true when given 
+ *     element is to be counted by sink and false otherwise.
+ *
+ *  **Example**
+ *
+ *     std::vector<int> v = {1, 2, 3, 4, 5};
+ *     const unsigned out = v | tpl::count([](auto i){ return i > 3;});
+ *     // out is 2
+ */
 template<class LogicalPredicate>
 count_factory<LogicalPredicate>
 count(LogicalPredicate &&logicalPredicate){

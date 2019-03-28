@@ -1,3 +1,7 @@
+/**
+ * \file
+ * \brief File defining sink which copies all elements to given output iterator.
+ */
 
 #pragma once
 
@@ -67,6 +71,23 @@ private:
 	OutputIterator m_outputIterator;
 };
 
+
+/**
+ * \brief Sink copying elements from input sequence to given output iterator.
+ *
+ * This is a sink, which means it can be used as final part of a pipeline.
+ *
+ * \tparam OutputIterator Type of output iterator. Its value_type must be
+ *     constructible from input sequence value_type.
+ *
+ * \param outputIterator Iterator to which is copied input sequence.
+ *
+ *  **Example**
+ *
+ *     std::vector<int> v = {1, 2, 3, 4, 5};
+ *     v | tpl::copy_to(std::ostream_iterator<int>(std::cout, ", "));
+ *     //prints 1, 2, 3, 4, 5, 
+ */
 template<class OutputIterator>
 copy_to_factory<OutputIterator>
 copy_to(OutputIterator &&outputIterator){

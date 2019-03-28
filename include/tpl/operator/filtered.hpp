@@ -1,4 +1,7 @@
-
+/**
+ * \file
+ * \brief File defining operator which filters given sequence.
+ */
 #pragma once
 
 #include "../meta/is_enumerable.hpp"
@@ -91,22 +94,54 @@ private:
 	const FilterPredicate *m_filterPredicate;
 };
 
+/**
+ * \brief Sequence filtering given sequence using supplied function.
+ *
+ * This class can be safely used with infinite sequences.
+ *
+ * This class complies with is_enumerable trait, which allows it to be used in
+ * a pipeline.
+ *
+ * \tparam Enumerable Type of sequence which is to be filtered. Must satisfy
+ *      is_enumerable trait.
+ * \tparam FilterPredicate Function-like type which will be used for filtering.
+ *      It should take one argument convertible to Enumerable::value_type and
+ *      return value of type convertible to bool.
+ */
 template<class Enumerable, class FilterPredicate>
 class filtered_sequence : meta::enforce_enumerable<Enumerable> {
 public:
 	using enumerable_traits = meta::enumerable_traits<Enumerable>;
+
+	//! Type of values returned from dereferencing iterators.
 	using value_type = typename enumerable_traits::value_type;
+
+	//! Type of const_iterator.
 	using const_iterator = filtering_iterator<
 		typename enumerable_traits::const_iterator,
 		typename enumerable_traits::enumerable_type,
 		typename std::remove_reference<FilterPredicate>::type
 	>;
+
+	//! Type of iterator.
 	using iterator = filtering_iterator<
 		typename enumerable_traits::iterator,
 		typename enumerable_traits::enumerable_type,
 		typename std::remove_reference<FilterPredicate>::type
 	>;
 
+	/**
+	 * \brief Creates new filtered_sequence from given sequence and filtering
+	 *      function.
+	 *
+	 * **Complexity** 
+	 * - O(1) for rvalue references of enumerable
+	 * - O(N) for lvalue references of enumerable (where N is size of enumerable)
+	 *
+	 * \param enumerable Sequence which is to be filtered.
+	 * \param op Function returning false when element is to be filtered out and
+	 *      false otherwise. This function CANNOT have side-effects.
+	 */
 	template<class T>
 	filtered_sequence(
 		Enumerable &&enumerable,
@@ -115,6 +150,9 @@ public:
 		m_enumerable(std::forward<Enumerable>(enumerable)),
 		m_filterPredicate(std::forward<T>(op)) {}
 
+	/**
+	 * \brief Creates and returns iterator pointing at the begin.
+	 */
 	iterator
 	begin() {
 		return iterator(
@@ -124,6 +162,9 @@ public:
 		);
 	}
 
+	/**
+	 * \brief Creates and returns iterator pointing at the end.
+	 */
 	iterator
 	end() {
 		return iterator(
@@ -133,6 +174,9 @@ public:
 		);
 	}
 
+	/**
+	 * \brief Creates and returns const_iterator pointing at the begin.
+	 */
 	const_iterator
 	begin() const {
 		return const_iterator(
@@ -142,6 +186,9 @@ public:
 		);
 	}
 
+	/**
+	 * \brief Creates and returns const_iterator pointing at the end.
+	 */
 	const_iterator
 	end() const {
 		return const_iterator(
@@ -192,10 +239,35 @@ private:
 	FilterPredicate m_filterPredicate;
 };
 
-template<class FilterPredicate>
-filter_factory<FilterPredicate>
-filter(FilterPredicate &&filterPredicate){
-	return filter_factory<FilterPredicate>(std::forward<FilterPredicate>(filterPredicate));
+
+/**
+ * \brief Piping operator filtering input sequence using supplied
+ *     function.
+ *
+ * This operator can be safely used with infinite sequences.
+ *
+ * \tparam FilterPredicate Function-like type which will be used for filtering.
+ *      It should take one argument convertible to value_type of input sequence
+ *      and return value of type convertible to bool.
+ *
+ * \param predicate Function returning false when element is to be
+ *     filtered out and false otherwise. Accepted type of this function
+ *     should be constructible from value_type of input sequence. This
+ *     function CANNOT have side-effects.
+ *
+ * **Example**
+ *     
+ *     std::vector<int> v = {1, 2, 3, 4, 5};
+ *     const auto filtered = v | tpl::filter([](auto i){ return i > 2; });
+ *     for (auto val : filtered)
+ *         std::cout << val << ", "; //displays 3, 4, 5, 
+ */
+template<class Predicate>
+filter_factory<Predicate>
+filter(Predicate &&predicate){
+	return filter_factory<Predicate>(
+		std::forward<Predicate>(predicate)
+	);
 }
 
 }

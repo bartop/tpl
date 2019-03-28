@@ -1,3 +1,8 @@
+/**
+ * \file
+ * \brief File defining left fold operation.
+ */
+
 #pragma once
 
 #include "fold_left_default.hpp"
@@ -48,7 +53,27 @@ private:
 	Predicate m_predicate;
 };
 
-
+/**
+ * \brief Sink performing on input sequence left fold. Left fold is also called
+ *     reduce or accumulate.
+ *
+ * This is a sink, which means it can be used as final part of a pipeline.
+ * 
+ * In this version of sink default value of input sequence value_type is 
+ * taken as initial fold value.
+ *
+ * \tparam Predicate Type of function-like object which will be used for fold.
+ *     It must take two parameters constructible from input sequence
+ *     value_type and return value convertible to its first argument.
+ *
+ * \param predicate Function which will be used for fold.
+ *
+ *  **Example**
+ *
+ *     std::vector<int> v = {1, 2, 3, 4, 5};
+ *     const int out = v | tpl::fold_left([](auto j, auto i){ return i + j; });
+ *     // out == 15
+ */
 template<class Predicate>
 fold_left_factory<Predicate>
 fold_left(Predicate &&predicate){
@@ -129,6 +154,29 @@ private:
 	InitialValue m_initialValue;
 };
 
+/**
+ * \brief Sink performing on input sequence left fold. Left fold is also called
+ *     reduce or accumulate.
+ *
+ * This is a sink, which means it can be used as final part of a pipeline.
+ * 
+ * In this version of sink passed argument is taken as initial fold value.
+ *
+ * \tparam Predicate Type of function-like object which will be used for fold.
+ *     It must take two parameters constructible from input sequence
+ *     value_type and return value convertible to its first argument.
+ * \tparam InitialValue Type of initial value of the fold. Must be convertible
+ *     to type of first argument of the Predicate.
+ *
+ * \param predicate Function which will be used for fold.
+ * \param initialValue Initial value of the fold operation.
+ *
+ *  **Example**
+ *
+ *     std::vector<int> v = {1, 2, 3, 4, 5};
+ *     const int out = v | tpl::fold_left([](auto j, auto i){ return i + j; }, 5);
+ *     // out == 20
+ */
 template<class Predicate, class InitialValue>
 initialized_fold_left_factory<Predicate, InitialValue>
 fold_left(Predicate &&predicate, InitialValue &&initialValue){

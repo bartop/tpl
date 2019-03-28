@@ -1,3 +1,8 @@
+/**
+ * \file
+ * \brief File defining sink which checks if any element in sequence complies
+ *     with given predicate.
+ */
 
 #pragma once
 
@@ -75,6 +80,26 @@ private:
 	Predicate m_predicate;
 };
 
+/**
+ * \brief Sink checking if any element in input sequence is compliant with
+ *     given predicate.
+ *
+ * This is a sink, which means it can be used as final part of a pipeline.
+ *
+ * \tparam LogicalPredicate Type of function-like object which will be called
+ *     on subsequent elements to check compliance with it. It must take one
+ *     argument constructible from input sequence value_type and return value
+ *     convertible to bool.
+ *
+ * \param logicalPredicate Function which will be tested on subsequent elements.
+ *
+ *  **Example**
+ *
+ *     std::vector<int> v = {1, 2, 3, 4, 5};
+ *     const bool out1 = v | tpl::any([](auto i){ return i < 0; });
+ *     const bool out2 = v | tpl::any([](auto i){ return i < 2; });
+ *     // out1 == false and out2 == true
+ */
 template<class LogicalPredicate>
 any_sink_factory<LogicalPredicate>
 any(LogicalPredicate &&logicalPredicate) {
