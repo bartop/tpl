@@ -1,9 +1,10 @@
-sudo: required
+udo: required
 
 language: cpp
-matrix:
+jobs:
   include:
-    - os: linux
+    - stage: test
+      os: linux
       compiler: gcc
       addons:
         apt:
@@ -13,8 +14,11 @@ matrix:
             - g++-5
       env:
          - MATRIX_EVAL="export CC=gcc-5 CXX=g++-5"
+      script:
+         - ./Scripts/travis-ci/test.bash
 
-    - os: linux
+    - stage: test
+      os: linux
       compiler: gcc
       addons:
         apt:
@@ -24,8 +28,11 @@ matrix:
             - g++-6
       env:
         - MATRIX_EVAL="export CC=gcc-6 CXX=g++-6"
+      script:
+         - ./Scripts/travis-ci/test.bash
 
-    - os: linux
+    - stage: test
+      os: linux
       compiler: gcc
       addons:
         apt:
@@ -35,8 +42,11 @@ matrix:
             - g++-7
       env:
         - MATRIX_EVAL="export CC=gcc-7 CXX=g++-7"
+      script:
+         - ./Scripts/travis-ci/test.bash
    
-    - os: linux
+    - stage: test
+      os: linux
       compiler: gcc
       addons:
         apt:
@@ -46,8 +56,11 @@ matrix:
             - g++-8
       env:
         - MATRIX_EVAL="export CC=gcc-8 CXX=g++-8"
+      script:
+         - ./Scripts/travis-ci/test.bash
         
-    - os: linux
+    - stage: test
+      os: linux
       compiler: gcc
       addons:
         apt:
@@ -57,8 +70,11 @@ matrix:
             - g++-4.9
       env:
          - MATRIX_EVAL="export CC=gcc-4.9 CXX=g++-4.9"
+      script:
+         - ./Scripts/travis-ci/test.bash
 
-    - os: linux
+    - stage: test
+      os: linux
       compiler: clang
       addons:
         apt:
@@ -68,8 +84,11 @@ matrix:
             - g++-4.9
       env:
         - MATRIX_EVAL="export CC=clang CXX=clang++"
+      script:
+         - ./Scripts/travis-ci/test.bash
 
-    - os: linux
+    - stage: test
+      os: linux
       compiler: clang
       addons:
         apt:
@@ -81,8 +100,11 @@ matrix:
             - g++-4.9
       env:
         - MATRIX_EVAL="export CC=clang-4.0 CXX=clang++-4.0"
+      script:
+         - ./Scripts/travis-ci/test.bash
 
-    - os: linux
+    - stage: test
+      os: linux
       compiler: clang
       addons:
         apt:
@@ -94,8 +116,11 @@ matrix:
             - g++-4.9
       env:
         - MATRIX_EVAL="export CC=clang-5.0 CXX=clang++-5.0"
+      script:
+         - ./Scripts/travis-ci/test.bash
 
-    - os: linux
+    - stage: test
+      os: linux
       compiler: clang
       addons:
         apt:
@@ -107,8 +132,11 @@ matrix:
             - g++-4.9
       env:
         - MATRIX_EVAL="export CC=clang-6.0 CXX=clang++-6.0"
+      script:
+         - ./Scripts/travis-ci/test.bash
 
-    - os: linux
+    - stage: test
+      os: linux
       compiler: clang
       addons:
         apt:
@@ -120,6 +148,12 @@ matrix:
             - g++-4.9
       env:
         - MATRIX_EVAL="export CC=clang-7 CXX=clang++-7"
+      script:
+         - ./Scripts/travis-ci/test.bash
+    
+    - stage: documentation
+      script:
+         - echo Deploying
 
 branches:
     only:
@@ -127,17 +161,3 @@ branches:
       - devel
       - ci-experiments
 
-script:
-  - mkdir $HOME/usr
-  - export PATH="$HOME/usr/bin:$PATH"
-  - wget https://cmake.org/files/v3.9/cmake-3.9.1-Linux-x86_64.sh
-  - chmod +x cmake-3.9.1-Linux-x86_64.sh
-  - ./cmake-3.9.1-Linux-x86_64.sh --prefix=$HOME/usr --exclude-subdir --skip-license
-  - cmake --version
-  - eval "${MATRIX_EVAL}"
-  - export CPLUS_INCLUDE_PATH=/usr/local/include
-  - mkdir build
-  - cd build
-  - cmake -DCMAKE_CXX_COMPILER=$COMPILER -DCMAKE_BUILD_TYPE=Release ..
-  - make all
-  - ctest .
