@@ -127,28 +127,17 @@ branches:
       - devel
       - ci-experiments
 
-before_install:
+script:
   - mkdir $HOME/usr
   - export PATH="$HOME/usr/bin:$PATH"
   - wget https://cmake.org/files/v3.9/cmake-3.9.1-Linux-x86_64.sh
   - chmod +x cmake-3.9.1-Linux-x86_64.sh
   - ./cmake-3.9.1-Linux-x86_64.sh --prefix=$HOME/usr --exclude-subdir --skip-license
   - cmake --version
-
-install:
   - eval "${MATRIX_EVAL}"
   - export CPLUS_INCLUDE_PATH=/usr/local/include
-
-before_script:
   - mkdir build
   - cd build
   - cmake -DCMAKE_CXX_COMPILER=$COMPILER -DCMAKE_BUILD_TYPE=Release ..
-
-script:
   - make all
   - ctest .
-
-jobs:
-  include:
-    - stage: deploy
-      script: echo Finished
